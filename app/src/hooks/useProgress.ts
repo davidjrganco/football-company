@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { applyCompletion } from '../lib/progressLogic'
 import type { Drill, ProgressState } from '../types'
 
 const STORAGE_KEY = 'treino-progress-v1'
@@ -84,7 +85,7 @@ export function useProgress() {
    * `dayProgramIds`: regista o dia de treino nesses programas (o exercício
    * conta venha do caminho misto ou do programa). `claimProgramIds`: entrega
    * as recompensas NA MESMA gravação (atómico — gravações separadas
-   * perdiam-se umas às outras).
+   * perdiam-se umas às outras). Regras puras em lib/progressLogic (testadas).
    */
   const completeDrill = useCallback(
     (
@@ -92,51 +93,10 @@ export function useProgress() {
       opts?: { dayProgramIds?: string[]; claimProgramIds?: string[] },
     ): CompletionResult => {
       const wasNew = !progress.completedDrillIds.includes(drill.id)
-      const { dayProgramIds = [], claimProgramIds = [] } = opts ?? {}
-
-      // dia de treino por programa (no máximo 1 registo por dia em cada)
-      let programTrainingDays = progress.programTrainingDays
-      for (const programId of dayProgramIds) {
-        const days = programTrainingDays[programId] ?? []
-        if (!days.includes(today())) {
-          programTrainingDays = { ...programTrainingDays, [programId]: [...days, today()] }
-        }
-      }
-
-      const next: ProgressState = {
-        xpTotal: progress.xpTotal + drill.xp,
-        drillsDone: progress.drillsDone + 1,
-        completedDrillIds: wasNew
-          ? [...progress.completedDrillIds, drill.id]
-          : progress.completedDrillIds,
-        completionCounts: {
-          ...progress.completionCounts,
-          [drill.id]: (progress.completionCounts[drill.id] ?? 0) + 1,
-        },
-        claimedPrograms: [
-          ...progress.claimedPrograms,
-          ...claimProgramIds.filter((id) => !progress.claimedPrograms.includes(id)),
-        ],
-        programTrainingDays,
-        streak: { ...progress.streak },
-      }
-
-      // streak diária pela data do dispositivo
-      const t = today()
-      const s = next.streak
-      if (s.lastTrainedDate === t) {
-        // já treinou hoje — não mexer
-      } else if (s.lastTrainedDate === yesterday()) {
-        s.current += 1
-      } else {
-        s.current = 1
-      }
-      s.best = Math.max(s.best, s.current)
-      s.lastTrainedDate = t
-
+      const next = applyCompletion(progress, drill, opts ?? {}, today(), yesterday())
       save(next)
       setProgress(next)
-      return { xpGained: drill.xp, streak: s.current, wasNew }
+      return { xpGained: drill.xp, streak: next.streak.current, wasNew }
     },
     [progress],
   )

@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { PlayerForm } from '../components/PlayerForm'
 import { BoltIcon, CheckIcon, FlameIcon, TrophyIcon } from '../components/icons'
+import { downloadBackup, readBackup, restoreBackup } from '../lib/backup'
 import { positionLabel } from '../hooks/usePlayer'
 import {
   ATTRIBUTE_CODES,
@@ -23,7 +24,22 @@ interface Props {
 /** Cartão de jogador premium (redesign 2026-08): brilho, círculo tático, grelha 3×3. */
 export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
   const [editing, setEditing] = useState(false)
+  const [backupMsg, setBackupMsg] = useState<string | null>(null)
+  const restoreInput = useRef<HTMLInputElement>(null)
   const values = attributeValues(progress, allDrills, programs)
+
+  async function handleRestore(file: File | undefined) {
+    if (!file) return
+    try {
+      const backup = await readBackup(file)
+      const when = backup.exportedAt.slice(0, 10)
+      if (window.confirm(`Repor a cópia de ${when}? O progresso atual é substituído.`)) {
+        restoreBackup(backup)
+      }
+    } catch (e) {
+      setBackupMsg(e instanceof Error ? e.message : 'Não consegui ler esse ficheiro.')
+    }
+  }
   const rating = overallRating(progress.xpTotal) // Geral sobe com o XP (decisão do Nicolas)
   const title = titleForRating(rating)
   const medals = earnedMedals(progress, programs)
@@ -157,6 +173,41 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
             <div className="mt-0.5 text-xs font-bold text-muted">Treinos feitos</div>
           </div>
         </div>
+      </div>
+
+      {/* cópia de segurança — o progresso vive só neste telemóvel */}
+      <div className="mt-3 rounded-2xl border border-line bg-panel px-[15px] py-[13px]">
+        <div className="text-xs font-extrabold tracking-[.1em] text-muted uppercase">Cópia de segurança</div>
+        <p className="mt-1.5 mb-2.5 text-[13px] leading-snug text-muted">
+          O teu progresso vive neste telemóvel. Guarda uma cópia de vez em quando — se trocares de
+          telemóvel ou limpares o browser, é assim que a streak sobrevive.
+        </p>
+        <div className="flex gap-2">
+          <button
+            className="flex-1 cursor-pointer rounded-xl border-none bg-grass px-3 py-2.5 font-display text-[13px] tracking-[.05em] text-[#052012]"
+            style={{ boxShadow: '0 4px 0 #16A34A' }}
+            onClick={() => {
+              downloadBackup(player, progress)
+              setBackupMsg('Cópia guardada nos teus ficheiros. 📁')
+            }}
+          >
+            GUARDAR CÓPIA
+          </button>
+          <button
+            className="flex-1 cursor-pointer rounded-xl border border-line bg-panel2 px-3 py-2.5 text-[13px] font-bold text-chalk"
+            onClick={() => restoreInput.current?.click()}
+          >
+            Repor cópia
+          </button>
+        </div>
+        <input
+          ref={restoreInput}
+          type="file"
+          accept=".json,application/json"
+          className="hidden"
+          onChange={(e) => handleRestore(e.target.files?.[0])}
+        />
+        {backupMsg && <div className="mt-2 text-[12.5px] font-bold text-lime">{backupMsg}</div>}
       </div>
 
       <p className="mt-4 text-center text-[12.5px] leading-normal text-muted">

@@ -754,7 +754,7 @@
             "Um pé em cada quadrado, o mais depressa que conseguires.",
             "Varia: dois pés por quadrado, ou deslocamento lateral."
           ],
-          "attributes": ["velocidade", "fisico"],
+          "attributes": ["velocidade", "fisico", "resistencia"],
           "video": { "type": "pending", "url": "" }
         },
         {
@@ -775,7 +775,7 @@
             "Sprinta em ziguezague, a cortar rente a cada cone.",
             "No fim, volta a andar e repete."
           ],
-          "attributes": ["velocidade"],
+          "attributes": ["velocidade", "resistencia"],
           "video": { "type": "pending", "url": "" }
         },
         {
@@ -796,7 +796,7 @@
             "Aterra suave, com os joelhos fletidos.",
             "Encadeia os saltos sem parar, em ritmo."
           ],
-          "attributes": ["fisico"],
+          "attributes": ["fisico", "resistencia"],
           "video": { "type": "pending", "url": "" }
         },
         {
@@ -838,7 +838,7 @@
             "Depois só num pé — e alterna o pé.",
             "Aterra sempre com controlo antes do salto seguinte."
           ],
-          "attributes": ["fisico", "velocidade"],
+          "attributes": ["fisico", "velocidade", "resistencia"],
           "video": { "type": "pending", "url": "" }
         }
       ]

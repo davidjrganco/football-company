@@ -1,4 +1,6 @@
+import { useRef, useState } from 'react'
 import { PlayerForm } from '../components/PlayerForm'
+import { readBackup, restoreBackup } from '../lib/backup'
 import type { PlayerProfile } from '../types'
 
 interface Props {
@@ -7,6 +9,18 @@ interface Props {
 
 /** Primeiro arranque: criar o cartão de jogador (sem contas — fica no telemóvel). */
 export function OnboardingScreen({ onSave }: Props) {
+  const restoreInput = useRef<HTMLInputElement>(null)
+  const [restoreMsg, setRestoreMsg] = useState<string | null>(null)
+
+  async function handleRestore(file: File | undefined) {
+    if (!file) return
+    try {
+      restoreBackup(await readBackup(file))
+    } catch (e) {
+      setRestoreMsg(e instanceof Error ? e.message : 'Não consegui ler esse ficheiro.')
+    }
+  }
+
   return (
     <div className="screen flex flex-col justify-center">
       <div className="mb-6 text-center">
@@ -23,6 +37,22 @@ export function OnboardingScreen({ onSave }: Props) {
         </p>
       </div>
       <PlayerForm submitLabel="CRIAR O MEU CARTÃO" onSave={onSave} />
+
+      {/* vindo de outro telemóvel? repor a cópia de segurança */}
+      <button
+        className="mt-5 cursor-pointer border-none bg-transparent text-center text-[13px] font-bold text-muted underline decoration-[rgba(233,245,236,.3)] underline-offset-4"
+        onClick={() => restoreInput.current?.click()}
+      >
+        Já treinavas noutro telemóvel? Repor cópia de segurança
+      </button>
+      <input
+        ref={restoreInput}
+        type="file"
+        accept=".json,application/json"
+        className="hidden"
+        onChange={(e) => handleRestore(e.target.files?.[0])}
+      />
+      {restoreMsg && <div className="mt-2 text-center text-[12.5px] font-bold text-flare2">{restoreMsg}</div>}
     </div>
   )
 }

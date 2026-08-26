@@ -17,7 +17,13 @@ interface Props {
 export function PathScreen({ progress, player, onOpenDrill }: Props) {
   const cur = currentDrillIndex(mainPathDrills, progress.completedDrillIds)
   const nextDrill = cur < mainPathDrills.length ? mainPathDrills[cur] : null
-  const nextCat = nextDrill ? categoryOfDrill(nextDrill) : CATEGORIES.dominio
+  // caminho completo → o hero passa a sugerir o Treino do Dia (rotação diária)
+  const now = new Date()
+  const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000)
+  const dailyDrill = mainPathDrills.length ? mainPathDrills[dayOfYear % mainPathDrills.length] : null
+  const heroDrill = nextDrill ?? dailyDrill
+  const heroLabel = nextDrill ? 'Próximo treino' : 'Treino do dia'
+  const nextCat = heroDrill ? categoryOfDrill(heroDrill) : CATEGORIES.dominio
   const doneCount = mainPathDrills.filter((d) => progress.completedDrillIds.includes(d.id)).length
   const levelIdx = Math.max(
     0,
@@ -65,8 +71,8 @@ export function PathScreen({ progress, player, onOpenDrill }: Props) {
         </div>
       </header>
 
-      {/* PRÓXIMO TREINO (hero) */}
-      {nextDrill ? (
+      {/* PRÓXIMO TREINO / TREINO DO DIA (hero) */}
+      {heroDrill ? (
         <div
           className="relative mb-1.5 cursor-pointer overflow-hidden rounded-[18px] px-4 py-3.5"
           style={{
@@ -74,16 +80,16 @@ export function PathScreen({ progress, player, onOpenDrill }: Props) {
             border: `1px solid ${nextCat.color}66`,
             boxShadow: `0 10px 24px rgba(0,0,0,.45), 0 0 26px ${nextCat.color}1F`,
           }}
-          onClick={() => onOpenDrill(nextDrill)}
+          onClick={() => onOpenDrill(heroDrill)}
         >
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
               <div className="text-[11px] font-extrabold tracking-[.16em] uppercase" style={{ color: nextCat.color }}>
-                Próximo treino
+                {heroLabel}
               </div>
-              <div className="mt-[3px] font-display text-[23px] leading-[1.05]">{nextDrill.name}</div>
+              <div className="mt-[3px] font-display text-[23px] leading-[1.05]">{heroDrill.name}</div>
               <div className="mt-1 text-xs font-bold text-muted">
-                {nextCat.label} · {nextDrill.sets} × {nextDrill.work_seconds}s · +{nextDrill.xp} XP
+                {nextCat.label} · {heroDrill.sets} × {heroDrill.work_seconds}s · +{heroDrill.xp} XP
               </div>
             </div>
             <button
@@ -91,7 +97,7 @@ export function PathScreen({ progress, player, onOpenDrill }: Props) {
               style={{ background: nextCat.color, color: nextCat.dark, boxShadow: `0 5px 0 ${nextCat.shadow}` }}
               onClick={(e) => {
                 e.stopPropagation()
-                onOpenDrill(nextDrill)
+                onOpenDrill(heroDrill)
               }}
             >
               COMEÇAR
@@ -99,7 +105,7 @@ export function PathScreen({ progress, player, onOpenDrill }: Props) {
           </div>
           <div className="mt-3 flex items-center gap-2">
             <span className="text-[10.5px] font-extrabold tracking-[.12em] text-muted uppercase">
-              Nível {levelIdx + 1}
+              {nextDrill ? `Nível ${levelIdx + 1}` : 'Caminho completo'}
             </span>
             <div className="flex flex-1 gap-1">
               {mainPathLevels.map((level, i) => {
