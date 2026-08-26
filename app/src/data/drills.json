@@ -1,0 +1,847 @@
+{
+  "meta": {
+    "version": "3.0",
+    "language": "pt-PT",
+    "note": "Futebol e o path principal. Futsal e secundario (primary:false) e nao deve ter o mesmo destaque. v2 (2026-08-18): series+descanso, passos, estrelas 1-5, atributos. v3 (2026-08-20): programas multi-dia. v3.1 (Tarefa 3b respondida 2026-08-23/24): Speed and Agility ativo com os 7 exercicios do Nicolas; main_path = caminho principal MISTO por niveis (como o Footwork), programas em pagina separada."
+  },
+  "main_path": {
+    "levels": [
+      { "name": "NÍVEL 1", "drill_ids": ["fb-01", "fb-02", "fb-03", "sa-03", "wf-01", "fin-01", "sa-02", "fb-04"] },
+      { "name": "NÍVEL 2", "drill_ids": ["fb-05", "fin-02", "wf-02", "sa-04", "fb-06", "wf-03", "sa-06", "fb-07"] },
+      { "name": "NÍVEL 3", "drill_ids": ["fin-03", "fb-08", "sa-07", "wf-04", "fb-09", "fin-04", "sa-05", "fb-10"] },
+      { "name": "NÍVEL 4", "drill_ids": ["wf-05", "fin-06", "fb-11", "sa-01", "fin-05", "wf-06", "fb-12", "fin-07"] }
+    ]
+  },
+  "programs": [
+    {
+      "id": "ballmastery7",
+      "name": "7 Day Ball Mastery",
+      "days": 7,
+      "minutes_per_day": "20-30",
+      "status": "ready",
+      "focus": "Ball control",
+      "reward": { "type": "attributes", "points": { "dominio": 1 } },
+      "drill_ids": ["fb-01", "fb-02", "fb-03", "fb-04", "fb-05", "fb-06", "fb-07", "fb-08", "fb-09", "fb-10", "fb-11", "fb-12"]
+    },
+    {
+      "id": "finishing",
+      "name": "Finishing",
+      "days": 30,
+      "minutes_per_day": "30",
+      "status": "ready",
+      "focus": "Remate",
+      "reward": { "type": "attributes", "points": { "remate": 3 } },
+      "drill_ids": ["fin-01", "fin-02", "fin-03", "fin-04", "fin-05", "fin-06", "fin-07"]
+    },
+    {
+      "id": "weakfoot",
+      "name": "Weak Foot",
+      "days": 27,
+      "minutes_per_day": "20",
+      "status": "ready",
+      "focus": "Pé fraco",
+      "reward": { "type": "medal", "name": "Pé Fraco", "level": 1 },
+      "drill_ids": ["wf-01", "wf-02", "wf-03", "wf-04", "wf-05", "wf-06"]
+    },
+    {
+      "id": "speedagility",
+      "name": "Speed and Agility",
+      "days": 14,
+      "minutes_per_day": "25",
+      "status": "ready",
+      "focus": "Velocidade",
+      "reward": { "type": "attributes", "points": { "velocidade": 2 } },
+      "drill_ids": ["sa-02", "sa-03", "sa-04", "sa-06", "sa-07", "sa-05", "sa-01"]
+    }
+  ],
+  "attributes": {
+    "controlo": "Controlo",
+    "dominio": "Domínio",
+    "passe": "Passe",
+    "remate": "Remate",
+    "defesa": "Defesa",
+    "fisico": "Físico",
+    "resistencia": "Resistência",
+    "velocidade": "Velocidade",
+    "iq": "IQ de jogo"
+  },
+  "paths": [
+    {
+      "id": "futebol-ballmastery",
+      "sport": "futebol",
+      "primary": true,
+      "name": "Domínio de Bola",
+      "category": "Ball Mastery",
+      "drills": [
+        {
+          "id": "fb-01",
+          "order": 1,
+          "name": "Toques com a Sola",
+          "name_en": "Toe Taps",
+          "skill": "Controlo / ritmo de pés",
+          "difficulty": 1,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Bola parada no chão. Alterna toques leves na parte de cima da bola com a planta (sola) de cada pé, o mais rápido que conseguires sem perder o controlo.",
+          "cue": "Pontas dos pés, ritmo rápido, olhos para cima.",
+          "steps": [
+            "Bola parada à tua frente, corpo nas pontas dos pés.",
+            "Alterna toques leves na parte de cima da bola com a sola de cada pé.",
+            "Aumenta o ritmo aos poucos, sempre com os olhos para cima."
+          ],
+          "attributes": ["controlo", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-02",
+          "order": 2,
+          "name": "Interior-Interior",
+          "name_en": "Bell Touches",
+          "skill": "Controlo com o interior",
+          "difficulty": 1,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Empurra a bola de um pé para o outro usando só o interior de cada pé. A bola faz um vaivém curto entre os dois pés.",
+          "cue": "Bola no meio, toques curtos e ritmados.",
+          "steps": [
+            "Pés à largura dos ombros, bola no meio.",
+            "Empurra a bola de um pé para o outro só com o interior.",
+            "Mantém os toques curtos e ritmados, sem deixar a bola fugir."
+          ],
+          "attributes": ["controlo", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-03",
+          "order": 3,
+          "name": "Rolar com a Sola",
+          "name_en": "Sole Rolls",
+          "skill": "Controlo com a sola",
+          "difficulty": 1,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Rola a bola de lado a lado com a sola, passando-a de um pé para o outro. Mantém o corpo baixo e a bola sempre sob controlo.",
+          "cue": "Sola sempre em contacto, joelhos fletidos.",
+          "steps": [
+            "Corpo baixo, joelhos fletidos.",
+            "Rola a bola de lado a lado com a sola, de um pé para o outro.",
+            "Mantém a sola em contacto com a bola o máximo de tempo possível."
+          ],
+          "attributes": ["controlo", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-04",
+          "order": 4,
+          "name": "Puxa e Empurra",
+          "name_en": "Push-Pull (L)",
+          "skill": "Mudança de ritmo",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "No mesmo pé: puxa a bola para trás com a sola e logo empurra-a para a frente com a parte da frente do pé. Repete em ritmo.",
+          "cue": "Sola atrás, frente à frente — sem parar.",
+          "steps": [
+            "Puxa a bola para trás com a sola.",
+            "Logo a seguir, empurra-a para a frente com a parte da frente do mesmo pé.",
+            "Repete em ritmo contínuo e depois troca de pé."
+          ],
+          "attributes": ["dominio", "velocidade"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-05",
+          "order": 5,
+          "name": "Puxar em V",
+          "name_en": "V-Pull",
+          "skill": "Mudança de direção",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Puxa a bola para trás com a sola e empurra-a em diagonal para o lado com o interior, desenhando um V. Alterna os pés.",
+          "cue": "Puxa-empurra, muda de ângulo rápido.",
+          "steps": [
+            "Puxa a bola para trás com a sola.",
+            "Empurra-a em diagonal para o lado com o interior, a desenhar um V.",
+            "Alterna os pés e muda de ângulo cada vez mais rápido."
+          ],
+          "attributes": ["dominio", "controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-06",
+          "order": 6,
+          "name": "Interior-Exterior",
+          "name_en": "Inside-Outside",
+          "skill": "Condução com um pé",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Com o mesmo pé, toca a bola com o interior e a seguir com o exterior, conduzindo-a para a frente em ziguezague curto.",
+          "cue": "Um pé só, tornozelo solto.",
+          "steps": [
+            "Mantém a bola junto aos pés, com muitos toques.",
+            "Toca com o interior e depois com o exterior — com os dois pés.",
+            "Vai aumentando a velocidade gradualmente."
+          ],
+          "attributes": ["dominio", "controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-07",
+          "order": 7,
+          "name": "Slalom em Cones",
+          "name_en": "Cone Weave",
+          "skill": "Condução em espaço apertado",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Põe 4-5 cones (ou marcas) em linha. Conduz a bola em ziguezague por entre eles, com toques curtos, e volta.",
+          "cue": "Toques curtos, bola perto do pé.",
+          "steps": [
+            "Coloca 4-5 cones (ou marcas) em linha, com um passo entre eles.",
+            "Conduz a bola em ziguezague por entre os cones, com toques curtos.",
+            "No fim, dá a volta e regressa sem parar."
+          ],
+          "attributes": ["dominio", "controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-08",
+          "order": 8,
+          "name": "Rolar e Acelerar",
+          "name_en": "Sole Roll to Push",
+          "skill": "Arranque",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Rola a bola para o lado com a sola e, no toque seguinte, arranca com o exterior a acelerar 3-4 metros. Trava e repete para o outro lado.",
+          "cue": "Da calma à explosão.",
+          "steps": [
+            "Rola a bola para o lado com a sola.",
+            "No toque seguinte, arranca com o exterior a acelerar 3-4 metros.",
+            "Trava com a sola e repete para o outro lado."
+          ],
+          "attributes": ["velocidade", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-09",
+          "order": 9,
+          "name": "Oito",
+          "name_en": "Figure 8",
+          "skill": "Controlo em curva",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Com dois cones (ou os teus pés como referência), conduz a bola num oito à volta deles, alternando o interior dos pés.",
+          "cue": "Toques suaves, controlo em curva.",
+          "steps": [
+            "Coloca dois cones a dois passos um do outro.",
+            "Conduz a bola num oito à volta deles, com o interior dos dois pés.",
+            "Toques suaves — a bola nunca se afasta de ti."
+          ],
+          "attributes": ["controlo", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-10",
+          "order": 10,
+          "name": "Tesoura",
+          "name_en": "Scissors",
+          "skill": "Finta 1x1",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Bola parada. Passa o pé à volta da bola por fora (como se fosses chutar) e sai a acelerar para o lado contrário. Alterna os pés.",
+          "cue": "Vende a finta com o corpo.",
+          "steps": [
+            "Bola parada: passa o pé à volta da bola por fora, como se fosses rematar.",
+            "Inclina o corpo para vender a finta.",
+            "Sai a acelerar para o lado contrário e alterna os pés."
+          ],
+          "attributes": ["dominio", "iq"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-11",
+          "order": 11,
+          "name": "Passo por Cima",
+          "name_en": "Step-Over",
+          "skill": "Finta 1x1",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Passa o pé por cima da bola de dentro para fora e arranca para o lado oposto ao do passo. Alterna os pés e acelera na saída.",
+          "cue": "Explode logo a seguir ao passo.",
+          "steps": [
+            "Passa o pé por cima da bola, de dentro para fora.",
+            "Planta esse pé no chão e arranca para o lado oposto.",
+            "Explode logo a seguir ao passo — alterna os pés."
+          ],
+          "attributes": ["dominio", "iq"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fb-12",
+          "order": 12,
+          "name": "Ziguezague Diagonal",
+          "name_en": "Diagonal Zigzag",
+          "skill": "Condução com mudança de direção",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Conduz a bola em diagonal, alternando o interior de cada pé e mudando de ângulo a cada toque, como se ultrapassasses adversários em ziguezague.",
+          "cue": "Muda de ângulo a cada toque.",
+          "steps": [
+            "Conduz a bola em diagonal com o interior de um pé.",
+            "Muda de ângulo a cada toque, alternando os pés.",
+            "Imagina que ultrapassas um adversário em cada mudança."
+          ],
+          "attributes": ["dominio", "velocidade"],
+          "video": { "type": "pending", "url": "" }
+        }
+      ]
+    },
+    {
+      "id": "futsal-intro",
+      "sport": "futsal",
+      "primary": false,
+      "name": "Futsal (secção secundária)",
+      "category": "Introdução ao Futsal",
+      "drills": [
+        {
+          "id": "ft-01",
+          "order": 1,
+          "name": "Controlo de Sola Futsal",
+          "name_en": "Futsal Sole Control",
+          "skill": "Controlo característico do futsal",
+          "difficulty": 1,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Domina a bola sempre com a sola, típico do futsal: pequenos toques a segurar e mover a bola com a planta do pé, alternando os pés.",
+          "cue": "Bola colada à sola, corpo protege a bola.",
+          "steps": [
+            "Toques pequenos com a sola, a segurar e a mover a bola.",
+            "Alterna os pés e protege a bola com o corpo."
+          ],
+          "attributes": ["controlo", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "ft-02",
+          "order": 2,
+          "name": "Conduzir com a Sola",
+          "name_en": "Sole Dribble",
+          "skill": "Condução em espaço reduzido",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Conduz a bola em deslocamento usando a sola para a empurrar e travar, mantendo-a sempre perto — como num campo apertado de futsal.",
+          "cue": "Toques pequenos, mudanças rápidas.",
+          "steps": [
+            "Conduz a bola em deslocamento, sempre com a sola.",
+            "Empurra e trava com a planta do pé, bola sempre colada."
+          ],
+          "attributes": ["dominio", "controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "ft-03",
+          "order": 3,
+          "name": "Finta Curta de Futsal",
+          "name_en": "Futsal Feint",
+          "skill": "Finta em espaço apertado",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Combina um toque de sola com uma saída rápida em interior para enganar um adversário imaginário num espaço curto.",
+          "cue": "Engana com a sola, sai com o interior.",
+          "steps": [
+            "Faz um toque de sola para enganar o adversário.",
+            "Sai rápido com o interior para o espaço."
+          ],
+          "attributes": ["dominio", "iq"],
+          "video": { "type": "pending", "url": "" }
+        }
+      ]
+    },
+    {
+      "id": "futebol-finishing",
+      "sport": "futebol",
+      "primary": false,
+      "name": "Finalização",
+      "category": "Finishing",
+      "drills": [
+        {
+          "id": "fin-01",
+          "order": 1,
+          "name": "Remate Colocado",
+          "name_en": "Placed Shot",
+          "skill": "Precisão de remate",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Bola parada em frente à baliza (ou alvo na parede). Remata colocado aos cantos, alternando o canto a cada remate.",
+          "cue": "Colocação antes de força — escolhe o canto ANTES de rematar.",
+          "steps": [
+            "Marca alvos nos cantos da baliza (ou na parede).",
+            "Bola parada: remata colocado, a apontar a um canto de cada vez.",
+            "Alterna o canto e o pé a cada remate."
+          ],
+          "attributes": ["remate"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fin-02",
+          "order": 2,
+          "name": "Controlo e Remate",
+          "name_en": "Touch and Shoot",
+          "skill": "Remate em 2 toques",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Toque curto para a frente a tirar a bola dos pés e remate logo a seguir — só dois toques no total.",
+          "cue": "O primeiro toque prepara, o segundo decide.",
+          "steps": [
+            "Toque curto para a frente, a tirar a bola dos pés.",
+            "Remata logo no segundo toque — sem toques extra.",
+            "Varia o ângulo do primeiro toque (frente, esquerda, direita)."
+          ],
+          "attributes": ["remate", "controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fin-03",
+          "order": 3,
+          "name": "Drible e Remate",
+          "name_en": "Dribble and Shoot",
+          "skill": "Remate após condução",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Ziguezague por 2 cones em condução rápida e remate à baliza no fim, sem parar a bola.",
+          "cue": "Última condução já a preparar o remate.",
+          "steps": [
+            "Coloca 2 cones a caminho da baliza.",
+            "Conduz em ziguezague rápido por entre eles.",
+            "Remata no fim sem parar a bola."
+          ],
+          "attributes": ["remate", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fin-04",
+          "order": 4,
+          "name": "Primeira Intenção",
+          "name_en": "First-Time Finish",
+          "skill": "Remate de primeira",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Passa a bola contra a parede (ou pede um passe) e remata de primeira quando ela volta, sem controlar.",
+          "cue": "Pé de apoio ao lado da bola, olho nela até ao fim.",
+          "steps": [
+            "Passa a bola contra a parede com força média.",
+            "Ajusta o corpo enquanto ela volta.",
+            "Remata de primeira — sem toque de controlo."
+          ],
+          "attributes": ["remate", "iq"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fin-05",
+          "order": 5,
+          "name": "Finta e Remate",
+          "name_en": "Skill Move and Shoot",
+          "skill": "Finta + finalização",
+          "difficulty": 4,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Conduz até à entrada da área, faz uma tesoura ou passo por cima e remata logo a seguir à finta.",
+          "cue": "A finta abre o espaço — o remate vem já a seguir.",
+          "steps": [
+            "Conduz em direção à baliza (ou ao alvo).",
+            "Faz uma tesoura ou passo por cima a 'passar' um defesa imaginário.",
+            "Remata imediatamente a seguir à finta."
+          ],
+          "attributes": ["remate", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fin-06",
+          "order": 6,
+          "name": "Potência",
+          "name_en": "Power Shot",
+          "skill": "Remate de longe",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Remates de mais longe, com o peito do pé e força — mas sempre dentro do alvo. Força só conta se acertar.",
+          "cue": "Peito do pé, corpo por cima da bola.",
+          "steps": [
+            "Afasta-te mais da baliza do que o normal.",
+            "Remata com o peito do pé, corpo por cima da bola.",
+            "Só conta se acertar no alvo — força COM pontaria."
+          ],
+          "attributes": ["remate", "fisico"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "fin-07",
+          "order": 7,
+          "name": "1v1 e Remata",
+          "name_en": "1v1 to Finish",
+          "skill": "Ganhar o duelo e finalizar",
+          "difficulty": 4,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "A tua ideia: enfrenta um adversário (o pai, um amigo ou um cone), ganha o 1x1 com uma finta e remata à baliza.",
+          "cue": "Ganha o duelo primeiro, remata depois — nunca ao contrário.",
+          "steps": [
+            "Coloca um adversário (ou cone) entre ti e a baliza.",
+            "Ganha o 1x1 com uma finta e mudança de velocidade.",
+            "Remata assim que tiveres ângulo — sem toques a mais."
+          ],
+          "attributes": ["remate", "iq"],
+          "video": { "type": "pending", "url": "" }
+        }
+      ]
+    },
+    {
+      "id": "futebol-weakfoot",
+      "sport": "futebol",
+      "primary": false,
+      "name": "Pé Fraco",
+      "category": "Weak Foot",
+      "drills": [
+        {
+          "id": "wf-01",
+          "order": 1,
+          "name": "Toques Só Pé Fraco",
+          "name_en": "Weak Foot Touches",
+          "skill": "Controlo com o pé fraco",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Toques de sola e interior usando SÓ o pé fraco: segura, move e trava a bola sem nunca usar o pé bom.",
+          "cue": "Devagar e bem — a técnica vem antes da velocidade.",
+          "steps": [
+            "Só o pé fraco toca na bola — o bom fica de apoio.",
+            "Alterna toques de sola e de interior.",
+            "Aumenta o ritmo só quando a bola obedecer."
+          ],
+          "attributes": ["controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "wf-02",
+          "order": 2,
+          "name": "Condução Pé Fraco",
+          "name_en": "Weak Foot Dribble",
+          "skill": "Condução com o pé fraco",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Slalom pelos cones conduzindo a bola só com o pé fraco — interior e exterior.",
+          "cue": "Toques curtos, bola sempre perto.",
+          "steps": [
+            "Põe 4-5 cones em linha.",
+            "Conduz em ziguezague só com o pé fraco.",
+            "Usa interior E exterior desse pé."
+          ],
+          "attributes": ["dominio", "controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "wf-03",
+          "order": 3,
+          "name": "Passe à Parede",
+          "name_en": "Weak Foot Wall Pass",
+          "skill": "Passe com o pé fraco",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Passes contra a parede só com o interior do pé fraco. Recebe com o fraco, passa com o fraco.",
+          "cue": "Interior firme, tornozelo travado.",
+          "steps": [
+            "Coloca-te a 3-4 metros da parede.",
+            "Passa com o interior do pé fraco.",
+            "Recebe também com o pé fraco e repete."
+          ],
+          "attributes": ["passe"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "wf-04",
+          "order": 4,
+          "name": "Interior-Exterior Fraco",
+          "name_en": "Weak Foot Inside-Outside",
+          "skill": "O teu Inside-Outside, no fraco",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "O teu exercício preferido, mas só com o pé fraco: toca com o interior e depois com o exterior, em ziguezague curto.",
+          "cue": "Mantém a bola junto ao pé, com muitos toques.",
+          "steps": [
+            "Mantém a bola junto ao pé fraco, com muitos toques.",
+            "Alterna interior e exterior desse pé.",
+            "Vai aumentando a velocidade gradualmente."
+          ],
+          "attributes": ["dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "wf-05",
+          "order": 5,
+          "name": "Remate Pé Fraco",
+          "name_en": "Weak Foot Shot",
+          "skill": "Remate com o pé fraco",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Remates ao alvo só com o pé fraco: primeiro colocados e devagar, depois com mais força.",
+          "cue": "Primeiro acerta, depois acelera.",
+          "steps": [
+            "Começa perto do alvo, remates colocados.",
+            "Só aumentas a força quando acertares 3 seguidos.",
+            "Afasta-te um passo de cada vez."
+          ],
+          "attributes": ["remate"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "wf-06",
+          "order": 6,
+          "name": "Juggling Pé Fraco",
+          "name_en": "Weak Foot Juggling",
+          "skill": "Manter a bola no ar",
+          "difficulty": 4,
+          "sets": 3,
+          "work_seconds": 45,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "A tua ideia: manter a bola no ar só com o pé fraco. Conta os toques e tenta bater o teu recorde em cada série.",
+          "cue": "Peito do pé esticado, toques baixos e macios.",
+          "steps": [
+            "Deixa a bola cair do peito ou das mãos para o pé fraco.",
+            "Toques baixos com o peito do pé, sem deixar cair.",
+            "Conta os toques — tenta bater o recorde a cada série."
+          ],
+          "attributes": ["controlo", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        }
+      ]
+    },
+    {
+      "id": "futebol-speedagility",
+      "sport": "futebol",
+      "primary": false,
+      "name": "Velocidade e Agilidade",
+      "category": "Speed and Agility",
+      "drills": [
+        {
+          "id": "sa-01",
+          "order": 1,
+          "name": "Box Jumps",
+          "name_en": "Box Jumps",
+          "skill": "Potência de pernas",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "A tua ideia: saltos a pés juntos para cima de uma caixa, degrau ou muro baixo ESTÁVEL. Variante reativa (também tua): assim que tocas no chão, salta logo outra vez, sem parar.",
+          "cue": "Explode a subir, aterra suave — e no reativo, o chão queima!",
+          "steps": [
+            "Escolhe uma caixa ou degrau estável, à altura do joelho no máximo.",
+            "Salta a pés juntos para cima, com explosão, e desce com calma.",
+            "Variante reativa: assim que tocas no chão, salta logo outra vez."
+          ],
+          "attributes": ["fisico", "velocidade"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "sa-02",
+          "order": 2,
+          "name": "Sprint com Bola",
+          "name_en": "Ball Sprint",
+          "skill": "Velocidade com bola",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Conduz a bola em sprint 15-20 metros com toques longos, trava com a sola e volta a conduzir devagar para recuperar.",
+          "cue": "Toques mais longos que o normal — a bola corre contigo.",
+          "steps": [
+            "Marca 15-20 metros com dois cones.",
+            "Conduz a bola em sprint com toques para a frente.",
+            "Trava com a sola no fim e volta devagar a recuperar."
+          ],
+          "attributes": ["velocidade", "dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "sa-03",
+          "order": 3,
+          "name": "Escada de Agilidade",
+          "name_en": "Agility Ladder",
+          "skill": "Pés rápidos",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Pés rápidos numa escada de agilidade no chão (ou desenhada com giz): um pé em cada quadrado, o mais depressa possível.",
+          "cue": "Pontas dos pés, passos pequenos e rápidos.",
+          "steps": [
+            "Usa uma escada de agilidade ou desenha quadrados com giz.",
+            "Um pé em cada quadrado, o mais depressa que conseguires.",
+            "Varia: dois pés por quadrado, ou deslocamento lateral."
+          ],
+          "attributes": ["velocidade", "fisico"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "sa-04",
+          "order": 4,
+          "name": "Sprint em Ziguezague",
+          "name_en": "Zigzag Sprint",
+          "skill": "Mudança de direção a correr",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Sprint em ziguezague por entre 4-5 cones, sem bola, a cortar o mais rente possível a cada cone.",
+          "cue": "Baixa o corpo na mudança, explode na saída.",
+          "steps": [
+            "Põe 4-5 cones em linha com dois passos entre eles.",
+            "Sprinta em ziguezague, a cortar rente a cada cone.",
+            "No fim, volta a andar e repete."
+          ],
+          "attributes": ["velocidade"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "sa-05",
+          "order": 5,
+          "name": "Knee Jumps",
+          "name_en": "Knee Jumps",
+          "skill": "Potência de salto",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "A tua ideia: saltos no lugar a puxar os joelhos ao peito, um atrás do outro, com aterragem suave.",
+          "cue": "Joelhos ao peito, aterra macio e salta logo.",
+          "steps": [
+            "Salta no lugar a puxar os dois joelhos ao peito.",
+            "Aterra suave, com os joelhos fletidos.",
+            "Encadeia os saltos sem parar, em ritmo."
+          ],
+          "attributes": ["fisico"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "sa-06",
+          "order": 6,
+          "name": "Tiro de Reação",
+          "name_en": "Reaction Sprint",
+          "skill": "Reação + arranque",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Alguém dá um sinal (palma ou grito) em momentos inesperados — ao sinal, explodes em sprint 5-10 metros.",
+          "cue": "Reage ao som, não adivinhes.",
+          "steps": [
+            "Pede a alguém para dar o sinal (palma) quando quiser.",
+            "Ao sinal, explode em sprint 5-10 metros.",
+            "Volta a andar e fica pronto para o próximo sinal."
+          ],
+          "attributes": ["velocidade", "iq"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "sa-07",
+          "order": 7,
+          "name": "Saltos em Frente",
+          "name_en": "Broad Hops",
+          "skill": "Impulsão para a frente",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "A tua ideia: saltos para a frente, primeiro a pés juntos e depois só num pé (alterna o pé em cada série).",
+          "cue": "Braços ajudam o salto, aterra com controlo.",
+          "steps": [
+            "Saltos para a frente a pés juntos, o mais longe que conseguires.",
+            "Depois só num pé — e alterna o pé.",
+            "Aterra sempre com controlo antes do salto seguinte."
+          ],
+          "attributes": ["fisico", "velocidade"],
+          "video": { "type": "pending", "url": "" }
+        }
+      ]
+    }
+  ]
+}

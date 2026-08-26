@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0C1712">
+<title>Protótipo — App de Treino (Vertical Slice)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch:#0C1712; --pitch2:#0A130F; --panel:#14231C; --panel2:#1A2E24;
+    --line:rgba(233,245,236,.14); --grass:#22C55E; --grass-d:#16A34A;
+    --lime:#A3E635; --flare:#F97316; --flare2:#FB923C;
+    --chalk:#F4FBF6; --muted:#8AA79A; --lock:#3A4A42;
+    --shadow:0 10px 24px rgba(0,0,0,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:
+      radial-gradient(120% 60% at 50% -10%, #10261C 0%, rgba(16,38,28,0) 60%),
+      var(--pitch);
+    font-family:'Barlow',system-ui,sans-serif; color:var(--chalk);
+    display:flex; align-items:center; justify-content:center; min-height:100dvh;
+  }
+  .phone{
+    position:relative; width:100%; max-width:430px; height:100dvh; max-height:920px;
+    background:linear-gradient(180deg,var(--pitch) 0%, var(--pitch2) 100%);
+    overflow:hidden; display:flex; flex-direction:column;
+    border-left:1px solid var(--line); border-right:1px solid var(--line);
+  }
+  /* faint pitch centre-line motif */
+  .phone:before{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+    background:
+      linear-gradient(var(--line),var(--line)) 50% 0/1px 100% no-repeat;
+    -webkit-mask:linear-gradient(#000,transparent 40%);
+            mask:linear-gradient(#000,transparent 40%);
+  }
+  .screen{flex:1; overflow-y:auto; overflow-x:hidden; padding:18px 18px 96px}
+  .screen::-webkit-scrollbar{display:none}
+  .hidden{display:none!important}
+
+  /* ---------- top bar ---------- */
+  .top{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px}
+  .hello .k{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:700}
+  .hello .n{font-family:'Anton'; font-size:26px; line-height:1; letter-spacing:.01em}
+  .stats{display:flex; gap:8px}
+  .chip{display:flex; align-items:center; gap:6px; background:var(--panel); border:1px solid var(--line);
+    padding:7px 11px; border-radius:12px; font-weight:700; font-size:15px}
+  .chip .num{font-family:'Anton'; font-size:18px; letter-spacing:.02em}
+  .chip.fire .num{color:var(--flare2)}
+  .chip.xp .num{color:var(--lime)}
+
+  /* ---------- level banner ---------- */
+  .band{display:flex; align-items:center; gap:12px; margin:2px 0 20px}
+  .band .rule{height:1px; flex:1; background:var(--line)}
+  .band .lbl{font-family:'Anton'; letter-spacing:.14em; font-size:14px; color:var(--muted)}
+  .phase{background:linear-gradient(135deg,var(--panel2),var(--panel)); border:1px solid var(--line);
+    border-radius:16px; padding:14px 16px; display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:22px; box-shadow:var(--shadow)}
+  .phase .t{font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--grass); font-weight:700}
+  .phase .h{font-family:'Anton'; font-size:24px; line-height:1.05; margin-top:3px}
+  .phase .b{background:rgba(163,230,53,.14); color:var(--lime); font-weight:700; font-size:13px;
+    padding:6px 10px; border-radius:999px; white-space:nowrap}
+
+  /* ---------- path (tactics board) ---------- */
+  .path{position:relative; padding:4px 0}
+  .node{position:relative; display:flex; align-items:center; gap:14px; padding:9px 0; z-index:2}
+  .node .dot{position:relative; width:60px; height:60px; flex:0 0 60px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-family:'Anton'; font-size:22px;
+    background:var(--panel); border:2px solid var(--line); color:var(--muted)}
+  .node.done .dot{background:linear-gradient(160deg,var(--grass),var(--grass-d)); border-color:transparent; color:#052012;
+    box-shadow:0 8px 18px rgba(34,197,94,.35)}
+  .node.current .dot{background:linear-gradient(160deg,#2A4A3A,#1C3328); border-color:var(--grass); color:var(--grass)}
+  .node.current .dot:after{content:""; position:absolute; inset:-6px; border-radius:50%;
+    border:2px solid var(--grass); opacity:.55; animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{0%{transform:scale(1);opacity:.55}100%{transform:scale(1.35);opacity:0}}
+  .node.locked .dot{opacity:.5}
+  .node .meta{flex:1; min-width:0}
+  .node .meta .nm{font-weight:700; font-size:17px; line-height:1.1}
+  .node .meta .sk{color:var(--muted); font-size:13px; margin-top:2px}
+  .node.locked .meta{opacity:.5}
+  .node .go{background:var(--grass); color:#052012; font-family:'Anton'; letter-spacing:.05em; font-size:14px;
+    border:none; padding:11px 16px; border-radius:12px; box-shadow:0 5px 0 var(--grass-d); cursor:pointer}
+  .node .go:active{transform:translateY(3px); box-shadow:0 2px 0 var(--grass-d)}
+  /* connector line, drawn like a chalk run */
+  .node:not(:last-child):before{content:""; position:absolute; left:29px; top:64px; bottom:-9px; width:2px;
+    background:repeating-linear-gradient(var(--line) 0 6px, transparent 6px 12px); z-index:1}
+  .node.done:not(:last-child):before{background:repeating-linear-gradient(rgba(34,197,94,.6) 0 6px, transparent 6px 12px)}
+
+  .foot-note{color:var(--muted); text-align:center; font-size:12.5px; margin-top:14px; line-height:1.5}
+
+  /* ---------- drill screen ---------- */
+  .drill{position:absolute; inset:0; background:linear-gradient(180deg,var(--pitch),var(--pitch2));
+    display:flex; flex-direction:column; z-index:20; transform:translateY(100%); transition:transform .28s ease}
+  .drill.up{transform:translateY(0)}
+  .drill .dhead{padding:16px 18px; display:flex; align-items:center; gap:12px; border-bottom:1px solid var(--line)}
+  .back{background:var(--panel); border:1px solid var(--line); color:var(--chalk); width:40px; height:40px;
+    border-radius:12px; font-size:20px; cursor:pointer}
+  .dhead .dt{font-family:'Anton'; font-size:20px; line-height:1}
+  .dhead .ds{color:var(--muted); font-size:12.5px; margin-top:3px}
+  .dbody{flex:1; overflow-y:auto; padding:20px 18px}
+  .video{aspect-ratio:16/10; border-radius:16px; background:
+      repeating-linear-gradient(135deg,#12201A 0 14px,#0F1B15 14px 28px);
+    border:1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:8px; color:var(--muted); margin-bottom:20px}
+  .video .play{width:56px; height:56px; border-radius:50%; background:var(--grass); color:#052012;
+    display:flex; align-items:center; justify-content:center; font-size:24px; box-shadow:0 8px 18px rgba(34,197,94,.35)}
+  .video small{font-size:11.5px; letter-spacing:.08em; text-transform:uppercase}
+  .lead{font-size:15.5px; line-height:1.5; color:#D8ECE0; margin-bottom:16px}
+  .cue{background:rgba(163,230,53,.1); border:1px solid rgba(163,230,53,.3); border-radius:14px;
+    padding:13px 15px; display:flex; gap:10px; align-items:flex-start; margin-bottom:22px}
+  .cue .ico{color:var(--lime); font-size:18px; line-height:1.3}
+  .cue .tx b{color:var(--lime); display:block; font-size:12px; letter-spacing:.1em; text-transform:uppercase; margin-bottom:2px}
+  .cue .tx span{font-size:15px}
+
+  .timer{display:flex; flex-direction:column; align-items:center; gap:14px; margin:8px 0 20px}
+  .ring{position:relative; width:180px; height:180px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .val{position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-family:'Anton'; font-size:52px; letter-spacing:.02em}
+  .tbtn{background:var(--panel); border:1px solid var(--line); color:var(--chalk); font-weight:700;
+    padding:11px 22px; border-radius:12px; font-size:15px; cursor:pointer}
+  .dfoot{padding:14px 18px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid var(--line)}
+  .cta{width:100%; background:var(--grass); color:#052012; font-family:'Anton'; letter-spacing:.06em; font-size:20px;
+    border:none; padding:16px; border-radius:16px; box-shadow:0 6px 0 var(--grass-d); cursor:pointer}
+  .cta:active{transform:translateY(4px); box-shadow:0 2px 0 var(--grass-d)}
+
+  /* ---------- profile ---------- */
+  .h2{font-family:'Anton'; font-size:22px; margin:6px 0 14px; letter-spacing:.02em}
+  .card{background:linear-gradient(150deg,#EAB308,#F59E0B); color:#3a2c05; border-radius:20px; padding:18px;
+    box-shadow:var(--shadow); margin-bottom:18px; position:relative; overflow:hidden}
+  .card .rt{font-family:'Anton'; font-size:56px; line-height:.9}
+  .card .ps{font-family:'Anton'; font-size:20px; margin-top:2px}
+  .card .who{font-family:'Anton'; font-size:20px; letter-spacing:.05em; margin:12px 0 10px; border-top:1px solid rgba(0,0,0,.15); padding-top:10px}
+  .attrs{display:grid; grid-template-columns:1fr 1fr; gap:6px 20px}
+  .attr{display:flex; align-items:center; justify-content:space-between; font-weight:700; font-size:14px}
+  .attr .bar{flex:1; height:6px; margin:0 8px; background:rgba(0,0,0,.15); border-radius:4px; overflow:hidden}
+  .attr .bar i{display:block; height:100%; background:#3a2c05; border-radius:4px}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+  .stat{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:15px}
+  .stat .n{font-family:'Anton'; font-size:30px; line-height:1}
+  .stat .l{color:var(--muted); font-size:13px; margin-top:4px; font-weight:600}
+  .stat.fire .n{color:var(--flare2)} .stat.xp .n{color:var(--lime)} .stat.grass .n{color:var(--grass)}
+
+  /* ---------- futsal (secondary) ---------- */
+  .sec-tag{display:inline-block; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:4px 10px; margin-bottom:12px; font-weight:700}
+  .frow{display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--line);
+    border-radius:14px; padding:12px 14px; margin-bottom:10px; opacity:.92}
+  .frow .fi{width:38px; height:38px; border-radius:10px; background:var(--panel2); display:flex; align-items:center; justify-content:center; font-size:18px; flex:0 0 38px}
+  .frow .fn{font-weight:700; font-size:15px}
+  .frow .fs{color:var(--muted); font-size:12.5px}
+
+  /* ---------- bottom nav ---------- */
+  .nav{position:absolute; left:0; right:0; bottom:0; height:72px; background:rgba(10,19,15,.92);
+    backdrop-filter:blur(10px); border-top:1px solid var(--line); display:flex; z-index:15;
+    padding-bottom:env(safe-area-inset-bottom)}
+  .nav button{flex:1; background:none; border:none; color:var(--muted); display:flex; flex-direction:column;
+    align-items:center; gap:3px; font-size:11px; font-weight:700; letter-spacing:.03em; cursor:pointer; padding-top:12px}
+  .nav button .ic{font-size:20px; line-height:1}
+  .nav button.on{color:var(--grass)}
+  .nav button.futsal.on{color:var(--muted)} /* futsal stays muted even active: secondary */
+
+  /* ---------- celebrate ---------- */
+  .cele{position:absolute; inset:0; z-index:40; display:none; align-items:center; justify-content:center;
+    background:rgba(6,12,9,.72); backdrop-filter:blur(3px)}
+  .cele.show{display:flex}
+  .cele .box{text-align:center; animation:pop .4s cubic-bezier(.2,1.3,.4,1)}
+  @keyframes pop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+  .cele .big{font-family:'Anton'; font-size:64px; color:var(--lime); line-height:1}
+  .cele .sub{font-family:'Anton'; font-size:22px; margin-top:4px}
+  .cele .msg{color:var(--muted); margin-top:8px; font-size:14px}
+  .confetti{position:absolute; width:9px; height:14px; top:-20px; border-radius:2px; animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(110vh) rotate(540deg); opacity:.9}}
+
+  .tag{position:absolute; top:8px; left:50%; transform:translateX(-50%); z-index:30; font-size:10px;
+    letter-spacing:.14em; text-transform:uppercase; color:var(--muted); background:rgba(10,19,15,.8);
+    border:1px solid var(--line); padding:3px 10px; border-radius:999px; pointer-events:none}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="tag">Protótipo · Vertical Slice</div>
+
+  <!-- ============ PATH ============ -->
+  <div class="screen" id="view-path">
+    <div class="top">
+      <div class="hello">
+        <div class="k">Vamos treinar</div>
+        <div class="n" id="pl-name">Nicolas</div>
+      </div>
+      <div class="stats">
+        <div class="chip fire">🔥 <span class="num" id="s-streak">0</span></div>
+        <div class="chip xp">⚡ <span class="num" id="s-xp">0</span></div>
+      </div>
+    </div>
+
+    <div class="band"><span class="lbl">NÍVEL 1</span><span class="rule"></span></div>
+
+    <div class="phase">
+      <div>
+        <div class="t">Fase em progresso</div>
+        <div class="h">Domínio de Bola</div>
+      </div>
+      <div class="b" id="phase-count">0/12</div>
+    </div>
+
+    <div class="path" id="path"></div>
+    <div class="foot-note">Futebol é o teu caminho principal.<br>O futsal está numa secção à parte, ali em baixo.</div>
+  </div>
+
+  <!-- ============ PROFILE ============ -->
+  <div class="screen hidden" id="view-profile">
+    <div class="h2">O teu cartão</div>
+    <div class="card">
+      <div class="rt" id="c-rating">40</div>
+      <div class="ps">LW · Extremo Esquerdo</div>
+      <div class="who" id="c-name">NICOLAS</div>
+      <div class="attrs">
+        <div class="attr">CTL <span class="bar"><i id="a-ctl" style="width:10%"></i></span> <span id="v-ctl">1</span></div>
+        <div class="attr">PAS <span class="bar"><i style="width:10%"></i></span> 1</div>
+        <div class="attr">REM <span class="bar"><i style="width:10%"></i></span> 1</div>
+        <div class="attr">DEF <span class="bar"><i style="width:10%"></i></span> 1</div>
+        <div class="attr">FÍS <span class="bar"><i style="width:10%"></i></span> 1</div>
+        <div class="attr">GR <span class="bar"><i style="width:10%"></i></span> 1</div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="stat fire"><div class="n" id="p-streak">0</div><div class="l">Streak atual</div></div>
+      <div class="stat"><div class="n" id="p-best">0</div><div class="l">Melhor streak</div></div>
+      <div class="stat xp"><div class="n" id="p-xp">0</div><div class="l">XP total</div></div>
+      <div class="stat grass"><div class="n" id="p-done">0</div><div class="l">Exercícios feitos</div></div>
+    </div>
+    <div class="foot-note" style="margin-top:18px">O cartão sobe à medida que treinas. Faz um exercício e vê o teu <b style="color:var(--lime)">rating</b> crescer.</div>
+  </div>
+
+  <!-- ============ FUTSAL (secondary) ============ -->
+  <div class="screen hidden" id="view-futsal">
+    <div class="h2">Futsal</div>
+    <span class="sec-tag">Secção secundária</span>
+    <p class="foot-note" style="text-align:left;margin:0 0 16px">Uns extras de futsal, para variar. O foco do teu treino é o futebol.</p>
+    <div id="futsal-list"></div>
+  </div>
+
+  <!-- ============ DRILL ============ -->
+  <div class="drill" id="drill">
+    <div class="dhead">
+      <button class="back" id="drill-back">‹</button>
+      <div><div class="dt" id="d-name">—</div><div class="ds" id="d-sub">—</div></div>
+    </div>
+    <div class="dbody">
+      <div class="video"><div class="play">▶</div><small>Vídeo do exercício · em breve</small></div>
+      <p class="lead" id="d-desc">—</p>
+      <div class="cue"><div class="ico">◎</div><div class="tx"><b>Dica-chave</b><span id="d-cue">—</span></div></div>
+      <div class="timer">
+        <div class="ring">
+          <svg width="180" height="180"><circle cx="90" cy="90" r="80" stroke="rgba(233,245,236,.12)" stroke-width="10" fill="none"/>
+          <circle id="ring-fg" cx="90" cy="90" r="80" stroke="#22C55E" stroke-width="10" fill="none" stroke-linecap="round"
+            stroke-dasharray="502" stroke-dashoffset="0"/></svg>
+          <div class="val" id="d-time">30</div>
+        </div>
+        <button class="tbtn" id="d-timer-btn">Iniciar</button>
+      </div>
+    </div>
+    <div class="dfoot"><button class="cta" id="d-complete">Concluir · +30 XP</button></div>
+  </div>
+
+  <!-- ============ CELEBRATE ============ -->
+  <div class="cele" id="cele">
+    <div class="box">
+      <div class="big" id="cele-xp">+30 XP</div>
+      <div class="sub" id="cele-sub">Boa!</div>
+      <div class="msg" id="cele-msg"></div>
+    </div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <div class="nav">
+    <button class="on" data-go="path"><span class="ic">⚽</span>Caminho</button>
+    <button data-go="profile"><span class="ic">👤</span>Perfil</button>
+    <button class="futsal" data-go="futsal"><span class="ic">▦</span>Futsal</button>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  futebol: [
+    {id:"fb-01",name:"Toques com a Sola",skill:"Controlo / ritmo de pés",secs:30,desc:"Bola parada. Alterna toques leves na parte de cima da bola com a planta de cada pé, o mais rápido que conseguires sem perder o controlo.",cue:"Pontas dos pés, ritmo rápido, olhos para cima."},
+    {id:"fb-02",name:"Interior-Interior",skill:"Controlo com o interior",secs:30,desc:"Empurra a bola de um pé para o outro só com o interior. A bola faz um vaivém curto entre os dois pés.",cue:"Bola no meio, toques curtos e ritmados."},
+    {id:"fb-03",name:"Rolar com a Sola",skill:"Controlo com a sola",secs:40,desc:"Rola a bola de lado a lado com a sola, passando-a de um pé ao outro. Corpo baixo, bola sempre controlada.",cue:"Sola sempre em contacto, joelhos fletidos."},
+    {id:"fb-04",name:"Puxa e Empurra",skill:"Mudança de ritmo",secs:40,desc:"No mesmo pé: puxa a bola atrás com a sola e empurra-a logo à frente com a frente do pé. Em ritmo.",cue:"Sola atrás, frente à frente — sem parar."},
+    {id:"fb-05",name:"Puxar em V",skill:"Mudança de direção",secs:40,desc:"Puxa a bola atrás com a sola e empurra-a em diagonal com o interior, a desenhar um V. Alterna os pés.",cue:"Puxa-empurra, muda de ângulo rápido."},
+    {id:"fb-06",name:"Interior-Exterior",skill:"Condução com um pé",secs:40,desc:"Com o mesmo pé, toca a bola com o interior e depois com o exterior, conduzindo-a em ziguezague curto.",cue:"Um pé só, tornozelo solto."},
+    {id:"fb-07",name:"Slalom em Cones",skill:"Condução apertada",secs:45,desc:"Põe 4-5 marcas em linha. Conduz a bola por entre elas com toques curtos, e volta.",cue:"Toques curtos, bola perto do pé."},
+    {id:"fb-08",name:"Rolar e Acelerar",skill:"Arranque",secs:45,desc:"Rola a bola para o lado com a sola e arranca com o exterior 3-4 metros. Trava e repete para o outro lado.",cue:"Da calma à explosão."},
+    {id:"fb-09",name:"Oito",skill:"Controlo em curva",secs:45,desc:"Com dois cones (ou os teus pés), conduz a bola num oito à volta deles, a alternar o interior dos pés.",cue:"Toques suaves, controlo em curva."},
+    {id:"fb-10",name:"Tesoura",skill:"Finta 1x1",secs:45,desc:"Bola parada. Passa o pé à volta da bola por fora e sai a acelerar para o lado contrário. Alterna os pés.",cue:"Vende a finta com o corpo."},
+    {id:"fb-11",name:"Passo por Cima",skill:"Finta 1x1",secs:45,desc:"Passa o pé por cima da bola de dentro para fora e arranca para o lado oposto. Acelera na saída.",cue:"Explode logo a seguir ao passo."},
+    {id:"fb-12",name:"Ziguezague Diagonal",skill:"Condução + mudança de direção",secs:45,desc:"Conduz em diagonal, a alternar o interior de cada pé e a mudar de ângulo a cada toque.",cue:"Muda de ângulo a cada toque."}
+  ],
+  futsal: [
+    {id:"ft-01",name:"Controlo de Sola",skill:"Toque típico do futsal",desc:"Domina a bola sempre com a sola: toques pequenos a segurar e a mover a bola."},
+    {id:"ft-02",name:"Conduzir com a Sola",skill:"Espaço reduzido",desc:"Conduz usando a sola para empurrar e travar, com a bola sempre perto."},
+    {id:"ft-03",name:"Finta Curta",skill:"Espaço apertado",desc:"Um toque de sola + saída rápida em interior para enganar num espaço curto."}
+  ]
+};
+
+/* ---------- state ---------- */
+const KEY="proto-vslice-v1";
+const def={xp:0,done:0,completed:[],streak:0,best:0,last:null};
+let S=load();
+function load(){try{const r=localStorage.getItem(KEY);return r?Object.assign({},def,JSON.parse(r)):Object.assign({},def)}catch(e){return Object.assign({},def)}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function today(){return new Date().toISOString().slice(0,10)}
+function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10)}
+
+/* ---------- render path ---------- */
+function currentIndex(){let i=DATA.futebol.findIndex(d=>!S.completed.includes(d.id));return i<0?DATA.futebol.length:i}
+function renderPath(){
+  const el=document.getElementById('path'); el.innerHTML='';
+  const cur=currentIndex();
+  DATA.futebol.forEach((d,i)=>{
+    const done=S.completed.includes(d.id);
+    const isCur=i===cur;
+    const st=done?'done':(isCur?'current':'locked');
+    const node=document.createElement('div'); node.className='node '+st;
+    node.innerHTML=`<div class="dot">${done?'✓':(i+1)}</div>
+      <div class="meta"><div class="nm">${d.name}</div><div class="sk">${d.skill}</div></div>
+      ${isCur?'<button class="go">COMEÇAR</button>':''}`;
+    if(done||isCur){node.style.cursor='pointer'; node.addEventListener('click',()=>openDrill(d.id));}
+    el.appendChild(node);
+  });
+  document.getElementById('phase-count').textContent=S.completed.length+'/12';
+  document.getElementById('s-streak').textContent=S.streak;
+  document.getElementById('s-xp').textContent=S.xp;
+}
+
+/* ---------- render profile ---------- */
+function renderProfile(){
+  const rating=Math.min(99,40+S.done);
+  document.getElementById('c-rating').textContent=rating;
+  const ctl=Math.min(20,1+Math.floor(S.done/2));
+  document.getElementById('v-ctl').textContent=ctl;
+  document.getElementById('a-ctl').style.width=Math.min(100,ctl*5)+'%';
+  document.getElementById('p-streak').textContent=S.streak;
+  document.getElementById('p-best').textContent=S.best;
+  document.getElementById('p-xp').textContent=S.xp;
+  document.getElementById('p-done').textContent=S.done;
+}
+
+/* ---------- render futsal ---------- */
+function renderFutsal(){
+  const el=document.getElementById('futsal-list'); el.innerHTML='';
+  DATA.futsal.forEach(d=>{
+    const r=document.createElement('div'); r.className='frow';
+    r.innerHTML=`<div class="fi">▦</div><div><div class="fn">${d.name}</div><div class="fs">${d.skill}</div></div>`;
+    el.appendChild(r);
+  });
+}
+
+/* ---------- drill screen + timer ---------- */
+let activeId=null, timer=null, remaining=0, running=false;
+const RING=502;
+function openDrill(id){
+  const d=DATA.futebol.find(x=>x.id===id); if(!d)return;
+  activeId=id;
+  document.getElementById('d-name').textContent=d.name;
+  document.getElementById('d-sub').textContent=d.skill;
+  document.getElementById('d-desc').textContent=d.desc;
+  document.getElementById('d-cue').textContent=d.cue;
+  remaining=d.secs; running=false; if(timer)clearInterval(timer);
+  document.getElementById('d-time').textContent=remaining;
+  document.getElementById('ring-fg').style.strokeDashoffset=0;
+  document.getElementById('d-timer-btn').textContent='Iniciar';
+  document.getElementById('d-complete').textContent='Concluir · +30 XP';
+  document.getElementById('drill').classList.add('up');
+}
+function closeDrill(){document.getElementById('drill').classList.remove('up'); if(timer)clearInterval(timer); running=false;}
+function toggleTimer(){
+  const d=DATA.futebol.find(x=>x.id===activeId); const total=d.secs;
+  const btn=document.getElementById('d-timer-btn');
+  if(running){clearInterval(timer); running=false; btn.textContent='Continuar'; return;}
+  running=true; btn.textContent='Parar';
+  timer=setInterval(()=>{
+    remaining--; if(remaining<=0){remaining=0; clearInterval(timer); running=false; btn.textContent='Feito';}
+    document.getElementById('d-time').textContent=remaining;
+    document.getElementById('ring-fg').style.strokeDashoffset=RING*(1-remaining/total);
+  },1000);
+}
+
+/* ---------- complete + celebrate ---------- */
+function complete(){
+  if(!activeId)return;
+  if(!S.completed.includes(activeId)){
+    S.completed.push(activeId); S.done++; S.xp+=30;
+    // streak
+    const t=today();
+    if(S.last===t){} else if(S.last===yesterday()){S.streak++;} else {S.streak=1;}
+    S.best=Math.max(S.best,S.streak); S.last=t;
+    save();
+  }
+  closeDrill();
+  celebrate();
+  renderPath(); renderProfile();
+}
+function celebrate(){
+  const c=document.getElementById('cele');
+  const next=currentIndex();
+  document.getElementById('cele-sub').textContent = S.streak>1? ('🔥 Streak de '+S.streak+' dias!') : 'Boa!';
+  document.getElementById('cele-msg').textContent = next<DATA.futebol.length? ('Desbloqueaste: '+DATA.futebol[next].name) : 'Fase completa! És uma máquina.';
+  // confetti
+  const colors=['#22C55E','#A3E635','#F97316','#F4FBF6'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div'); p.className='confetti';
+    p.style.left=Math.random()*100+'%'; p.style.background=colors[i%colors.length];
+    p.style.animationDuration=(1+Math.random()*1.2)+'s'; p.style.animationDelay=(Math.random()*.3)+'s';
+    c.appendChild(p); setTimeout(()=>p.remove(),2600);
+  }
+  c.classList.add('show');
+  setTimeout(()=>c.classList.remove('show'),1700);
+}
+
+/* ---------- nav ---------- */
+function go(v){
+  ['path','profile','futsal'].forEach(x=>document.getElementById('view-'+x).classList.toggle('hidden',x!==v));
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.go===v));
+  if(v==='profile')renderProfile(); if(v==='futsal')renderFutsal(); if(v==='path')renderPath();
+}
+
+/* ---------- wire ---------- */
+document.getElementById('drill-back').addEventListener('click',closeDrill);
+document.getElementById('d-timer-btn').addEventListener('click',toggleTimer);
+document.getElementById('d-complete').addEventListener('click',complete);
+document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
+
+renderPath(); renderProfile(); renderFutsal();
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+@import 'tailwindcss';
+
+@theme {
+  /* Tokens do Design System — direção "Jogo à Noite" */
+  --color-pitch: #0c1712;
+  --color-pitch2: #0a130f;
+  --color-panel: #14231c;
+  --color-panel2: #1a2e24;
+  --color-grass: #22c55e;
+  --color-grassd: #16a34a;
+  --color-lime: #a3e635;
+  --color-flare: #f97316;
+  --color-flare2: #fb923c;
+  --color-chalk: #f4fbf6;
+  --color-muted: #8aa79a;
+  --color-lock: #3a4a42;
+  --color-line: rgba(233, 245, 236, 0.14);
+
+  --font-display: 'Anton', system-ui, sans-serif;
+  --font-sans: 'Barlow', system-ui, sans-serif;
+
+  --shadow-card: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(120% 60% at 50% -10%, #10261c 0%, rgba(16, 38, 28, 0) 60%),
+    var(--color-pitch);
+  color: var(--color-chalk);
+  font-family: var(--font-sans);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+}
+
+/* Moldura "telemóvel" com o motivo da linha central do campo */
+.phone {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  height: 100dvh;
+  max-height: 920px;
+  background: linear-gradient(180deg, var(--color-pitch) 0%, var(--color-pitch2) 100%);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--color-line);
+  border-right: 1px solid var(--color-line);
+}
+.phone::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background: linear-gradient(var(--color-line), var(--color-line)) 50% 0 / 1px 100% no-repeat;
+  -webkit-mask: linear-gradient(#000, transparent 40%);
+  mask: linear-gradient(#000, transparent 40%);
+}
+
+.screen {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 18px 18px 96px;
+  scrollbar-width: none;
+}
+.screen::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- caminho (quadro tático) ---------- */
+.node-dot-current::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid var(--pulse-color, var(--color-grass));
+  opacity: 0.55;
+  animation: pulse 1.8s ease-out infinite;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+/* Ligação entre nós: giz tracejado de quadro tático */
+.node:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 29px;
+  top: 64px;
+  bottom: -9px;
+  width: 2px;
+  background: repeating-linear-gradient(var(--color-line) 0 6px, transparent 6px 12px);
+  z-index: 1;
+}
+.node.done:not(:last-child)::before {
+  background: repeating-linear-gradient(rgba(34, 197, 94, 0.6) 0 6px, transparent 6px 12px);
+}
+
+/* ---------- ecrã do exercício (folha que sobe) ---------- */
+.drill-sheet {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--color-pitch), var(--color-pitch2));
+  display: flex;
+  flex-direction: column;
+  z-index: 20;
+  transform: translateY(100%);
+  transition: transform 0.28s ease;
+}
+.drill-sheet.up {
+  transform: translateY(0);
+}
+
+/* ---------- celebração ---------- */
+@keyframes pop {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.cele-box {
+  animation: pop 0.4s cubic-bezier(0.2, 1.3, 0.4, 1);
+}
+.confetti {
+  position: absolute;
+  width: 9px;
+  height: 14px;
+  top: -20px;
+  border-radius: 2px;
+  animation: fall linear forwards;
+}
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(540deg);
+    opacity: 0.9;
+  }
+}
+
+/* Botões com relevo (estilo jogo) */
+.btn-raised {
+  box-shadow: 0 6px 0 var(--color-grassd);
+}
+.btn-raised:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--color-grassd);
+}
+.btn-raised-sm {
+  box-shadow: 0 5px 0 var(--color-grassd);
+}
+.btn-raised-sm:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 var(--color-grassd);
+}
