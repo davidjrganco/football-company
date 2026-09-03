@@ -25,7 +25,7 @@ export const futsalDrills: Drill[] = [...(futsalPath?.drills ?? [])].sort(
   (a, b) => a.order - b.order,
 )
 
-const drillsById = new Map(allDrills.map((d) => [d.id, d]))
+export const drillsById = new Map(allDrills.map((d) => [d.id, d]))
 
 /** Programas de treino multi-dia (Tarefa 3). */
 export const programs: Program[] = data.programs ?? []
@@ -58,6 +58,16 @@ export function programDrills(program: Program): Drill[] {
 /** Índice do exercício atual: o primeiro ainda não concluído (desbloqueio sequencial). */
 export function currentDrillIndex(drills: Drill[], completedIds: string[]): number {
   const i = drills.findIndex((d) => !completedIds.includes(d.id))
+  return i < 0 ? drills.length : i
+}
+
+/**
+ * Índice do atual a SOLO: o primeiro não concluído que não precisa de companhia.
+ * Regra do Nicolas: exercícios multi-jogador nunca bloqueiam o caminho —
+ * ficam sempre desbloqueados (opcionais) e o trilho segue em frente sem eles.
+ */
+export function currentSoloDrillIndex(drills: Drill[], completedIds: string[]): number {
+  const i = drills.findIndex((d) => !completedIds.includes(d.id) && !d.needs_people)
   return i < 0 ? drills.length : i
 }
 

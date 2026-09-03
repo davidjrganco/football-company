@@ -31,6 +31,8 @@ interface Props {
   onNext: (drill: Drill) => void
   onClose: () => void
   onFeedback: (level: FeedbackLevel) => void
+  onSaveRecord: (value: number) => { newRecord: boolean; best: number }
+  onShareRecord: (value: number) => void
 }
 
 const CONFETTI_COLORS = ['#22C55E', '#A3E635', '#F97316', '#F4FBF6', '#38BDF8', '#EAB308']
@@ -39,13 +41,20 @@ const CONFETTI_COLORS = ['#22C55E', '#A3E635', '#F97316', '#F4FBF6', '#38BDF8', 
  * Ecrã de conclusão (redesign 2026-08): o coração do produto — treinaste na
  * vida real, o teu jogador sobe na app, à frente dos teus olhos.
  */
-export function CompletionScreen({ data, onNext, onClose, onFeedback }: Props) {
+export function CompletionScreen({ data, onNext, onClose, onFeedback, onSaveRecord, onShareRecord }: Props) {
   const cat = categoryOfDrill(data.drill)
   const [feedbackGiven, setFeedbackGiven] = useState<FeedbackLevel | null>(null)
+  const [recordInput, setRecordInput] = useState('')
+  const [recordResult, setRecordResult] = useState<{ newRecord: boolean; best: number; value: number } | null>(null)
   const giveFeedback = (level: FeedbackLevel) => {
     if (feedbackGiven) return
     setFeedbackGiven(level)
     onFeedback(level)
+  }
+  const submitRecord = () => {
+    const value = parseInt(recordInput, 10)
+    if (!Number.isFinite(value) || value <= 0) return
+    setRecordResult({ ...onSaveRecord(value), value })
   }
   const xpToNext = XP_PER_OVERALL_POINT - (data.xpTotalAfter % XP_PER_OVERALL_POINT)
   const overallPct = Math.round(((data.xpTotalAfter % XP_PER_OVERALL_POINT) / XP_PER_OVERALL_POINT) * 100)
@@ -102,6 +111,57 @@ export function CompletionScreen({ data, onNext, onClose, onFeedback }: Props) {
           <span className="font-display text-[18px] text-[#F6CE55]">
             TREINO DE HOJE COMPLETO · +{data.sessionBonus} XP
           </span>
+        </div>
+      )}
+
+      {/* recorde pessoal (exercícios contáveis — votação do Nicolas) */}
+      {data.drill.record && (
+        <div className="mt-4 w-full rounded-[18px] border border-[rgba(234,179,8,.35)] bg-[rgba(234,179,8,.08)] px-[17px] py-[13px]">
+          <div className="flex items-center gap-2 text-[11px] font-extrabold tracking-[.14em] text-[#F6CE55] uppercase">
+            <TrophyIcon size={14} color="#F6CE55" />
+            Recorde pessoal
+          </div>
+          {recordResult ? (
+            <div className="mt-2.5">
+              {recordResult.newRecord ? (
+                <>
+                  <div className="cele-box font-display text-[24px] text-[#F6CE55]">
+                    NOVO RECORDE · {recordResult.value} {data.drill.record.unit}! 🎉
+                  </div>
+                  <button
+                    className="mt-2.5 w-full cursor-pointer rounded-xl border-none bg-[#EAB308] px-3 py-2.5 font-display text-[14px] tracking-[.05em] text-[#2E2410]"
+                    style={{ boxShadow: '0 4px 0 #A16207' }}
+                    onClick={() => onShareRecord(recordResult.value)}
+                  >
+                    PARTILHAR RECORDE 📤
+                  </button>
+                </>
+              ) : (
+                <div className="text-[14px] font-bold text-muted">
+                  O teu recorde continua a ser {recordResult.best} {data.drill.record.unit} — para a próxima cai!
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="mt-2.5 flex gap-2">
+              <input
+                type="number"
+                inputMode="numeric"
+                min="1"
+                placeholder={data.drill.record.prompt}
+                className="min-w-0 flex-1 rounded-xl border border-line bg-panel2 px-3 py-2.5 text-[14px] font-bold text-chalk outline-none placeholder:text-muted focus:border-[#EAB308]"
+                value={recordInput}
+                onChange={(e) => setRecordInput(e.target.value)}
+              />
+              <button
+                className="cursor-pointer rounded-xl border-none bg-[#EAB308] px-4 py-2.5 font-display text-[13px] tracking-[.05em] text-[#2E2410]"
+                style={{ boxShadow: '0 4px 0 #A16207' }}
+                onClick={submitRecord}
+              >
+                GUARDAR
+              </button>
+            </div>
+          )}
         </div>
       )}
 

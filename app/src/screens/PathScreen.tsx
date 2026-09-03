@@ -1,14 +1,16 @@
 import { CategoryIcon, PathNode, type NodeState } from '../components/PathNode'
-import { BoltIcon, CheckIcon, FlameIcon, TrophyIcon } from '../components/icons'
+import { BoltIcon, CheckIcon, FlameIcon, TrophyIcon, UsersIcon } from '../components/icons'
 import { CATEGORIES, categoryOfDrill } from '../lib/categories'
 import { SESSION_BONUS_XP, buildDailySession, sessionMinutes } from '../lib/dailySession'
 import { localToday } from '../hooks/useProgress'
-import { currentDrillIndex, mainPathDrills, mainPathLevels } from '../lib/drills'
+import { currentSoloDrillIndex, mainPathDrills, mainPathLevels } from '../lib/drills'
 import type { Drill, PlayerProfile, ProgressState } from '../types'
 
 interface Props {
   progress: ProgressState
   player: PlayerProfile
+  withFriends: boolean
+  onToggleFriends: (v: boolean) => void
   onOpenDrill: (drill: Drill) => void
   onOpenSessionDrill: (drill: Drill) => void
 }
@@ -17,8 +19,16 @@ interface Props {
  * Ecrã principal (redesign 2026-08): responde logo "o que faço agora?" com o
  * hero PRÓXIMO TREINO, e o caminho misto por níveis com cor por categoria.
  */
-export function PathScreen({ progress, player, onOpenDrill, onOpenSessionDrill }: Props) {
-  const cur = currentDrillIndex(mainPathDrills, progress.completedDrillIds)
+export function PathScreen({
+  progress,
+  player,
+  withFriends,
+  onToggleFriends,
+  onOpenDrill,
+  onOpenSessionDrill,
+}: Props) {
+  // o "atual" é sempre um exercício a solo — os 👥 nunca bloqueiam (regra do Nicolas)
+  const cur = currentSoloDrillIndex(mainPathDrills, progress.completedDrillIds)
   const nextDrill = cur < mainPathDrills.length ? mainPathDrills[cur] : null
   const doneCount = mainPathDrills.filter((d) => progress.completedDrillIds.includes(d.id)).length
   const levelIdx = Math.max(
@@ -27,7 +37,7 @@ export function PathScreen({ progress, player, onOpenDrill, onOpenSessionDrill }
   )
 
   // TREINO DE HOJE — a app diz o que fazer (Iteração D)
-  const session = buildDailySession(new Date(), progress)
+  const session = buildDailySession(new Date(), progress, withFriends)
   const doneToday = progress.daily.date === localToday() ? progress.daily.doneIds : []
   const sessionDone = session.filter((d) => doneToday.includes(d.id)).length
   const sessionComplete = session.length > 0 && sessionDone >= session.length
@@ -145,6 +155,26 @@ export function PathScreen({ progress, player, onOpenDrill, onOpenSessionDrill }
               style={{ width: `${Math.round((sessionDone / session.length) * 100)}%` }}
             />
           </div>
+
+          {/* toggle "hoje treino acompanhado" — inclui os exercícios 👥 do Nicolas */}
+          <button
+            className="mt-2.5 flex w-full cursor-pointer items-center justify-between rounded-xl border border-line bg-[rgba(233,245,236,.05)] px-3 py-2.5"
+            onClick={() => onToggleFriends(!withFriends)}
+          >
+            <span className="flex items-center gap-2 text-[12.5px] font-extrabold text-chalk">
+              <UsersIcon size={15} color={withFriends ? '#F6CE55' : '#8AA79A'} />
+              Hoje treino acompanhado
+            </span>
+            <span
+              className="relative h-[22px] w-[40px] rounded-full transition-colors"
+              style={{ background: withFriends ? '#EAB308' : 'rgba(233,245,236,.15)' }}
+            >
+              <span
+                className="absolute top-[3px] h-4 w-4 rounded-full bg-chalk transition-all"
+                style={{ left: withFriends ? '21px' : '3px' }}
+              />
+            </span>
+          </button>
         </div>
       )}
 
@@ -189,9 +219,11 @@ export function PathScreen({ progress, player, onOpenDrill, onOpenSessionDrill }
                 const globalIndex = start + i
                 const state: NodeState = progress.completedDrillIds.includes(d.id)
                   ? 'done'
-                  : globalIndex === cur
-                    ? 'current'
-                    : 'locked'
+                  : d.needs_people != null
+                    ? 'open' // 👥 sempre desbloqueado, nunca bloqueia (regra do Nicolas)
+                    : globalIndex === cur
+                      ? 'current'
+                      : 'locked'
                 return <PathNode key={d.id} drill={d} index={globalIndex} state={state} onOpen={onOpenDrill} />
               })}
             </div>
@@ -201,7 +233,7 @@ export function PathScreen({ progress, player, onOpenDrill, onOpenSessionDrill }
 
       {/* legenda de categorias */}
       <div className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5">
-        {(['dominio', 'velocidade', 'finalizacao', 'pefraco'] as const).map((k) => (
+        {(['dominio', 'velocidade', 'finalizacao', 'pefraco', 'forca', 'defesa'] as const).map((k) => (
           <span key={k} className="flex items-center gap-1.5 text-[10.5px] font-bold text-muted">
             <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[k].color }} />
             {CATEGORIES[k].label}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Drill, ProgressState } from '../types'
-import { applyCompletion, applyStreak } from './progressLogic'
+import { applyCompletion, applyRecord, applyStreak } from './progressLogic'
 
 const HOJE = '2026-09-03'
 const ONTEM = '2026-09-02'
@@ -32,6 +32,7 @@ const base = (over: Partial<ProgressState> = {}): ProgressState => ({
   programTrainingDays: {},
   daily: { date: '', doneIds: [], bonusClaimed: false },
   feedback: {},
+  records: {},
   streak: { current: 0, best: 0, lastTrainedDate: null },
   ...over,
 })
@@ -122,7 +123,7 @@ describe('Treino de Hoje (sessão diária)', () => {
 
   it('marca o exercício da sessão como feito hoje', () => {
     const { state, sessionBonus } = applyCompletion(base(), drill('fb-01'), opts, HOJE, ONTEM)
-    expect(state.daily).toEqual({ date: HOJE, doneIds: ['fb-01'], bonusClaimed: false })
+    expect(state.daily).toEqual({ date: HOJE, doneIds: ['fb-01'], bonusClaimed: false, withFriends: false })
     expect(sessionBonus).toBe(0)
   })
 
@@ -142,9 +143,37 @@ describe('Treino de Hoje (sessão diária)', () => {
     expect(depois.sessionBonus).toBe(0)
   })
 
-  it('mudar o dia vira a sessão (doneIds e bónus recomeçam)', () => {
-    const p = base({ daily: { date: ONTEM, doneIds: ['fb-01', 'fb-02', 'st-01'], bonusClaimed: true } })
+  it('mudar o dia vira a sessão (doneIds, bónus e companhia recomeçam)', () => {
+    const p = base({
+      daily: { date: ONTEM, doneIds: ['fb-01', 'fb-02', 'st-01'], bonusClaimed: true, withFriends: true },
+    })
     const { state } = applyCompletion(p, drill('fb-01'), opts, HOJE, ONTEM)
-    expect(state.daily).toEqual({ date: HOJE, doneIds: ['fb-01'], bonusClaimed: false })
+    expect(state.daily).toEqual({ date: HOJE, doneIds: ['fb-01'], bonusClaimed: false, withFriends: false })
+  })
+})
+
+describe('recordes pessoais (votação do Nicolas)', () => {
+  it('primeiro registo é sempre recorde', () => {
+    const { state, newRecord, best } = applyRecord(base(), 'wf-06', 34, HOJE)
+    expect(newRecord).toBe(true)
+    expect(best).toBe(34)
+    expect(state.records['wf-06']).toEqual({ best: 34, date: HOJE })
+  })
+
+  it('só grava se bater o melhor anterior', () => {
+    const p = base({ records: { 'wf-06': { best: 40, date: ONTEM } } })
+    const pior = applyRecord(p, 'wf-06', 35, HOJE)
+    expect(pior.newRecord).toBe(false)
+    expect(pior.best).toBe(40)
+    expect(pior.state.records['wf-06'].best).toBe(40)
+    const melhor = applyRecord(p, 'wf-06', 45, HOJE)
+    expect(melhor.newRecord).toBe(true)
+    expect(melhor.state.records['wf-06']).toEqual({ best: 45, date: HOJE })
+  })
+
+  it('rejeita valores inválidos', () => {
+    expect(applyRecord(base(), 'wf-06', 0, HOJE).newRecord).toBe(false)
+    expect(applyRecord(base(), 'wf-06', -3, HOJE).newRecord).toBe(false)
+    expect(applyRecord(base(), 'wf-06', NaN, HOJE).newRecord).toBe(false)
   })
 })

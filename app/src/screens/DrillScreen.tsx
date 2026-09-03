@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { DrillTimer } from '../components/DrillTimer'
-import { BoltIcon, ChevronLeftIcon, PlayIcon, StarIcon, TargetIcon } from '../components/icons'
+import { BoltIcon, ChevronLeftIcon, PlayIcon, StarIcon, TargetIcon, UsersIcon } from '../components/icons'
 import { categoryOfDrill } from '../lib/categories'
 import type { Drill } from '../types'
 
@@ -13,9 +13,20 @@ interface Props {
 
 export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
   const cat = categoryOfDrill(drill)
-  // pedido do Nicolas: "só carregas para concluir e acaba" — agora as séries
-  // têm de terminar no temporizador para o Concluir desbloquear
+  // Nicolas: as séries têm de terminar no relógio. David: e depois o exercício
+  // conclui-se SOZINHO — o relógio é o árbitro, não o botão.
   const [seriesDone, setSeriesDone] = useState(false)
+  const autoRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (!seriesDone) return
+    autoRef.current = window.setTimeout(() => onComplete(drill), 1600)
+    return () => {
+      if (autoRef.current) window.clearTimeout(autoRef.current)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seriesDone])
+
   return (
     <div className={`drill-sheet ${up ? 'up' : ''}`}>
       <div className="flex items-center gap-3 border-b border-line px-[18px] py-4">
@@ -43,6 +54,15 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
         >
           {cat.label}
         </span>
+        {drill.needs_people != null && (
+          <span
+            className="flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[10.5px] font-extrabold whitespace-nowrap"
+            style={{ background: `${cat.color}1F`, border: `1px solid ${cat.color}59`, color: cat.color }}
+            title={`Precisas de mais ${drill.needs_people} pessoa(s)`}
+          >
+            <UsersIcon size={12} color={cat.color} />+{drill.needs_people}
+          </span>
+        )}
       </div>
 
       <div className="flex-1 overflow-y-auto px-[18px] py-5">
@@ -128,22 +148,19 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
       </div>
 
       <div className="border-t border-line px-[18px] pt-3.5 pb-[calc(16px+env(safe-area-inset-bottom))]">
-        {!seriesDone && (
-          <div className="mb-2 text-center text-[12px] font-bold text-muted">
-            Termina as séries no relógio para poderes concluir 💪
+        {seriesDone ? (
+          <div
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-br from-grass to-grassd p-4 font-display text-xl tracking-[.06em] text-[#052012]"
+            style={{ boxShadow: '0 6px 0 #15803D, 0 0 30px rgba(34,197,94,.3)' }}
+          >
+            <BoltIcon size={19} color="#052012" />
+            Concluído · +{drill.xp} XP
+          </div>
+        ) : (
+          <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-panel p-4 text-center text-[13.5px] font-bold text-muted">
+            ⏱️ O exercício conclui-se sozinho quando o relógio terminar as séries
           </div>
         )}
-        <button
-          className={`btn-raised flex w-full items-center justify-center gap-2 rounded-2xl border-none bg-gradient-to-br from-grass to-grassd p-4 font-display text-xl tracking-[.06em] text-[#052012] ${
-            seriesDone ? 'cursor-pointer' : 'cursor-not-allowed opacity-40 saturate-50'
-          }`}
-          style={seriesDone ? { boxShadow: '0 6px 0 #15803D, 0 0 30px rgba(34,197,94,.3)' } : undefined}
-          disabled={!seriesDone}
-          onClick={() => onComplete(drill)}
-        >
-          <BoltIcon size={19} color="#052012" />
-          Concluir · +{drill.xp} XP
-        </button>
       </div>
     </div>
   )

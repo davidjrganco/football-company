@@ -13,6 +13,7 @@ const base = (over: Partial<ProgressState> = {}): ProgressState => ({
   programTrainingDays: {},
   daily: { date: '', doneIds: [], bonusClaimed: false },
   feedback: {},
+  records: {},
   streak: { current: 0, best: 0, lastTrainedDate: null },
   ...over,
 })
@@ -55,5 +56,17 @@ describe('Treino de Hoje (gerador)', () => {
   it('jogador novo: sessão de 1 exercício (o primeiro do caminho)', () => {
     const session = buildDailySession(QUARTA, base())
     expect(session.map((d) => d.id)).toEqual(['fb-01'])
+  })
+
+  it('sozinho, os exercícios 👥 nunca entram na sessão', () => {
+    const ids = buildDailySession(QUARTA, ALL_DONE).map((d) => d.id)
+    expect(ids).not.toContain('df-01')
+    expect(ids).not.toContain('df-02')
+  })
+
+  it('em dia acompanhado, os exercícios do Nicolas entram no fim da sessão', () => {
+    const ids = buildDailySession(QUARTA, ALL_DONE, true).map((d) => d.id)
+    expect(ids.slice(-2)).toEqual(['df-01', 'df-02'])
+    expect(ids.length).toBe(SESSION_SIZE + 2)
   })
 })

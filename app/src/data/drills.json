@@ -9,7 +9,7 @@
       { "name": "NÍVEL 1", "drill_ids": ["fb-01", "fb-02", "st-01", "fb-03", "sa-03", "wf-01", "fin-01", "sa-02", "fb-04"] },
       { "name": "NÍVEL 2", "drill_ids": ["fb-05", "fin-02", "st-02", "wf-02", "sa-04", "fb-06", "wf-03", "sa-06", "fb-07"] },
       { "name": "NÍVEL 3", "drill_ids": ["fin-03", "fb-08", "st-03", "sa-07", "wf-04", "fb-09", "fin-04", "st-05", "sa-05", "fb-10"] },
-      { "name": "NÍVEL 4", "drill_ids": ["wf-05", "fin-06", "st-04", "fb-11", "sa-01", "fin-05", "wf-06", "st-06", "fb-12", "fin-07"] }
+      { "name": "NÍVEL 4", "drill_ids": ["wf-05", "fin-06", "st-04", "fb-11", "sa-01", "fin-05", "wf-06", "st-06", "fb-12", "fin-07", "df-01", "df-02"] }
     ]
   },
   "programs": [
@@ -328,6 +328,59 @@
       ]
     },
     {
+      "id": "futebol-defesa",
+      "sport": "futebol",
+      "primary": false,
+      "name": "Defesa",
+      "category": "Defending",
+      "drills": [
+        {
+          "id": "df-01",
+          "order": 1,
+          "name": "Cobertura Defensiva",
+          "name_en": "Defensive Cover",
+          "skill": "Pressão + cobertura (1v1 ou 2x2)",
+          "difficulty": 4,
+          "sets": 4,
+          "work_seconds": 120,
+          "rest_seconds": 60,
+          "xp": 40,
+          "needs_people": 1,
+          "description": "Exercício inventado pelo Nicolas: dois atacantes tentam marcar numa baliza pequena e dois têm de impedir — e depois troca-se, porque os defesas atacam também, que é importante. Um defensor pressiona quem tem a bola e o outro dá cobertura, protegendo o espaço atrás. Com 2 pessoas faz-se em 1v1.",
+          "cue": "Trabalha comunicação, posicionamento e leitura de jogo.",
+          "steps": [
+            "Marca uma baliza pequena; ataca quem tem a bola, defende quem não tem.",
+            "Um defensor pressiona o portador; o outro dá cobertura a proteger o espaço atrás.",
+            "Ao fim de cada série, troca: os defesas atacam também."
+          ],
+          "attributes": ["defesa", "iq"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "df-02",
+          "order": 2,
+          "name": "Interceptação de Passes",
+          "name_en": "Pass Interception",
+          "skill": "Ler o passe e cortar",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 150,
+          "rest_seconds": 60,
+          "xp": 40,
+          "needs_people": 2,
+          "description": "Exercício inventado pelo Nicolas: dois jogadores ficam a trocar passes enquanto o defesa fica no meio. O objetivo do defesa é ler o passe e interceptá-lo — sem entrar de forma descontrolada. Quando recupera a bola, troca com quem a perdeu.",
+          "cue": "Lê o passe antes de saltar — sem entrar de forma descontrolada.",
+          "steps": [
+            "Dois jogadores trocam passes; tu ficas no meio, em posição defensiva.",
+            "Lê o corpo de quem passa e corta a linha no momento certo.",
+            "Recuperaste? Trocas com quem perdeu a bola."
+          ],
+          "attributes": ["defesa", "iq"],
+          "video": { "type": "pending", "url": "" }
+        }
+      ]
+    },
+    {
       "id": "futebol-forca",
       "sport": "futebol",
       "primary": false,
@@ -352,6 +405,7 @@
             "Desce devagar como se te sentasses, até as coxas ficarem paralelas ao chão.",
             "Sobe com força, sem tirar os calcanhares do chão."
           ],
+          "record": { "unit": "agachamentos", "prompt": "Quantos fizeste na tua melhor série?" },
           "attributes": ["fisico"],
           "video": { "type": "pending", "url": "" }
         },
@@ -415,6 +469,7 @@
             "Desce devagar até o peito quase tocar no chão.",
             "Empurra para cima. Se custar, apoia os joelhos — vale na mesma."
           ],
+          "record": { "unit": "flexões", "prompt": "Quantas fizeste na tua melhor série?" },
           "attributes": ["fisico"],
           "video": { "type": "pending", "url": "" }
         },
@@ -547,6 +602,7 @@
             "Passa de primeira com o interior — sem toque de controlo.",
             "Alterna os pés e aumenta o ritmo aos poucos."
           ],
+          "record": { "unit": "passes seguidos", "prompt": "Quantos passes de primeira seguidos fizeste?" },
           "attributes": ["passe"],
           "video": { "type": "pending", "url": "" }
         },
@@ -661,6 +717,7 @@
             "Bola parada: remata colocado, a apontar a um canto de cada vez.",
             "Alterna o canto e o pé a cada remate."
           ],
+          "record": { "unit": "remates certeiros", "prompt": "Quantos acertaste no alvo?" },
           "attributes": ["remate"],
           "video": { "type": "pending", "url": "" }
         },
@@ -922,6 +979,7 @@
             "Toques baixos com o peito do pé, sem deixar cair.",
             "Conta os toques — tenta bater o recorde a cada série."
           ],
+          "record": { "unit": "toques", "prompt": "Quantos toques seguidos fizeste?" },
           "attributes": ["controlo", "dominio"],
           "video": { "type": "pending", "url": "" }
         }
@@ -1036,6 +1094,7 @@
             "Aterra suave, com os joelhos fletidos.",
             "Encadeia os saltos sem parar, em ritmo."
           ],
+          "record": { "unit": "saltos", "prompt": "Quantos saltos seguidos fizeste?" },
           "attributes": ["fisico", "resistencia"],
           "video": { "type": "pending", "url": "" }
         },

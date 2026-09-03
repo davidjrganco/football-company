@@ -57,7 +57,10 @@ export function applyCompletion(
 
   // sessão "Treino de Hoje": vira o dia se a data mudou, marca este exercício,
   // e entrega o bónus UMA vez quando a sessão fica completa
-  let daily = progress.daily.date === today ? progress.daily : { date: today, doneIds: [], bonusClaimed: false }
+  let daily =
+    progress.daily.date === today
+      ? progress.daily
+      : { date: today, doneIds: [], bonusClaimed: false, withFriends: false }
   if (sessionIds.includes(drill.id) && !daily.doneIds.includes(drill.id)) {
     daily = { ...daily, doneIds: [...daily.doneIds, drill.id] }
   }
@@ -88,7 +91,29 @@ export function applyCompletion(
     programTrainingDays,
     daily,
     feedback: progress.feedback,
+    records: progress.records,
     streak: applyStreak(progress.streak, today, yesterday),
   }
   return { state, sessionBonus }
+}
+
+/** Tenta registar um recorde pessoal; só grava se bater o melhor anterior. */
+export function applyRecord(
+  progress: ProgressState,
+  drillId: string,
+  value: number,
+  today: string,
+): { state: ProgressState; newRecord: boolean; best: number } {
+  const prev = progress.records[drillId]
+  if (!Number.isFinite(value) || value <= 0 || (prev && value <= prev.best)) {
+    return { state: progress, newRecord: false, best: prev?.best ?? 0 }
+  }
+  return {
+    state: {
+      ...progress,
+      records: { ...progress.records, [drillId]: { best: value, date: today } },
+    },
+    newRecord: true,
+    best: value,
+  }
 }

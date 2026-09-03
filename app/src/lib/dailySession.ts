@@ -1,5 +1,5 @@
 import { categoryOfDrill, type CategoryKey } from './categories'
-import { currentDrillIndex, mainPathDrills } from './drills'
+import { currentSoloDrillIndex, mainPathDrills } from './drills'
 import type { Drill, ProgressState } from '../types'
 
 // "Treino de Hoje" (Iteração D — ideia do David): a app diz o que treinar,
@@ -24,19 +24,33 @@ function dayOfYear(d: Date): number {
   return Math.floor((d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86400000)
 }
 
-/** Exercícios disponíveis para sessões: os já feitos + o atual do caminho. */
+/**
+ * Exercícios disponíveis para sessões: os já feitos + o atual do caminho —
+ * SEM os multi-jogador (o Treino de Hoje é para treinar sozinho; regra do
+ * Nicolas: "o jogador tem de aceitar se tem disponibilidade").
+ */
 export function sessionPool(progress: ProgressState): Drill[] {
-  const cur = currentDrillIndex(mainPathDrills, progress.completedDrillIds)
+  const cur = currentSoloDrillIndex(mainPathDrills, progress.completedDrillIds)
   return mainPathDrills.filter(
-    (d, i) => progress.completedDrillIds.includes(d.id) || i === cur,
+    (d, i) => !d.needs_people && (progress.completedDrillIds.includes(d.id) || i === cur),
   )
+}
+
+/** Exercícios 👥 para dias acompanhados (sempre desbloqueados, opcionais). */
+export function friendsDrills(): Drill[] {
+  return mainPathDrills.filter((d) => d.needs_people)
 }
 
 /**
  * A sessão de hoje: escolhe do pool segundo o plano do dia da semana,
  * rodando as escolhas pelo dia do ano (variedade sem aleatoriedade).
+ * `withFriends`: acrescenta os exercícios 👥 (o toggle "treino acompanhado").
  */
-export function buildDailySession(date: Date, progress: ProgressState): Drill[] {
+export function buildDailySession(
+  date: Date,
+  progress: ProgressState,
+  withFriends = false,
+): Drill[] {
   const pool = sessionPool(progress)
   if (pool.length === 0) return []
   const plan = WEEK_PLAN[date.getDay()] ?? { dominio: 3, forca: 2 }
@@ -59,7 +73,9 @@ export function buildDailySession(date: Date, progress: ProgressState): Drill[] 
   if (chosen.length < Math.min(SESSION_SIZE, pool.length)) {
     take(pool, Math.min(SESSION_SIZE, pool.length) - chosen.length)
   }
-  return chosen.slice(0, SESSION_SIZE)
+  const session = chosen.slice(0, SESSION_SIZE)
+  // dia acompanhado → os exercícios do Nicolas com amigos entram no fim
+  return withFriends ? [...session, ...friendsDrills()] : session
 }
 
 /** Minutos estimados da sessão (séries × (trabalho+descanso)). */

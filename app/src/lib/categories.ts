@@ -2,7 +2,14 @@ import type { Drill } from '../types'
 
 // Cor por categoria (redesign 2026-08): cada família de exercícios tem a sua
 // cor no caminho, nos programas e no ecrã do exercício.
-export type CategoryKey = 'dominio' | 'velocidade' | 'finalizacao' | 'pefraco' | 'forca' | 'futsal'
+export type CategoryKey =
+  | 'dominio'
+  | 'velocidade'
+  | 'finalizacao'
+  | 'pefraco'
+  | 'forca'
+  | 'defesa'
+  | 'futsal'
 
 export interface CategoryStyle {
   key: CategoryKey
@@ -60,6 +67,15 @@ export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
     tintBg: '#2A1B40',
     tintBg2: '#1B1029',
   },
+  defesa: {
+    key: 'defesa',
+    label: 'Defesa',
+    color: '#F87171',
+    dark: '#2B0E0E',
+    shadow: '#DC2626',
+    tintBg: '#3A1515',
+    tintBg2: '#240D0D',
+  },
   futsal: {
     key: 'futsal',
     label: 'Futsal',
@@ -77,6 +93,7 @@ export function categoryOfDrill(drill: Drill): CategoryStyle {
   if (drill.id.startsWith('fin-')) return CATEGORIES.finalizacao
   if (drill.id.startsWith('wf-')) return CATEGORIES.pefraco
   if (drill.id.startsWith('st-')) return CATEGORIES.forca
+  if (drill.id.startsWith('df-')) return CATEGORIES.defesa
   if (drill.id.startsWith('ft-')) return CATEGORIES.futsal
   return CATEGORIES.dominio
 }

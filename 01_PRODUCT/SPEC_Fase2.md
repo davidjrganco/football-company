@@ -85,6 +85,27 @@ Com base nas respostas do Nicolas à Tarefa 3 (20/08/2026):
   A escolha 150 vs 120 XP (5 vs 4 treinos) **confirma-se na Tarefa 3b
   (pergunta extra 2).**
 
+## Iteração E — Defesa do Nicolas, recordes e partilha (CONSTRUÍDA 2026-09-03)
+
+Das respostas à Tarefa 5 (manuscrito 03/09) + pedido do David:
+- **Auto-conclusão** (David): o exercício conclui-se SOZINHO quando o relógio
+  termina as séries — o botão Concluir desapareceu; o relógio é o árbitro.
+- **A Defesa é do Nicolas**: df-01 "Cobertura Defensiva" (4×2min) e df-02
+  "Interceptação de Passes" (3×2,5min) — os exercícios que ELE inventou, com as
+  palavras dele nas descrições. Categoria vermelha (escudo), DEF+IQ, XP 40.
+  TODOS os 9 atributos têm agora cobertura.
+- **Regra da companhia (dele)**: exercícios com `needs_people` ficam SEMPRE
+  desbloqueados mas NUNCA bloqueiam o caminho nem entram na sessão a solo;
+  toggle **"Hoje treino acompanhado"** no Treino de Hoje junta-os à sessão.
+- **Recordes pessoais** (votação dele): 6 exercícios contáveis (juggling,
+  agachamentos, flexões, knee jumps, remates certeiros, passes de primeira)
+  perguntam o máximo no fim; "NOVO RECORDE 🎉" + estante no Perfil.
+- **Partilha por imagem** (Modo Amigos fase 1, escolha dele: WhatsApp/Insta/
+  Snapchat, sem contas): imagem story 9:16 gerada em canvas — cartão dourado
+  completo, e variante com faixa de "NOVO RECORDE" partilhável na hora. É o
+  desafio "quem faz mais toques" sem backend.
+- drills.json v5: 48 exercícios, caminho de 40. **37 testes** Vitest.
+
 ## Iteração D — "A app diz-te o que treinar" (CONSTRUÍDA 2026-09-03)
 
 Da Grande Análise (Nicolas 02/09) + WhatsApp do David 03/09:

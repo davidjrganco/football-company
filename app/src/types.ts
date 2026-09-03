@@ -31,6 +31,11 @@ export interface Drill {
   cue: string
   steps: string[]
   attributes: AttributeKey[] // atributos que este exercício treina
+  // nº de pessoas EXTRA necessárias (regra do Nicolas: multi-jogador é opcional,
+  // nunca bloqueia o caminho, e só entra no Treino de Hoje em dias acompanhados)
+  needs_people?: number
+  // exercício contável — a app guarda o máximo pessoal (votação do Nicolas)
+  record?: { unit: string; prompt: string }
   video: DrillVideo
 }
 
@@ -85,6 +90,7 @@ export interface DailyState {
   date: string // YYYY-MM-DD da sessão a que isto se refere
   doneIds: string[] // exercícios da sessão concluídos hoje
   bonusClaimed: boolean // bónus de sessão completa já entregue
+  withFriends?: boolean // "hoje treino acompanhado" — inclui os exercícios 👥
 }
 
 export type FeedbackLevel = 'facil' | 'normal' | 'dificil'
@@ -101,6 +107,8 @@ export interface ProgressState {
   daily: DailyState
   // "Como correu?" por exercício (semente da dificuldade adaptativa)
   feedback: Record<string, Record<FeedbackLevel, number>>
+  // recordes pessoais por exercício contável (votação do Nicolas)
+  records: Record<string, { best: number; date: string }>
   streak: StreakState
 }
 

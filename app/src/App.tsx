@@ -3,11 +3,19 @@ import { BottomNav, type View } from './components/BottomNav'
 import { ProgramCelebration } from './components/ProgramCelebration'
 import { usePlayer } from './hooks/usePlayer'
 import { localToday, useProgress } from './hooks/useProgress'
-import { ATTRIBUTE_CODES, attributeValues, overallRating } from './lib/attributes'
+import {
+  ATTRIBUTE_CODES,
+  attributeValues,
+  earnedMedals,
+  overallRating,
+  titleForRating,
+} from './lib/attributes'
 import { SESSION_BONUS_XP, buildDailySession } from './lib/dailySession'
+import { generateShareImage, shareImage } from './lib/shareCard'
 import {
   allDrills,
   currentDrillIndex,
+  currentSoloDrillIndex,
   futsalDrills,
   isProgramComplete,
   mainPathDrills,
@@ -31,8 +39,10 @@ const SHEET_MS = 280
 type DrillOrigin = { kind: 'main' } | { kind: 'session' } | { kind: 'futsal' } | { kind: 'program'; program: Program }
 
 export default function App() {
-  const { progress, completeDrill, recordFeedback } = useProgress()
+  const { progress, completeDrill, recordFeedback, saveRecord, setWithFriends } = useProgress()
   const { player, savePlayer } = usePlayer()
+  const withFriends =
+    progress.daily.date === localToday() ? (progress.daily.withFriends ?? false) : false
   const [view, setView] = useState<View>('path')
   const [activeProgram, setActiveProgram] = useState<Program | null>(null)
   const [activeDrill, setActiveDrill] = useState<Drill | null>(null)
@@ -74,7 +84,7 @@ export default function App() {
       })
 
       // sessão "Treino de Hoje" — o exercício conta venha de onde vier
-      const session = buildDailySession(new Date(), progress)
+      const session = buildDailySession(new Date(), progress, withFriends)
       const sessionIds = session.map((d) => d.id)
 
       // deltas de atributos (antes → depois) para o ecrã de conclusão
@@ -117,7 +127,8 @@ export default function App() {
         const nextIdx = currentDrillIndex(futsalDrills, completedNow)
         next = nextIdx < futsalDrills.length ? futsalDrills[nextIdx] : null
       } else {
-        const nextIdx = currentDrillIndex(mainPathDrills, completedNow)
+        // no caminho, o próximo é sempre a solo — os 👥 nunca se abrem sozinhos
+        const nextIdx = currentSoloDrillIndex(mainPathDrills, completedNow)
         next = nextIdx < mainPathDrills.length ? mainPathDrills[nextIdx] : null
       }
 
@@ -148,7 +159,31 @@ export default function App() {
       })
       setPendingProgramCele(claims[0] ?? null)
     },
-    [completeDrill, closeDrill, progress, drillOrigin],
+    [completeDrill, closeDrill, progress, drillOrigin, withFriends],
+  )
+
+  /** Partilha do recorde como imagem story (Modo Amigos fase 1). */
+  const shareRecord = useCallback(
+    async (drill: Drill, value: number) => {
+      if (!player || !drill.record) return
+      try {
+        const values = attributeValues(progress, allDrills, programs)
+        const rating = overallRating(progress.xpTotal)
+        const blob = await generateShareImage({
+          player,
+          rating,
+          title: titleForRating(rating),
+          values,
+          streak: progress.streak.current,
+          medals: earnedMedals(progress, programs),
+          record: { value, unit: drill.record.unit, drillName: drill.name },
+        })
+        await shareImage(blob, 'novo-recorde.png')
+      } catch {
+        // partilha falhou/cancelada — sem drama
+      }
+    },
+    [player, progress],
   )
 
   const dismissCompletion = useCallback(
@@ -179,6 +214,8 @@ export default function App() {
         <PathScreen
           progress={progress}
           player={player}
+          withFriends={withFriends}
+          onToggleFriends={setWithFriends}
           onOpenDrill={(d) => openDrill(d, { kind: 'main' })}
           onOpenSessionDrill={(d) => openDrill(d, { kind: 'session' })}
         />
@@ -211,6 +248,8 @@ export default function App() {
           onNext={(d) => dismissCompletion(d)}
           onClose={() => dismissCompletion(null)}
           onFeedback={(level) => recordFeedback(completion.drill.id, level)}
+          onSaveRecord={(value) => saveRecord(completion.drill.id, value)}
+          onShareRecord={(value) => void shareRecord(completion.drill, value)}
         />
       )}
       {programCelebration && (

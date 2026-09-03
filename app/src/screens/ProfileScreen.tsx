@@ -1,7 +1,9 @@
 import { useRef, useState } from 'react'
 import { PlayerForm } from '../components/PlayerForm'
-import { BoltIcon, CheckIcon, FlameIcon, TrophyIcon } from '../components/icons'
+import { BoltIcon, CheckIcon, FlameIcon, ShareIcon, TrophyIcon } from '../components/icons'
 import { downloadBackup, readBackup, restoreBackup } from '../lib/backup'
+import { generateShareImage, shareImage } from '../lib/shareCard'
+import { drillsById } from '../lib/drills'
 import { positionLabel } from '../hooks/usePlayer'
 import {
   ATTRIBUTE_CODES,
@@ -45,6 +47,30 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
   const medals = earnedMedals(progress, programs)
   const xpToNext = XP_PER_OVERALL_POINT - (progress.xpTotal % XP_PER_OVERALL_POINT)
   const nextPct = Math.round(((progress.xpTotal % XP_PER_OVERALL_POINT) / XP_PER_OVERALL_POINT) * 100)
+  const [sharing, setSharing] = useState(false)
+  const recordEntries = Object.entries(progress.records)
+    .map(([id, r]) => ({ drill: drillsById.get(id), ...r }))
+    .filter((r) => r.drill?.record)
+
+  async function handleShareCard() {
+    if (sharing) return
+    setSharing(true)
+    try {
+      const blob = await generateShareImage({
+        player,
+        rating,
+        title,
+        values,
+        streak: progress.streak.current,
+        medals,
+      })
+      await shareImage(blob, 'o-meu-cartao.png')
+    } catch {
+      setBackupMsg('Não consegui gerar a imagem — tenta outra vez.')
+    } finally {
+      setSharing(false)
+    }
+  }
 
   return (
     <div className="screen">
@@ -129,6 +155,17 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
         )}
       </div>
 
+      {/* partilhar o cartão (Modo Amigos fase 1 — escolha do Nicolas) */}
+      <button
+        className="mb-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border-none bg-gradient-to-br from-[#F6CE55] to-[#EAB308] p-3.5 font-display text-[16px] tracking-[.05em] text-[#3A2C05]"
+        style={{ boxShadow: '0 5px 0 #A16207' }}
+        onClick={handleShareCard}
+        disabled={sharing}
+      >
+        <ShareIcon size={17} color="#3A2C05" />
+        {sharing ? 'A GERAR…' : 'PARTILHAR O MEU CARTÃO'}
+      </button>
+
       {/* rumo ao próximo geral */}
       <div className="mb-3 rounded-2xl border border-line bg-panel px-[15px] py-[13px]">
         <div className="flex items-center justify-between text-xs font-extrabold">
@@ -174,6 +211,26 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
           </div>
         </div>
       </div>
+
+      {/* recordes pessoais (votação do Nicolas) */}
+      {recordEntries.length > 0 && (
+        <div className="mt-3 rounded-2xl border border-[rgba(234,179,8,.3)] bg-[rgba(234,179,8,.06)] px-[15px] py-[13px]">
+          <div className="flex items-center gap-2 text-xs font-extrabold tracking-[.1em] text-[#F6CE55] uppercase">
+            <TrophyIcon size={14} color="#F6CE55" />
+            Recordes pessoais
+          </div>
+          <div className="mt-2.5 flex flex-col gap-2">
+            {recordEntries.map((r) => (
+              <div key={r.drill!.id} className="flex items-center justify-between">
+                <span className="text-[13.5px] font-bold">{r.drill!.name}</span>
+                <span className="font-display text-[17px] text-[#F6CE55]">
+                  {r.best} {r.drill!.record!.unit}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* cópia de segurança — o progresso vive só neste telemóvel */}
       <div className="mt-3 rounded-2xl border border-line bg-panel px-[15px] py-[13px]">

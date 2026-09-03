@@ -12,6 +12,7 @@ const base = (over: Partial<ProgressState> = {}): ProgressState => ({
   programTrainingDays: {},
   daily: { date: '', doneIds: [], bonusClaimed: false },
   feedback: {},
+  records: {},
   streak: { current: 0, best: 0, lastTrainedDate: null },
   ...over,
 })
@@ -50,9 +51,9 @@ describe('cartão (regras do Nicolas)', () => {
 })
 
 describe('integridade dos dados (drills.json)', () => {
-  it('o caminho misto tem 38 exercícios únicos e válidos (v4: +Força)', () => {
-    expect(mainPathDrills.length).toBe(38)
-    expect(new Set(mainPathDrills.map((d) => d.id)).size).toBe(38)
+  it('o caminho misto tem 40 exercícios únicos e válidos (v5: +Defesa do Nicolas)', () => {
+    expect(mainPathDrills.length).toBe(40)
+    expect(new Set(mainPathDrills.map((d) => d.id)).size).toBe(40)
   })
 
   it('todos os programas referem exercícios existentes', () => {
@@ -60,12 +61,13 @@ describe('integridade dos dados (drills.json)', () => {
     for (const p of programs) for (const id of p.drill_ids) expect(ids.has(id)).toBe(true)
   })
 
-  it('só Defesa fica sem cobertura (dívida conhecida — exercícios por criar)', () => {
+  it('TODOS os 9 atributos têm cobertura (a Defesa do Nicolas fechou o círculo)', () => {
     const covered = new Set(allDrills.flatMap((d) => d.attributes))
-    expect(covered.has('resistencia')).toBe(true) // corrigido no Raio-X 2026-08
-    const passe = allDrills.filter((d) => d.attributes.includes('passe' as never)).length
-    expect(passe).toBeGreaterThanOrEqual(3) // reforçado no futsal (Iteração D)
-    const defesa = allDrills.filter((d) => d.attributes.includes('defesa' as never)).length
-    expect(defesa).toBe(0) // espera por exercícios novos
+    for (const attr of ['controlo', 'dominio', 'passe', 'remate', 'defesa', 'fisico', 'resistencia', 'velocidade', 'iq']) {
+      expect(covered.has(attr as never)).toBe(true)
+    }
+    const defesa = allDrills.filter((d) => d.attributes.includes('defesa' as never))
+    expect(defesa.map((d) => d.id)).toEqual(['df-01', 'df-02']) // os exercícios dele
+    expect(defesa.every((d) => d.needs_people)).toBe(true) // multi-jogador, opcionais
   })
 })

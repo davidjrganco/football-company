@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { applyCompletion, type CompleteOpts } from '../lib/progressLogic'
+import { applyCompletion, applyRecord, type CompleteOpts } from '../lib/progressLogic'
 import type { Drill, FeedbackLevel, ProgressState } from '../types'
 
 const STORAGE_KEY = 'treino-progress-v1'
@@ -11,8 +11,9 @@ const DEFAULT_STATE: ProgressState = {
   completionCounts: {},
   claimedPrograms: [],
   programTrainingDays: {},
-  daily: { date: '', doneIds: [], bonusClaimed: false },
+  daily: { date: '', doneIds: [], bonusClaimed: false, withFriends: false },
   feedback: {},
+  records: {},
   streak: { current: 0, best: 0, lastTrainedDate: null },
 }
 
@@ -52,6 +53,7 @@ function load(): ProgressState {
       programTrainingDays: { ...parsed.programTrainingDays },
       daily: { ...DEFAULT_STATE.daily, ...parsed.daily },
       feedback: { ...parsed.feedback },
+      records: { ...parsed.records },
       streak: { ...DEFAULT_STATE.streak, ...parsed.streak },
     }
     // migração v1→v2: quem já tinha exercícios feitos passa a contar 1 de cada
@@ -122,5 +124,37 @@ export function useProgress() {
     [progress.completedDrillIds],
   )
 
-  return { progress, completeDrill, isCompleted, recordFeedback }
+  /** Recorde pessoal: grava se bater o melhor; devolve o resultado para a UI. */
+  const saveRecord = useCallback(
+    (drillId: string, value: number): { newRecord: boolean; best: number } => {
+      const { state, newRecord, best } = applyRecord(progress, drillId, value, today())
+      if (newRecord) {
+        save(state)
+        setProgress(state)
+      }
+      return { newRecord, best }
+    },
+    [progress],
+  )
+
+  /** Toggle "hoje treino acompanhado" (inclui os exercícios 👥 na sessão). */
+  const setWithFriends = useCallback(
+    (withFriends: boolean) => {
+      const sameDay = progress.daily.date === today()
+      const next: ProgressState = {
+        ...progress,
+        daily: {
+          date: today(),
+          doneIds: sameDay ? progress.daily.doneIds : [],
+          bonusClaimed: sameDay ? progress.daily.bonusClaimed : false,
+          withFriends,
+        },
+      }
+      save(next)
+      setProgress(next)
+    },
+    [progress],
+  )
+
+  return { progress, completeDrill, isCompleted, recordFeedback, saveRecord, setWithFriends }
 }

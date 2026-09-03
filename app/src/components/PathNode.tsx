@@ -1,8 +1,9 @@
 import { categoryOfDrill } from '../lib/categories'
 import type { Drill } from '../types'
-import { CheckIcon, LockIcon, TargetIcon, BootIcon, DumbbellIcon, FootIcon, BallIcon } from './icons'
+import { CheckIcon, LockIcon, TargetIcon, BootIcon, DumbbellIcon, FootIcon, BallIcon, ShieldIcon, UsersIcon } from './icons'
 
-export type NodeState = 'done' | 'current' | 'locked'
+// 'open' = desbloqueado mas não é o atual (ex.: exercícios 👥, sempre disponíveis)
+export type NodeState = 'done' | 'current' | 'open' | 'locked'
 
 export function CategoryIcon({ drill, color, size }: { drill: Drill; color: string; size: number }) {
   const cat = categoryOfDrill(drill)
@@ -10,6 +11,7 @@ export function CategoryIcon({ drill, color, size }: { drill: Drill; color: stri
   if (cat.key === 'finalizacao') return <TargetIcon size={size} color={color} />
   if (cat.key === 'pefraco') return <FootIcon size={size} color={color} />
   if (cat.key === 'forca') return <DumbbellIcon size={size} color={color} />
+  if (cat.key === 'defesa') return <ShieldIcon size={size} color={color} />
   return <BallIcon size={size} color={color} />
 }
 
@@ -55,6 +57,16 @@ export function PathNode({ drill, state, onOpen }: Props) {
         >
           <CategoryIcon drill={drill} color={cat.color} size={26} />
         </div>
+      ) : state === 'open' ? (
+        <div
+          className="flex h-[60px] w-[60px] flex-none items-center justify-center rounded-full"
+          style={{
+            background: `linear-gradient(160deg, ${cat.tintBg}, ${cat.tintBg2})`,
+            border: `2px solid ${cat.color}80`,
+          }}
+        >
+          <CategoryIcon drill={drill} color={cat.color} size={24} />
+        </div>
       ) : (
         <div className="flex h-[60px] w-[60px] flex-none items-center justify-center rounded-full border-2 border-line bg-panel opacity-50">
           <LockIcon size={20} />
@@ -62,7 +74,17 @@ export function PathNode({ drill, state, onOpen }: Props) {
       )}
 
       <div className={`min-w-0 flex-1 ${state === 'locked' ? 'opacity-50' : ''}`}>
-        <div className="text-[17px] leading-[1.1] font-bold">{drill.name}</div>
+        <div className="flex items-center gap-2 text-[17px] leading-[1.1] font-bold">
+          {drill.name}
+          {drill.needs_people != null && (
+            <span
+              className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-extrabold whitespace-nowrap"
+              style={{ background: `${cat.color}1F`, border: `1px solid ${cat.color}59`, color: cat.color }}
+            >
+              <UsersIcon size={11} color={cat.color} />+{drill.needs_people}
+            </span>
+          )}
+        </div>
         <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-muted">
           <span className="inline-block h-2 w-2 rounded-full" style={{ background: cat.color, opacity: state === 'locked' ? 0.5 : 1 }} />
           {drill.skill}

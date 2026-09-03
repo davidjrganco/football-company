@@ -139,6 +139,38 @@ export function DumbbellIcon({ size = 20, color = 'currentColor' }: IconProps) {
   )
 }
 
+export function ShieldIcon({ size = 20, color = 'currentColor' }: IconProps) {
+  // escudo — defesa
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3 5 6v6c0 4.4 3 7.6 7 9 4-1.4 7-4.6 7-9V6l-7-3z" />
+    </svg>
+  )
+}
+
+export function UsersIcon({ size = 16, color = 'currentColor' }: IconProps) {
+  // duas pessoas — exercício acompanhado
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round">
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3.5 19c1-2.8 3.1-4.2 5.5-4.2s4.5 1.4 5.5 4.2" />
+      <circle cx="17" cy="9" r="2.6" />
+      <path d="M16 14.9c2 .2 3.6 1.5 4.4 3.6" />
+    </svg>
+  )
+}
+
+export function ShareIcon({ size = 18, color = 'currentColor' }: IconProps) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="6" r="3" />
+      <circle cx="18" cy="18" r="3" />
+      <path d="M8.7 10.6 15.3 7.4M8.7 13.4l6.6 3.2" />
+    </svg>
+  )
+}
+
 export function FootIcon({ size = 20, color = 'currentColor' }: IconProps) {
   // pé/meia — pé fraco
   return (
