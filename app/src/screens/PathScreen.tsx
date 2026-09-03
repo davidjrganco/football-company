@@ -80,6 +80,9 @@ export function PathScreen({
           <div className="flex items-center gap-1.5 rounded-xl border border-line bg-panel px-[11px] py-[7px]">
             <FlameIcon size={16} />
             <span className="font-display text-lg tracking-[.02em] text-flare2">{progress.streak.current}</span>
+            {progress.streak.shields > 0 && (
+              <span className="text-[11px] font-extrabold text-[#38BDF8]">🛡️{progress.streak.shields}</span>
+            )}
           </div>
           <div className="flex items-center gap-1.5 rounded-xl border border-line bg-panel px-[11px] py-[7px]">
             <BoltIcon size={16} />

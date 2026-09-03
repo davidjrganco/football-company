@@ -28,6 +28,8 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // lembrete diário (periodic background sync) vive num script próprio
+        importScripts: ['sw-reminder.js'],
         // Fontes Google em cache para a app funcionar offline depois do 1.º uso
         runtimeCaching: [
           {

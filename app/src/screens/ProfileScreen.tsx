@@ -5,6 +5,8 @@ import { downloadBackup, readBackup, restoreBackup } from '../lib/backup'
 import { generateShareImage, shareImage } from '../lib/shareCard'
 import { drillsById } from '../lib/drills'
 import { localizeDrill, useLang } from '../lib/i18n'
+import { disableReminder, enableReminder, reminderEnabled } from '../lib/reminder'
+import { TrainingCalendar } from '../components/TrainingCalendar'
 import { positionLabel } from '../hooks/usePlayer'
 import {
   ATTRIBUTE_CODES,
@@ -54,9 +56,38 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
   const xpToNext = XP_PER_OVERALL_POINT - (progress.xpTotal % XP_PER_OVERALL_POINT)
   const nextPct = Math.round(((progress.xpTotal % XP_PER_OVERALL_POINT) / XP_PER_OVERALL_POINT) * 100)
   const [sharing, setSharing] = useState(false)
+  const [reminder, setReminder] = useState(reminderEnabled)
+  const [reminderMsg, setReminderMsg] = useState<string | null>(null)
   const recordEntries = Object.entries(progress.records)
     .map(([id, r]) => ({ drill: drillsById.get(id), ...r }))
     .filter((r) => r.drill?.record)
+
+  async function toggleReminder() {
+    if (reminder) {
+      await disableReminder()
+      setReminder(false)
+      setReminderMsg(null)
+      return
+    }
+    const status = await enableReminder()
+    if (status === 'denied') {
+      setReminderMsg(l('Sem permissão de notificações no telemóvel.', 'Notification permission was denied.'))
+      return
+    }
+    if (status === 'unsupported') {
+      setReminderMsg(l('Este dispositivo não suporta notificações.', "This device doesn't support notifications."))
+      return
+    }
+    setReminder(true)
+    setReminderMsg(
+      status === 'scheduled'
+        ? l('Lembrete ativo — todos os dias. 🔔', 'Reminder on — every day. 🔔')
+        : l(
+            'Permissão dada! Nota: o teu telemóvel pode só mostrar o lembrete com a app instalada no ecrã inicial.',
+            'Permission granted! Note: your phone may only show reminders when the app is installed to the home screen.',
+          ),
+    )
+  }
 
   async function handleShareCard() {
     if (sharing) return
@@ -208,8 +239,15 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
       <div className="grid grid-cols-2 gap-2.5">
         <div className="flex items-center gap-3 rounded-2xl border border-line bg-panel px-[15px] py-[13px]">
           <FlameIcon size={22} />
-          <div>
-            <div className="font-display text-[26px] leading-none text-flare2">{progress.streak.current}</div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <div className="font-display text-[26px] leading-none text-flare2">{progress.streak.current}</div>
+              {progress.streak.shields > 0 && (
+                <span className="rounded-full bg-[rgba(56,189,248,.14)] px-1.5 py-0.5 text-[10.5px] font-extrabold text-[#38BDF8]">
+                  🛡️×{progress.streak.shields}
+                </span>
+              )}
+            </div>
             <div className="mt-0.5 text-xs font-bold text-muted">{l('Streak atual', 'Current streak')}</div>
           </div>
         </div>
@@ -234,6 +272,31 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
             <div className="mt-0.5 text-xs font-bold text-muted">{l('Treinos feitos', 'Workouts done')}</div>
           </div>
         </div>
+      </div>
+
+      {/* calendário do mês — o "não quebres a corrente" à vista */}
+      <TrainingCalendar trainingDays={progress.trainingDays} />
+
+      {/* lembrete diário (melhor esforço, sem servidores) */}
+      <div className="mt-3 rounded-2xl border border-line bg-panel px-[15px] py-[13px]">
+        <button
+          className="flex w-full cursor-pointer items-center justify-between border-none bg-transparent p-0"
+          onClick={toggleReminder}
+        >
+          <span className="text-[13.5px] font-extrabold text-chalk">
+            🔔 {l('Lembrete diário de treino', 'Daily training reminder')}
+          </span>
+          <span
+            className="relative h-[22px] w-[40px] flex-none rounded-full transition-colors"
+            style={{ background: reminder ? '#22C55E' : 'rgba(233,245,236,.15)' }}
+          >
+            <span
+              className="absolute top-[3px] h-4 w-4 rounded-full bg-chalk transition-all"
+              style={{ left: reminder ? '21px' : '3px' }}
+            />
+          </span>
+        </button>
+        {reminderMsg && <div className="mt-2 text-[12px] font-bold text-muted">{reminderMsg}</div>}
       </div>
 
       {/* recordes pessoais (votação do Nicolas) */}

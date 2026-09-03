@@ -11,10 +11,11 @@ const DEFAULT_STATE: ProgressState = {
   completionCounts: {},
   claimedPrograms: [],
   programTrainingDays: {},
-  daily: { date: '', doneIds: [], bonusClaimed: false, withFriends: false },
+  daily: { date: '', doneIds: [], bonusClaimed: false, withFriends: false, completions: {} },
   feedback: {},
   records: {},
-  streak: { current: 0, best: 0, lastTrainedDate: null },
+  trainingDays: [],
+  streak: { current: 0, best: 0, lastTrainedDate: null, shields: 0 },
 }
 
 /** YYYY-MM-DD pela data LOCAL do dispositivo (SPEC 7 — não usar UTC). */
@@ -40,6 +41,12 @@ function yesterday(): string {
   return localDateString(d)
 }
 
+function dayBefore(): string {
+  const d = new Date()
+  d.setDate(d.getDate() - 2)
+  return localDateString(d)
+}
+
 function load(): ProgressState {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -54,7 +61,15 @@ function load(): ProgressState {
       daily: { ...DEFAULT_STATE.daily, ...parsed.daily },
       feedback: { ...parsed.feedback },
       records: { ...parsed.records },
+      trainingDays: parsed.trainingDays ?? [],
       streak: { ...DEFAULT_STATE.streak, ...parsed.streak },
+    }
+    // migração: sem histórico global de dias, semeia com os dias dos programas
+    if (state.trainingDays.length === 0) {
+      const seen = new Set<string>()
+      for (const days of Object.values(state.programTrainingDays)) for (const d of days) seen.add(d)
+      if (state.streak.lastTrainedDate) seen.add(state.streak.lastTrainedDate)
+      state.trainingDays = [...seen].sort()
     }
     // migração v1→v2: quem já tinha exercícios feitos passa a contar 1 de cada
     if (Object.keys(state.completionCounts).length === 0 && state.completedDrillIds.length > 0) {
@@ -79,6 +94,8 @@ export interface CompletionResult {
   streak: number
   wasNew: boolean // primeira vez que este exercício foi concluído (desbloqueia o seguinte)
   sessionBonus: number // XP extra por ter completado o Treino de Hoje (0 se não)
+  shieldUsed: boolean // um escudo salvou a streak
+  shieldEarned: boolean // ganhou um escudo ao completar a sessão
 }
 
 export function useProgress() {
@@ -97,10 +114,17 @@ export function useProgress() {
   const completeDrill = useCallback(
     (drill: Drill, opts?: CompleteOpts): CompletionResult => {
       const wasNew = !progress.completedDrillIds.includes(drill.id)
-      const { state, sessionBonus } = applyCompletion(progress, drill, opts ?? {}, today(), yesterday())
+      const { state, xpGained, sessionBonus, shieldUsed, shieldEarned } = applyCompletion(
+        progress,
+        drill,
+        opts ?? {},
+        today(),
+        yesterday(),
+        dayBefore(),
+      )
       save(state)
       setProgress(state)
-      return { xpGained: drill.xp, streak: state.streak.current, wasNew, sessionBonus }
+      return { xpGained, streak: state.streak.current, wasNew, sessionBonus, shieldUsed, shieldEarned }
     },
     [progress],
   )

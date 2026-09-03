@@ -8,14 +8,17 @@ import type { Drill } from '../types'
 interface Props {
   drill: Drill
   up: boolean
+  /** XP real deste treino (com o decaimento de repetição do dia) */
+  xpPreview?: number
   onBack: () => void
   onComplete: (drill: Drill) => void
 }
 
-export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
+export function DrillScreen({ drill, up, xpPreview, onBack, onComplete }: Props) {
   const { lang, l } = useLang()
   const loc = localizeDrill(drill, lang)
   const cat = categoryOfDrill(drill)
+  const xp = xpPreview ?? drill.xp
   // Nicolas: as séries têm de terminar no relógio. David: e depois o exercício
   // conclui-se SOZINHO — o relógio é o árbitro, não o botão.
   const [seriesDone, setSeriesDone] = useState(false)
@@ -161,14 +164,19 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
             style={{ boxShadow: '0 6px 0 #15803D, 0 0 30px rgba(34,197,94,.3)' }}
           >
             <BoltIcon size={19} color="#052012" />
-            {l('Concluído', 'Complete')} · +{drill.xp} XP
+            {l('Concluído', 'Complete')} · +{xp} XP
           </div>
         ) : (
-          <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-panel p-4 text-center text-[13.5px] font-bold text-muted">
+          <div className="w-full rounded-2xl border border-line bg-panel p-4 text-center text-[13.5px] font-bold text-muted">
             ⏱️{' '}
             {l(
-              'O exercício conclui-se sozinho quando o relógio terminar as séries',
-              'The drill completes itself when the clock finishes your sets',
+              `O exercício conclui-se sozinho no fim das séries · vale +${xp} XP`,
+              `The drill completes itself when your sets end · worth +${xp} XP`,
+            )}
+            {xp < drill.xp && (
+              <div className="mt-1 text-[11.5px] font-bold text-flare2">
+                {l('Repetição de hoje — XP reduzido. Varia o treino! 😉', "Today's repeat — reduced XP. Mix it up! 😉")}
+              </div>
             )}
           </div>
         )}

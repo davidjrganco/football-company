@@ -25,6 +25,9 @@ export interface CompletionData {
   wasNew: boolean
   sessionBonus: number // XP extra por completar o Treino de Hoje
   sessionProgress: { done: number; total: number } | null
+  shieldUsed: boolean // um escudo salvou a streak
+  shieldEarned: boolean // ganhou um escudo ao completar a sessão
+  shields: number // escudos atuais
 }
 
 interface Props {
@@ -108,6 +111,22 @@ export function CompletionScreen({ data, onNext, onClose, onFeedback, onSaveReco
           </span>
         </div>
       </div>
+
+      {/* escudos de streak */}
+      {data.shieldUsed && (
+        <div className="cele-box mt-3 flex items-center gap-2 rounded-[14px] border border-[rgba(56,189,248,.45)] bg-[rgba(56,189,248,.12)] px-4 py-2.5">
+          <span className="font-display text-[16px] text-[#38BDF8]">
+            🛡️ {l('ESCUDO USADO — A STREAK SOBREVIVEU!', 'SHIELD USED — YOUR STREAK SURVIVED!')}
+          </span>
+        </div>
+      )}
+      {data.shieldEarned && (
+        <div className="mt-3 flex items-center gap-2 rounded-[14px] border border-[rgba(56,189,248,.35)] bg-[rgba(56,189,248,.08)] px-4 py-2">
+          <span className="text-[13px] font-extrabold text-[#38BDF8]">
+            🛡️ {l(`+1 Escudo de streak (tens ${data.shields})`, `+1 Streak shield (you have ${data.shields})`)}
+          </span>
+        </div>
+      )}
 
       {/* sessão do dia completa → bónus */}
       {data.sessionBonus > 0 && (

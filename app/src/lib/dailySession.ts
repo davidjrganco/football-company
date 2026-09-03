@@ -56,13 +56,29 @@ export function buildDailySession(
   const plan = WEEK_PLAN[date.getDay()] ?? { dominio: 3, forca: 2 }
   const rotation = dayOfYear(date)
 
+  // Adaptativo ao "Como correu?" (Iteração F): o que ele marca "difícil" tem
+  // prioridade (treinar o que custa é treinar); o que marca "fácil" desce na
+  // fila. Determinístico: a rotação só desempata dentro do mesmo nível.
+  const hardness = (d: Drill) => {
+    const fb = progress.feedback[d.id]
+    return (fb?.dificil ?? 0) - (fb?.facil ?? 0)
+  }
+
   const chosen: Drill[] = []
   const take = (candidates: Drill[], count: number) => {
     const fresh = candidates.filter((d) => !chosen.includes(d))
     if (fresh.length === 0) return
-    const start = rotation % fresh.length
-    for (let i = 0; i < Math.min(count, fresh.length); i++) {
-      chosen.push(fresh[(start + i) % fresh.length])
+    const hasFeedback = fresh.some((d) => hardness(d) !== 0)
+    if (hasFeedback) {
+      // com feedback: ordem estrita por dificuldade sentida (empates pela ordem do caminho)
+      const sorted = [...fresh].sort((a, b) => hardness(b) - hardness(a))
+      chosen.push(...sorted.slice(0, count))
+    } else {
+      // sem feedback: rotação pelo dia do ano (variedade sem aleatoriedade)
+      const start = rotation % fresh.length
+      for (let i = 0; i < Math.min(count, fresh.length); i++) {
+        chosen.push(fresh[(start + i) % fresh.length])
+      }
     }
   }
 

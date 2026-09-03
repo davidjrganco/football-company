@@ -13,7 +13,8 @@ const base = (over: Partial<ProgressState> = {}): ProgressState => ({
   daily: { date: '', doneIds: [], bonusClaimed: false },
   feedback: {},
   records: {},
-  streak: { current: 0, best: 0, lastTrainedDate: null },
+  trainingDays: [],
+  streak: { current: 0, best: 0, lastTrainedDate: null, shields: 0 },
   ...over,
 })
 

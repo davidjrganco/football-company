@@ -88,6 +88,9 @@ export interface StreakState {
   current: number
   best: number
   lastTrainedDate: string | null // YYYY-MM-DD
+  // escudos: falhar UM dia com escudo não parte a streak (ganha-se a completar
+  // o Treino de Hoje, máx. 2 — Iteração F)
+  shields: number
 }
 
 // Sessão diária "Treino de Hoje" (Iteração D)
@@ -96,6 +99,8 @@ export interface DailyState {
   doneIds: string[] // exercícios da sessão concluídos hoje
   bonusClaimed: boolean // bónus de sessão completa já entregue
   withFriends?: boolean // "hoje treino acompanhado" — inclui os exercícios 👥
+  // nº de conclusões de cada exercício HOJE (para o XP decrescente)
+  completions?: Record<string, number>
 }
 
 export type FeedbackLevel = 'facil' | 'normal' | 'dificil'
@@ -114,6 +119,8 @@ export interface ProgressState {
   feedback: Record<string, Record<FeedbackLevel, number>>
   // recordes pessoais por exercício contável (votação do Nicolas)
   records: Record<string, { best: number; date: string }>
+  // todos os dias (YYYY-MM-DD) com pelo menos 1 treino — o calendário do Perfil
+  trainingDays: string[]
   streak: StreakState
 }
 

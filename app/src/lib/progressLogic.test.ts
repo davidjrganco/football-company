@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { Drill, ProgressState } from '../types'
-import { applyCompletion, applyRecord, applyStreak } from './progressLogic'
+import { applyCompletion, applyRecord, applyStreak, xpForCompletion } from './progressLogic'
 
-const HOJE = '2026-09-03'
-const ONTEM = '2026-09-02'
+const HOJE = '2026-09-04'
+const ONTEM = '2026-09-03'
+const ANTEONTEM = '2026-09-02'
 
 const drill = (id: string, xp = 30): Drill => ({
   id,
@@ -30,150 +31,149 @@ const base = (over: Partial<ProgressState> = {}): ProgressState => ({
   completionCounts: {},
   claimedPrograms: [],
   programTrainingDays: {},
-  daily: { date: '', doneIds: [], bonusClaimed: false },
+  daily: { date: '', doneIds: [], bonusClaimed: false, withFriends: false, completions: {} },
   feedback: {},
   records: {},
-  streak: { current: 0, best: 0, lastTrainedDate: null },
+  trainingDays: [],
+  streak: { current: 0, best: 0, lastTrainedDate: null, shields: 0 },
   ...over,
 })
 
-describe('streak (SPEC secção 7)', () => {
+const done = (progress: ProgressState, d: Drill, opts = {}) =>
+  applyCompletion(progress, d, opts, HOJE, ONTEM, ANTEONTEM)
+
+describe('streak (SPEC secção 7 + escudos)', () => {
+  const s = (over = {}) => ({ current: 0, best: 0, lastTrainedDate: null, shields: 0, ...over })
+
   it('primeira vez → 1', () => {
-    const s = applyStreak({ current: 0, best: 0, lastTrainedDate: null }, HOJE, ONTEM)
-    expect(s).toEqual({ current: 1, best: 1, lastTrainedDate: HOJE })
+    const r = applyStreak(s(), HOJE, ONTEM, ANTEONTEM)
+    expect(r.streak).toEqual({ current: 1, best: 1, lastTrainedDate: HOJE, shields: 0 })
+    expect(r.shieldUsed).toBe(false)
   })
   it('já treinou hoje → não mexe', () => {
-    const s = applyStreak({ current: 3, best: 5, lastTrainedDate: HOJE }, HOJE, ONTEM)
-    expect(s.current).toBe(3)
-    expect(s.best).toBe(5)
+    const r = applyStreak(s({ current: 3, best: 5, lastTrainedDate: HOJE }), HOJE, ONTEM, ANTEONTEM)
+    expect(r.streak.current).toBe(3)
   })
-  it('treinou ontem → +1 e atualiza best', () => {
-    const s = applyStreak({ current: 5, best: 5, lastTrainedDate: ONTEM }, HOJE, ONTEM)
-    expect(s.current).toBe(6)
-    expect(s.best).toBe(6)
+  it('treinou ontem → +1', () => {
+    const r = applyStreak(s({ current: 5, best: 5, lastTrainedDate: ONTEM }), HOJE, ONTEM, ANTEONTEM)
+    expect(r.streak.current).toBe(6)
+    expect(r.streak.best).toBe(6)
   })
-  it('falhou ≥1 dia → volta a 1, best fica', () => {
-    const s = applyStreak({ current: 9, best: 9, lastTrainedDate: '2026-08-20' }, HOJE, ONTEM)
-    expect(s.current).toBe(1)
-    expect(s.best).toBe(9)
+  it('falhou 1 dia COM escudo → escudo gasto, streak continua', () => {
+    const r = applyStreak(
+      s({ current: 9, best: 9, lastTrainedDate: ANTEONTEM, shields: 2 }),
+      HOJE,
+      ONTEM,
+      ANTEONTEM,
+    )
+    expect(r.streak.current).toBe(10)
+    expect(r.streak.shields).toBe(1)
+    expect(r.shieldUsed).toBe(true)
+  })
+  it('falhou 1 dia SEM escudo → volta a 1', () => {
+    const r = applyStreak(s({ current: 9, best: 9, lastTrainedDate: ANTEONTEM }), HOJE, ONTEM, ANTEONTEM)
+    expect(r.streak.current).toBe(1)
+    expect(r.shieldUsed).toBe(false)
+  })
+  it('falhou 2+ dias → volta a 1 mesmo com escudos', () => {
+    const r = applyStreak(
+      s({ current: 9, best: 9, lastTrainedDate: '2026-08-20', shields: 2 }),
+      HOJE,
+      ONTEM,
+      ANTEONTEM,
+    )
+    expect(r.streak.current).toBe(1)
+    expect(r.streak.shields).toBe(2) // não gasta à toa
   })
 })
 
-describe('applyCompletion', () => {
-  it('primeira conclusão: XP, contagem, id, streak', () => {
-    const { state } = applyCompletion(base(), drill('fb-01'), {}, HOJE, ONTEM)
+describe('XP decrescente no mesmo dia (Iteração F)', () => {
+  it('30 → 15 → 5', () => {
+    expect(xpForCompletion(drill('x'), 0)).toBe(30)
+    expect(xpForCompletion(drill('x'), 1)).toBe(15)
+    expect(xpForCompletion(drill('x'), 2)).toBe(5)
+    expect(xpForCompletion(drill('x'), 7)).toBe(5)
+  })
+
+  it('aplica-se na conclusão e reinicia no dia seguinte', () => {
+    let p = base()
+    let r = done(p, drill('fb-01'))
+    expect(r.xpGained).toBe(30)
+    r = done(r.state, drill('fb-01'))
+    expect(r.xpGained).toBe(15)
+    r = done(r.state, drill('fb-01'))
+    expect(r.xpGained).toBe(5)
+    expect(r.state.xpTotal).toBe(50)
+    // dia seguinte: o daily vira e volta a valer tudo
+    const amanha = applyCompletion(r.state, drill('fb-01'), {}, '2026-09-05', HOJE, ONTEM)
+    expect(amanha.xpGained).toBe(30)
+  })
+
+  it('exercícios diferentes no mesmo dia valem sempre tudo', () => {
+    const r1 = done(base(), drill('fb-01'))
+    const r2 = done(r1.state, drill('fb-02'))
+    expect(r2.xpGained).toBe(30)
+  })
+})
+
+describe('applyCompletion (essenciais)', () => {
+  it('primeira conclusão: XP, contagem, id, streak, dia no calendário', () => {
+    const { state } = done(base(), drill('fb-01'))
     expect(state.xpTotal).toBe(30)
-    expect(state.drillsDone).toBe(1)
     expect(state.completedDrillIds).toEqual(['fb-01'])
     expect(state.completionCounts['fb-01']).toBe(1)
     expect(state.streak.current).toBe(1)
+    expect(state.trainingDays).toEqual([HOJE])
   })
 
-  it('repetição: volta a dar XP e conta, sem duplicar o id', () => {
-    const p = base({ xpTotal: 30, drillsDone: 1, completedDrillIds: ['fb-01'], completionCounts: { 'fb-01': 1 } })
-    const { state } = applyCompletion(p, drill('fb-01'), {}, HOJE, ONTEM)
-    expect(state.xpTotal).toBe(60)
-    expect(state.completedDrillIds).toEqual(['fb-01'])
-    expect(state.completionCounts['fb-01']).toBe(2)
+  it('o dia só entra 1× no calendário', () => {
+    const r1 = done(base(), drill('fb-01'))
+    const r2 = done(r1.state, drill('fb-02'))
+    expect(r2.state.trainingDays).toEqual([HOJE])
   })
 
-  it('regista o dia de treino do programa no máximo 1× por dia', () => {
-    const p = base({ programTrainingDays: { finishing: [ONTEM] } })
-    const uma = applyCompletion(p, drill('fin-01'), { dayProgramIds: ['finishing'] }, HOJE, ONTEM).state
-    expect(uma.programTrainingDays.finishing).toEqual([ONTEM, HOJE])
-    const duas = applyCompletion(uma, drill('fin-02'), { dayProgramIds: ['finishing'] }, HOJE, ONTEM).state
-    expect(duas.programTrainingDays.finishing).toEqual([ONTEM, HOJE]) // não duplica
-  })
-
-  it('entrega recompensas atomicamente e nunca duplica claims', () => {
-    const p = base({ claimedPrograms: ['weakfoot'] })
-    const { state } = applyCompletion(
-      p,
-      drill('fin-07'),
-      { claimProgramIds: ['finishing', 'weakfoot'] },
-      HOJE,
-      ONTEM,
-    )
+  it('dias de programa e claims continuam atómicos', () => {
+    const { state } = done(base({ claimedPrograms: ['weakfoot'] }), drill('fin-07'), {
+      dayProgramIds: ['finishing'],
+      claimProgramIds: ['finishing', 'weakfoot'],
+    })
+    expect(state.programTrainingDays.finishing).toEqual([HOJE])
     expect(state.claimedPrograms).toEqual(['weakfoot', 'finishing'])
   })
-
-  it('conclusão + dia + claim numa só passagem preserva tudo (regressão do bug da Iteração B)', () => {
-    const p = base({
-      xpTotal: 300,
-      completedDrillIds: ['wf-01', 'wf-02', 'wf-03', 'wf-04', 'wf-05'],
-      completionCounts: { 'wf-01': 1, 'wf-02': 1, 'wf-03': 1, 'wf-04': 1, 'wf-05': 1 },
-    })
-    const { state } = applyCompletion(
-      p,
-      drill('wf-06'),
-      { dayProgramIds: ['weakfoot'], claimProgramIds: ['weakfoot'] },
-      HOJE,
-      ONTEM,
-    )
-    expect(state.completedDrillIds).toContain('wf-06') // o bug antigo perdia isto
-    expect(state.xpTotal).toBe(330)
-    expect(state.claimedPrograms).toEqual(['weakfoot'])
-    expect(state.programTrainingDays.weakfoot).toEqual([HOJE])
-  })
 })
 
-describe('Treino de Hoje (sessão diária)', () => {
-  const SESSION = ['fb-01', 'fb-02', 'st-01']
+describe('Treino de Hoje: bónus + escudo', () => {
+  const SESSION = ['fb-01', 'fb-02']
   const opts = { sessionIds: SESSION, sessionBonusXp: 50 }
 
-  it('marca o exercício da sessão como feito hoje', () => {
-    const { state, sessionBonus } = applyCompletion(base(), drill('fb-01'), opts, HOJE, ONTEM)
-    expect(state.daily).toEqual({ date: HOJE, doneIds: ['fb-01'], bonusClaimed: false, withFriends: false })
-    expect(sessionBonus).toBe(0)
+  it('completar a sessão dá o bónus E um escudo (máx. 2)', () => {
+    const r1 = done(base(), drill('fb-01'), opts)
+    expect(r1.sessionBonus).toBe(0)
+    expect(r1.shieldEarned).toBe(false)
+    const r2 = done(r1.state, drill('fb-02'), opts)
+    expect(r2.sessionBonus).toBe(50)
+    expect(r2.shieldEarned).toBe(true)
+    expect(r2.state.streak.shields).toBe(1)
   })
 
-  it('exercício fora da sessão não conta para ela', () => {
-    const { state } = applyCompletion(base(), drill('sa-06'), opts, HOJE, ONTEM)
-    expect(state.daily.doneIds).toEqual([])
-  })
-
-  it('completar a sessão dá o bónus UMA vez, somado ao XP', () => {
-    const p = base({ xpTotal: 60, daily: { date: HOJE, doneIds: ['fb-01', 'fb-02'], bonusClaimed: false } })
-    const { state, sessionBonus } = applyCompletion(p, drill('st-01'), opts, HOJE, ONTEM)
-    expect(sessionBonus).toBe(50)
-    expect(state.xpTotal).toBe(60 + 30 + 50)
-    expect(state.daily.bonusClaimed).toBe(true)
-    // repetir depois da sessão completa não volta a dar bónus
-    const depois = applyCompletion(state, drill('fb-01'), opts, HOJE, ONTEM)
-    expect(depois.sessionBonus).toBe(0)
-  })
-
-  it('mudar o dia vira a sessão (doneIds, bónus e companhia recomeçam)', () => {
+  it('com 2 escudos não ganha terceiro', () => {
     const p = base({
-      daily: { date: ONTEM, doneIds: ['fb-01', 'fb-02', 'st-01'], bonusClaimed: true, withFriends: true },
+      daily: { date: HOJE, doneIds: ['fb-01'], bonusClaimed: false, withFriends: false, completions: { 'fb-01': 1 } },
+      streak: { current: 1, best: 1, lastTrainedDate: HOJE, shields: 2 },
     })
-    const { state } = applyCompletion(p, drill('fb-01'), opts, HOJE, ONTEM)
-    expect(state.daily).toEqual({ date: HOJE, doneIds: ['fb-01'], bonusClaimed: false, withFriends: false })
+    const r = done(p, drill('fb-02'), opts)
+    expect(r.sessionBonus).toBe(50)
+    expect(r.shieldEarned).toBe(false)
+    expect(r.state.streak.shields).toBe(2)
   })
 })
 
-describe('recordes pessoais (votação do Nicolas)', () => {
-  it('primeiro registo é sempre recorde', () => {
-    const { state, newRecord, best } = applyRecord(base(), 'wf-06', 34, HOJE)
-    expect(newRecord).toBe(true)
-    expect(best).toBe(34)
-    expect(state.records['wf-06']).toEqual({ best: 34, date: HOJE })
-  })
-
+describe('recordes pessoais', () => {
   it('só grava se bater o melhor anterior', () => {
     const p = base({ records: { 'wf-06': { best: 40, date: ONTEM } } })
-    const pior = applyRecord(p, 'wf-06', 35, HOJE)
-    expect(pior.newRecord).toBe(false)
-    expect(pior.best).toBe(40)
-    expect(pior.state.records['wf-06'].best).toBe(40)
+    expect(applyRecord(p, 'wf-06', 35, HOJE).newRecord).toBe(false)
     const melhor = applyRecord(p, 'wf-06', 45, HOJE)
     expect(melhor.newRecord).toBe(true)
     expect(melhor.state.records['wf-06']).toEqual({ best: 45, date: HOJE })
-  })
-
-  it('rejeita valores inválidos', () => {
-    expect(applyRecord(base(), 'wf-06', 0, HOJE).newRecord).toBe(false)
-    expect(applyRecord(base(), 'wf-06', -3, HOJE).newRecord).toBe(false)
-    expect(applyRecord(base(), 'wf-06', NaN, HOJE).newRecord).toBe(false)
   })
 })

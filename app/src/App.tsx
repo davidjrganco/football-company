@@ -12,6 +12,7 @@ import {
 } from './lib/attributes'
 import { SESSION_BONUS_XP, buildDailySession } from './lib/dailySession'
 import { localizeDrill, useLang } from './lib/i18n'
+import { xpForCompletion } from './lib/progressLogic'
 import { generateShareImage, shareImage } from './lib/shareCard'
 import {
   allDrills,
@@ -145,8 +146,8 @@ export default function App() {
         streak: result.streak,
         attrDeltas,
         overallFrom: overallRating(progress.xpTotal),
-        overallTo: overallRating(progress.xpTotal + drill.xp + result.sessionBonus),
-        xpTotalAfter: progress.xpTotal + drill.xp + result.sessionBonus,
+        overallTo: overallRating(progress.xpTotal + result.xpGained + result.sessionBonus),
+        xpTotalAfter: progress.xpTotal + result.xpGained + result.sessionBonus,
         programRows: containing.map((p) => {
           const days = progress.programTrainingDays[p.id] ?? []
           const dayCount = days.includes(localToday()) ? days.length : days.length + 1
@@ -158,6 +159,10 @@ export default function App() {
         sessionProgress: sessionIds.length
           ? { done: Math.min(doneTodayAfter, sessionIds.length), total: sessionIds.length }
           : null,
+        shieldUsed: result.shieldUsed,
+        shieldEarned: result.shieldEarned,
+        shields:
+          progress.streak.shields + (result.shieldEarned ? 1 : 0) - (result.shieldUsed ? 1 : 0),
       })
       setPendingProgramCele(claims[0] ?? null)
     },
@@ -243,7 +248,16 @@ export default function App() {
       )}
 
       {activeDrill && (
-        <DrillScreen drill={activeDrill} up={sheetUp} onBack={closeDrill} onComplete={handleComplete} />
+        <DrillScreen
+          drill={activeDrill}
+          up={sheetUp}
+          xpPreview={xpForCompletion(
+            activeDrill,
+            progress.daily.date === localToday() ? (progress.daily.completions?.[activeDrill.id] ?? 0) : 0,
+          )}
+          onBack={closeDrill}
+          onComplete={handleComplete}
+        />
       )}
 
       {completion && (

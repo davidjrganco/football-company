@@ -14,7 +14,8 @@ const base = (over: Partial<ProgressState> = {}): ProgressState => ({
   daily: { date: '', doneIds: [], bonusClaimed: false },
   feedback: {},
   records: {},
-  streak: { current: 0, best: 0, lastTrainedDate: null },
+  trainingDays: [],
+  streak: { current: 0, best: 0, lastTrainedDate: null, shields: 0 },
   ...over,
 })
 
@@ -68,5 +69,21 @@ describe('Treino de Hoje (gerador)', () => {
     const ids = buildDailySession(QUARTA, ALL_DONE, true).map((d) => d.id)
     expect(ids.slice(-2)).toEqual(['df-01', 'df-02'])
     expect(ids.length).toBe(SESSION_SIZE + 2)
+  })
+
+  it('adaptativo: o "difícil" entra, o "fácil" sai (Como correu? a trabalhar)', () => {
+    // quarta pede 2 de finalização; marca fin-01 como fácil 2× e fin-04 como difícil
+    const comFeedback = base({
+      completedDrillIds: mainPathDrills.map((d) => d.id),
+      feedback: {
+        'fin-01': { facil: 2, normal: 0, dificil: 0 },
+        'fin-04': { facil: 0, normal: 0, dificil: 1 },
+      },
+    })
+    const ids = buildDailySession(QUARTA, comFeedback).map((d) => d.id)
+    expect(ids).toContain('fin-04') // o que custa treina-se
+    expect(ids).not.toContain('fin-01') // o que já é fácil dá lugar
+    // determinístico na mesma
+    expect(buildDailySession(QUARTA, comFeedback).map((d) => d.id)).toEqual(ids)
   })
 })
