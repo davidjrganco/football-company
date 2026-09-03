@@ -30,12 +30,17 @@ export interface Drill {
   description: string
   cue: string
   steps: string[]
+  // traduções EN (opção PT/EN); em falta, a app cai para o PT
+  skill_en?: string
+  description_en?: string
+  cue_en?: string
+  steps_en?: string[]
   attributes: AttributeKey[] // atributos que este exercício treina
   // nº de pessoas EXTRA necessárias (regra do Nicolas: multi-jogador é opcional,
   // nunca bloqueia o caminho, e só entra no Treino de Hoje em dias acompanhados)
   needs_people?: number
   // exercício contável — a app guarda o máximo pessoal (votação do Nicolas)
-  record?: { unit: string; prompt: string }
+  record?: { unit: string; prompt: string; unit_en?: string; prompt_en?: string }
   video: DrillVideo
 }
 

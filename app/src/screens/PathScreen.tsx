@@ -1,6 +1,7 @@
 import { CategoryIcon, PathNode, type NodeState } from '../components/PathNode'
 import { BoltIcon, CheckIcon, FlameIcon, TrophyIcon, UsersIcon } from '../components/icons'
-import { CATEGORIES, categoryOfDrill } from '../lib/categories'
+import { CATEGORIES, categoryLabel, categoryOfDrill } from '../lib/categories'
+import { localizeDrill, useLang } from '../lib/i18n'
 import { SESSION_BONUS_XP, buildDailySession, sessionMinutes } from '../lib/dailySession'
 import { localToday } from '../hooks/useProgress'
 import { currentSoloDrillIndex, mainPathDrills, mainPathLevels } from '../lib/drills'
@@ -27,6 +28,7 @@ export function PathScreen({
   onOpenDrill,
   onOpenSessionDrill,
 }: Props) {
+  const { lang, l } = useLang()
   // o "atual" é sempre um exercício a solo — os 👥 nunca bloqueiam (regra do Nicolas)
   const cur = currentSoloDrillIndex(mainPathDrills, progress.completedDrillIds)
   const nextDrill = cur < mainPathDrills.length ? mainPathDrills[cur] : null
@@ -68,7 +70,9 @@ export function PathScreen({
             {player.name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <div className="text-[11px] font-bold tracking-[.16em] text-muted uppercase">Vamos treinar</div>
+            <div className="text-[11px] font-bold tracking-[.16em] text-muted uppercase">
+              {l('Vamos treinar', "Let's train")}
+            </div>
             <div className="font-display text-[26px] leading-none tracking-[.01em]">{player.name}</div>
           </div>
         </div>
@@ -98,12 +102,15 @@ export function PathScreen({
             <div>
               <div className="flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.16em] text-[#F6CE55] uppercase">
                 <TrophyIcon size={13} color="#F6CE55" />
-                Treino de Hoje
+                {l('Treino de Hoje', "Today's Training")}
               </div>
               <div className="mt-[3px] font-display text-[21px] leading-[1.05]">
                 {sessionComplete
-                  ? 'Sessão completa!'
-                  : `${session.length} exercícios · ~${sessionMinutes(session)} min`}
+                  ? l('Sessão completa!', 'Session complete!')
+                  : l(
+                      `${session.length} exercícios · ~${sessionMinutes(session)} min`,
+                      `${session.length} drills · ~${sessionMinutes(session)} min`,
+                    )}
               </div>
             </div>
             {sessionComplete ? (
@@ -116,7 +123,7 @@ export function PathScreen({
                 style={{ boxShadow: '0 5px 0 #A16207' }}
                 onClick={() => nextSessionDrill && onOpenSessionDrill(nextSessionDrill)}
               >
-                {sessionDone > 0 ? 'CONTINUAR' : 'COMEÇAR'}
+                {sessionDone > 0 ? l('CONTINUAR', 'CONTINUE') : l('COMEÇAR', 'START')}
               </button>
             )}
           </div>
@@ -137,7 +144,9 @@ export function PathScreen({
                   onClick={() => onOpenSessionDrill(d)}
                 >
                   <CategoryIcon drill={d} color={cat.color} size={16} />
-                  <span className={`flex-1 text-[13.5px] font-bold ${done ? 'line-through' : ''}`}>{d.name}</span>
+                  <span className={`flex-1 text-[13.5px] font-bold ${done ? 'line-through' : ''}`}>
+                    {localizeDrill(d, lang).name}
+                  </span>
                   {done ? (
                     <CheckIcon size={14} color="#22C55E" />
                   ) : (
@@ -163,7 +172,7 @@ export function PathScreen({
           >
             <span className="flex items-center gap-2 text-[12.5px] font-extrabold text-chalk">
               <UsersIcon size={15} color={withFriends ? '#F6CE55' : '#8AA79A'} />
-              Hoje treino acompanhado
+              {l('Hoje treino acompanhado', "Training with others today")}
             </span>
             <span
               className="relative h-[22px] w-[40px] rounded-full transition-colors"
@@ -182,7 +191,7 @@ export function PathScreen({
       <div className="mb-1.5 rounded-2xl border border-line bg-panel px-4 py-3">
         <div className="flex items-center gap-2">
           <span className="text-[10.5px] font-extrabold tracking-[.12em] text-muted uppercase">
-            {nextDrill ? `Nível ${levelIdx + 1}` : 'Caminho completo'}
+            {nextDrill ? l(`Nível ${levelIdx + 1}`, `Level ${levelIdx + 1}`) : l('Caminho completo', 'Path complete')}
           </span>
           <div className="flex flex-1 gap-1">
             {mainPathLevels.map((level, i) => {
@@ -211,7 +220,9 @@ export function PathScreen({
         return (
           <div key={level.name}>
             <div className="mt-5 mb-3 flex items-center gap-3">
-              <span className="font-display text-sm tracking-[.14em] text-muted">{level.name}</span>
+              <span className="font-display text-sm tracking-[.14em] text-muted">
+                {lang === 'en' ? level.name.replace('NÍVEL', 'LEVEL') : level.name}
+              </span>
               <span className="h-px flex-1 bg-line" />
             </div>
             <div className="relative py-1">
@@ -236,12 +247,15 @@ export function PathScreen({
         {(['dominio', 'velocidade', 'finalizacao', 'pefraco', 'forca', 'defesa'] as const).map((k) => (
           <span key={k} className="flex items-center gap-1.5 text-[10.5px] font-bold text-muted">
             <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[k].color }} />
-            {CATEGORIES[k].label}
+            {categoryLabel(CATEGORIES[k], lang)}
           </span>
         ))}
       </div>
       <p className="mt-2 text-center text-[12.5px] leading-normal text-muted">
-        Um pouco de tudo, todos os dias — cada treino conta também para os teus Programas.
+        {l(
+          'Um pouco de tudo, todos os dias — cada treino conta também para os teus Programas.',
+          'A bit of everything, every day — each drill also counts towards your Programs.',
+        )}
       </p>
     </div>
   )

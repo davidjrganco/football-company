@@ -1,4 +1,5 @@
 import { categoryOfDrill } from '../lib/categories'
+import { localizeDrill, useLang } from '../lib/i18n'
 import type { Drill } from '../types'
 import { CheckIcon, LockIcon, TargetIcon, BootIcon, DumbbellIcon, FootIcon, BallIcon, ShieldIcon, UsersIcon } from './icons'
 
@@ -24,6 +25,8 @@ interface Props {
 
 /** Nó do caminho — quadro tático com cor por categoria (redesign 2026-08). */
 export function PathNode({ drill, state, onOpen }: Props) {
+  const { lang } = useLang()
+  const loc = localizeDrill(drill, lang)
   const cat = categoryOfDrill(drill)
   const clickable = state !== 'locked'
 
@@ -75,7 +78,7 @@ export function PathNode({ drill, state, onOpen }: Props) {
 
       <div className={`min-w-0 flex-1 ${state === 'locked' ? 'opacity-50' : ''}`}>
         <div className="flex items-center gap-2 text-[17px] leading-[1.1] font-bold">
-          {drill.name}
+          {loc.name}
           {drill.needs_people != null && (
             <span
               className="flex items-center gap-1 rounded-full px-2 py-0.5 text-[10.5px] font-extrabold whitespace-nowrap"
@@ -87,7 +90,7 @@ export function PathNode({ drill, state, onOpen }: Props) {
         </div>
         <div className="mt-0.5 flex items-center gap-1.5 text-[13px] text-muted">
           <span className="inline-block h-2 w-2 rounded-full" style={{ background: cat.color, opacity: state === 'locked' ? 0.5 : 1 }} />
-          {drill.skill}
+          {loc.skill}
         </div>
       </div>
 
@@ -100,7 +103,7 @@ export function PathNode({ drill, state, onOpen }: Props) {
             onOpen(drill)
           }}
         >
-          COMEÇAR
+          {lang === 'en' ? 'START' : 'COMEÇAR'}
         </button>
       )}
     </div>

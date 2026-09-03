@@ -11,6 +11,7 @@ import {
   titleForRating,
 } from './lib/attributes'
 import { SESSION_BONUS_XP, buildDailySession } from './lib/dailySession'
+import { localizeDrill, useLang } from './lib/i18n'
 import { generateShareImage, shareImage } from './lib/shareCard'
 import {
   allDrills,
@@ -39,6 +40,7 @@ const SHEET_MS = 280
 type DrillOrigin = { kind: 'main' } | { kind: 'session' } | { kind: 'futsal' } | { kind: 'program'; program: Program }
 
 export default function App() {
+  const { lang } = useLang()
   const { progress, completeDrill, recordFeedback, saveRecord, setWithFriends } = useProgress()
   const { player, savePlayer } = usePlayer()
   const withFriends =
@@ -169,21 +171,23 @@ export default function App() {
       try {
         const values = attributeValues(progress, allDrills, programs)
         const rating = overallRating(progress.xpTotal)
+        const loc = localizeDrill(drill, lang)
         const blob = await generateShareImage({
           player,
           rating,
-          title: titleForRating(rating),
+          title: titleForRating(rating, lang),
           values,
           streak: progress.streak.current,
           medals: earnedMedals(progress, programs),
-          record: { value, unit: drill.record.unit, drillName: drill.name },
+          record: { value, unit: loc.recordUnit ?? drill.record.unit, drillName: loc.name },
+          lang,
         })
-        await shareImage(blob, 'novo-recorde.png')
+        await shareImage(blob, lang === 'en' ? 'new-record.png' : 'novo-recorde.png')
       } catch {
         // partilha falhou/cancelada — sem drama
       }
     },
-    [player, progress],
+    [player, progress, lang],
   )
 
   const dismissCompletion = useCallback(

@@ -2,14 +2,70 @@
   "meta": {
     "version": "3.0",
     "language": "pt-PT",
-    "note": "Futebol e o path principal. Futsal e secundario (primary:false) e nao deve ter o mesmo destaque. v2 (2026-08-18): series+descanso, passos, estrelas 1-5, atributos. v3 (2026-08-20): programas multi-dia. v3.1 (Tarefa 3b respondida 2026-08-23/24): Speed and Agility ativo com os 7 exercicios do Nicolas; main_path = caminho principal MISTO por niveis (como o Footwork), programas em pagina separada."
+    "note": "Futebol e o path principal. Futsal e secundario (primary:false) e nao deve ter o mesmo destaque. v2 (2026-08-18): series+descanso, passos, estrelas 1-5, atributos. v3 (2026-08-20): programas multi-dia. v3.1 (Tarefa 3b respondida 2026-08-23/24): Speed and Agility ativo com os 7 exercicios do Nicolas; main_path = caminho principal MISTO por niveis (como o Footwork), programas em pagina separada. v6 (2026-09-03): traducoes EN completas (skill/description/cue/steps/record) para a opcao PT/EN."
   },
   "main_path": {
     "levels": [
-      { "name": "NÍVEL 1", "drill_ids": ["fb-01", "fb-02", "st-01", "fb-03", "sa-03", "wf-01", "fin-01", "sa-02", "fb-04"] },
-      { "name": "NÍVEL 2", "drill_ids": ["fb-05", "fin-02", "st-02", "wf-02", "sa-04", "fb-06", "wf-03", "sa-06", "fb-07"] },
-      { "name": "NÍVEL 3", "drill_ids": ["fin-03", "fb-08", "st-03", "sa-07", "wf-04", "fb-09", "fin-04", "st-05", "sa-05", "fb-10"] },
-      { "name": "NÍVEL 4", "drill_ids": ["wf-05", "fin-06", "st-04", "fb-11", "sa-01", "fin-05", "wf-06", "st-06", "fb-12", "fin-07", "df-01", "df-02"] }
+      {
+        "name": "NÍVEL 1",
+        "drill_ids": [
+          "fb-01",
+          "fb-02",
+          "st-01",
+          "fb-03",
+          "sa-03",
+          "wf-01",
+          "fin-01",
+          "sa-02",
+          "fb-04"
+        ]
+      },
+      {
+        "name": "NÍVEL 2",
+        "drill_ids": [
+          "fb-05",
+          "fin-02",
+          "st-02",
+          "wf-02",
+          "sa-04",
+          "fb-06",
+          "wf-03",
+          "sa-06",
+          "fb-07"
+        ]
+      },
+      {
+        "name": "NÍVEL 3",
+        "drill_ids": [
+          "fin-03",
+          "fb-08",
+          "st-03",
+          "sa-07",
+          "wf-04",
+          "fb-09",
+          "fin-04",
+          "st-05",
+          "sa-05",
+          "fb-10"
+        ]
+      },
+      {
+        "name": "NÍVEL 4",
+        "drill_ids": [
+          "wf-05",
+          "fin-06",
+          "st-04",
+          "fb-11",
+          "sa-01",
+          "fin-05",
+          "wf-06",
+          "st-06",
+          "fb-12",
+          "fin-07",
+          "df-01",
+          "df-02"
+        ]
+      }
     ]
   },
   "programs": [
@@ -20,8 +76,26 @@
       "minutes_per_day": "20-30",
       "status": "ready",
       "focus": "Ball control",
-      "reward": { "type": "attributes", "points": { "dominio": 1 } },
-      "drill_ids": ["fb-01", "fb-02", "fb-03", "fb-04", "fb-05", "fb-06", "fb-07", "fb-08", "fb-09", "fb-10", "fb-11", "fb-12"]
+      "reward": {
+        "type": "attributes",
+        "points": {
+          "dominio": 1
+        }
+      },
+      "drill_ids": [
+        "fb-01",
+        "fb-02",
+        "fb-03",
+        "fb-04",
+        "fb-05",
+        "fb-06",
+        "fb-07",
+        "fb-08",
+        "fb-09",
+        "fb-10",
+        "fb-11",
+        "fb-12"
+      ]
     },
     {
       "id": "finishing",
@@ -30,8 +104,21 @@
       "minutes_per_day": "30",
       "status": "ready",
       "focus": "Remate",
-      "reward": { "type": "attributes", "points": { "remate": 3 } },
-      "drill_ids": ["fin-01", "fin-02", "fin-03", "fin-04", "fin-05", "fin-06", "fin-07"]
+      "reward": {
+        "type": "attributes",
+        "points": {
+          "remate": 3
+        }
+      },
+      "drill_ids": [
+        "fin-01",
+        "fin-02",
+        "fin-03",
+        "fin-04",
+        "fin-05",
+        "fin-06",
+        "fin-07"
+      ]
     },
     {
       "id": "weakfoot",
@@ -40,8 +127,19 @@
       "minutes_per_day": "20",
       "status": "ready",
       "focus": "Pé fraco",
-      "reward": { "type": "medal", "name": "Pé Fraco", "level": 1 },
-      "drill_ids": ["wf-01", "wf-02", "wf-03", "wf-04", "wf-05", "wf-06"]
+      "reward": {
+        "type": "medal",
+        "name": "Pé Fraco",
+        "level": 1
+      },
+      "drill_ids": [
+        "wf-01",
+        "wf-02",
+        "wf-03",
+        "wf-04",
+        "wf-05",
+        "wf-06"
+      ]
     },
     {
       "id": "speedagility",
@@ -50,8 +148,21 @@
       "minutes_per_day": "25",
       "status": "ready",
       "focus": "Velocidade",
-      "reward": { "type": "attributes", "points": { "velocidade": 2 } },
-      "drill_ids": ["sa-02", "sa-03", "sa-04", "sa-06", "sa-07", "sa-05", "sa-01"]
+      "reward": {
+        "type": "attributes",
+        "points": {
+          "velocidade": 2
+        }
+      },
+      "drill_ids": [
+        "sa-02",
+        "sa-03",
+        "sa-04",
+        "sa-06",
+        "sa-07",
+        "sa-05",
+        "sa-01"
+      ]
     }
   ],
   "attributes": {
@@ -91,8 +202,22 @@
             "Alterna toques leves na parte de cima da bola com a sola de cada pé.",
             "Aumenta o ritmo aos poucos, sempre com os olhos para cima."
           ],
-          "attributes": ["controlo", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "controlo",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Control / foot speed",
+          "description_en": "Ball still on the ground. Alternate light touches on top of the ball with the sole of each foot, as fast as you can without losing control.",
+          "cue_en": "On your toes, quick rhythm, eyes up.",
+          "steps_en": [
+            "Ball still in front of you, stay on your toes.",
+            "Alternate light touches on top of the ball with the sole of each foot.",
+            "Build up the rhythm little by little, always with your eyes up."
+          ]
         },
         {
           "id": "fb-02",
@@ -112,8 +237,22 @@
             "Empurra a bola de um pé para o outro só com o interior.",
             "Mantém os toques curtos e ritmados, sem deixar a bola fugir."
           ],
-          "attributes": ["controlo", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "controlo",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Inside-foot control",
+          "description_en": "Push the ball from one foot to the other using only the inside of each foot. The ball ping-pongs between your feet.",
+          "cue_en": "Ball in the middle, short sharp touches.",
+          "steps_en": [
+            "Feet shoulder-width apart, ball in the middle.",
+            "Push the ball from foot to foot using only the insides.",
+            "Keep the touches short and rhythmic — don't let the ball escape."
+          ]
         },
         {
           "id": "fb-03",
@@ -133,8 +272,22 @@
             "Rola a bola de lado a lado com a sola, de um pé para o outro.",
             "Mantém a sola em contacto com a bola o máximo de tempo possível."
           ],
-          "attributes": ["controlo", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "controlo",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Sole control",
+          "description_en": "Roll the ball side to side with your sole, passing it from one foot to the other. Stay low and keep the ball under control.",
+          "cue_en": "Sole always in contact, knees bent.",
+          "steps_en": [
+            "Stay low, knees bent.",
+            "Roll the ball side to side with your sole, foot to foot.",
+            "Keep your sole in contact with the ball as long as possible."
+          ]
         },
         {
           "id": "fb-04",
@@ -154,8 +307,22 @@
             "Logo a seguir, empurra-a para a frente com a parte da frente do mesmo pé.",
             "Repete em ritmo contínuo e depois troca de pé."
           ],
-          "attributes": ["dominio", "velocidade"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "velocidade"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Change of pace",
+          "description_en": "Same foot: pull the ball back with your sole, then push it forward with the front of your foot. Repeat in rhythm.",
+          "cue_en": "Sole back, laces forward — never stop.",
+          "steps_en": [
+            "Pull the ball back with your sole.",
+            "Right after, push it forward with the front of the same foot.",
+            "Repeat in a steady rhythm, then switch feet."
+          ]
         },
         {
           "id": "fb-05",
@@ -175,8 +342,22 @@
             "Empurra-a em diagonal para o lado com o interior, a desenhar um V.",
             "Alterna os pés e muda de ângulo cada vez mais rápido."
           ],
-          "attributes": ["dominio", "controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Change of direction",
+          "description_en": "Pull the ball back with your sole and push it diagonally to the side with your inside foot, drawing a V. Alternate feet.",
+          "cue_en": "Pull-push, switch angles fast.",
+          "steps_en": [
+            "Pull the ball back with your sole.",
+            "Push it diagonally with your inside foot, drawing a V.",
+            "Alternate feet and change angle faster and faster."
+          ]
         },
         {
           "id": "fb-06",
@@ -196,8 +377,22 @@
             "Toca com o interior e depois com o exterior — com os dois pés.",
             "Vai aumentando a velocidade gradualmente."
           ],
-          "attributes": ["dominio", "controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "One-foot dribbling",
+          "description_en": "With the same foot, touch the ball with the inside then the outside, moving it forward in a short zigzag.",
+          "cue_en": "One foot only, loose ankle.",
+          "steps_en": [
+            "Keep the ball close to your feet with lots of touches.",
+            "Touch with the inside then the outside — with both feet.",
+            "Build up the speed gradually."
+          ]
         },
         {
           "id": "fb-07",
@@ -217,8 +412,22 @@
             "Conduz a bola em ziguezague por entre os cones, com toques curtos.",
             "No fim, dá a volta e regressa sem parar."
           ],
-          "attributes": ["dominio", "controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Tight dribbling",
+          "description_en": "Set 4-5 cones (or markers) in a line. Weave the ball through them with short touches, then come back.",
+          "cue_en": "Short touches, ball close to your foot.",
+          "steps_en": [
+            "Set 4-5 cones in a line, one step apart.",
+            "Weave the ball through the cones with short touches.",
+            "Turn at the end and come back without stopping."
+          ]
         },
         {
           "id": "fb-08",
@@ -238,8 +447,22 @@
             "No toque seguinte, arranca com o exterior a acelerar 3-4 metros.",
             "Trava com a sola e repete para o outro lado."
           ],
-          "attributes": ["velocidade", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "velocidade",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Explosive start",
+          "description_en": "Roll the ball sideways with your sole and, on the next touch, burst 3-4 metres with your outside foot. Stop and repeat the other way.",
+          "cue_en": "From calm to explosion.",
+          "steps_en": [
+            "Roll the ball sideways with your sole.",
+            "On the next touch, burst 3-4 metres with your outside foot.",
+            "Brake with your sole and repeat to the other side."
+          ]
         },
         {
           "id": "fb-09",
@@ -259,8 +482,22 @@
             "Conduz a bola num oito à volta deles, com o interior dos dois pés.",
             "Toques suaves — a bola nunca se afasta de ti."
           ],
-          "attributes": ["controlo", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "controlo",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Curved control",
+          "description_en": "With two cones (or your feet as markers), dribble the ball in a figure 8 around them, alternating the inside of your feet.",
+          "cue_en": "Soft touches, control through the curve.",
+          "steps_en": [
+            "Place two cones two steps apart.",
+            "Dribble a figure 8 around them with the inside of both feet.",
+            "Soft touches — the ball never leaves your side."
+          ]
         },
         {
           "id": "fb-10",
@@ -280,8 +517,22 @@
             "Inclina o corpo para vender a finta.",
             "Sai a acelerar para o lado contrário e alterna os pés."
           ],
-          "attributes": ["dominio", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "1v1 skill move",
+          "description_en": "Ball still. Swing your foot around the ball from outside (like you're about to shoot) and burst away to the opposite side. Alternate feet.",
+          "cue_en": "Sell the fake with your body.",
+          "steps_en": [
+            "Ball still: swing your foot around the ball, like a shot.",
+            "Lean your body to sell the fake.",
+            "Burst away to the opposite side and alternate feet."
+          ]
         },
         {
           "id": "fb-11",
@@ -301,8 +552,22 @@
             "Planta esse pé no chão e arranca para o lado oposto.",
             "Explode logo a seguir ao passo — alterna os pés."
           ],
-          "attributes": ["dominio", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "1v1 skill move",
+          "description_en": "Step over the ball from inside to outside and burst to the opposite side. Alternate feet and accelerate away.",
+          "cue_en": "Explode right after the step.",
+          "steps_en": [
+            "Step over the ball from inside to outside.",
+            "Plant that foot and burst the opposite way.",
+            "Explode right after the step — alternate feet."
+          ]
         },
         {
           "id": "fb-12",
@@ -322,8 +587,22 @@
             "Muda de ângulo a cada toque, alternando os pés.",
             "Imagina que ultrapassas um adversário em cada mudança."
           ],
-          "attributes": ["dominio", "velocidade"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "velocidade"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Dribbling with direction changes",
+          "description_en": "Dribble diagonally, alternating the inside of each foot and changing angle with every touch, like you're beating defenders in a zigzag.",
+          "cue_en": "Change angle with every touch.",
+          "steps_en": [
+            "Dribble diagonally with the inside of one foot.",
+            "Change angle on every touch, alternating feet.",
+            "Imagine beating a defender with every change."
+          ]
         }
       ]
     },
@@ -353,8 +632,22 @@
             "Um defensor pressiona o portador; o outro dá cobertura a proteger o espaço atrás.",
             "Ao fim de cada série, troca: os defesas atacam também."
           ],
-          "attributes": ["defesa", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "defesa",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Pressure + cover (1v1 or 2v2)",
+          "description_en": "Invented by Nicolas: two attackers try to score in a small goal and two must stop them — then you swap, because defenders attack too, and that matters. One defender presses the ball-carrier, the other covers the space behind. With 2 people, play it 1v1.",
+          "cue_en": "It trains communication, positioning and game-reading.",
+          "steps_en": [
+            "Set up a small goal; whoever has the ball attacks, the others defend.",
+            "One defender presses the ball-carrier; the other covers the space behind.",
+            "After each set, swap: the defenders attack too."
+          ]
         },
         {
           "id": "df-02",
@@ -375,8 +668,22 @@
             "Lê o corpo de quem passa e corta a linha no momento certo.",
             "Recuperaste? Trocas com quem perdeu a bola."
           ],
-          "attributes": ["defesa", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "defesa",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Read the pass and cut it",
+          "description_en": "Invented by Nicolas: two players exchange passes while the defender stays in the middle. The defender's job is to read the pass and intercept it — without diving in out of control. Win the ball? Swap with whoever lost it.",
+          "cue_en": "Read the pass before you jump — never dive in out of control.",
+          "steps_en": [
+            "Two players exchange passes; you stay in the middle, in a defensive stance.",
+            "Read the passer's body and cut the lane at the right moment.",
+            "Won it? Swap with the one who lost the ball."
+          ]
         }
       ]
     },
@@ -405,9 +712,27 @@
             "Desce devagar como se te sentasses, até as coxas ficarem paralelas ao chão.",
             "Sobe com força, sem tirar os calcanhares do chão."
           ],
-          "record": { "unit": "agachamentos", "prompt": "Quantos fizeste na tua melhor série?" },
-          "attributes": ["fisico"],
-          "video": { "type": "pending", "url": "" }
+          "record": {
+            "unit": "agachamentos",
+            "prompt": "Quantos fizeste na tua melhor série?",
+            "unit_en": "squats",
+            "prompt_en": "How many in your best set?"
+          },
+          "attributes": [
+            "fisico"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Leg strength",
+          "description_en": "Bodyweight squats: sit back like there's an invisible chair, then drive back up. Strong legs = strong shots and won duels.",
+          "cue_en": "Chest up, knees tracking over your feet.",
+          "steps_en": [
+            "Feet shoulder-width apart, arms out in front.",
+            "Lower slowly like you're sitting down, thighs parallel to the floor.",
+            "Drive up strong, heels always on the ground."
+          ]
         },
         {
           "id": "st-02",
@@ -427,8 +752,22 @@
             "Estica o corpo: só antebraços e pontas dos pés no chão.",
             "Aguenta os 30 segundos sem deixar a anca descer nem subir."
           ],
-          "attributes": ["fisico", "resistencia"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "fisico",
+            "resistencia"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Core / solid trunk",
+          "description_en": "Forearm plank: body straight as a board, heels to head. A strong core shields the ball and survives the shoves.",
+          "cue_en": "Squeeze your belly, body in a straight line — hips don't drop.",
+          "steps_en": [
+            "Forearms on the floor, elbows under shoulders.",
+            "Stretch out: only forearms and toes on the ground.",
+            "Hold the 30 seconds without letting your hips sink or rise."
+          ]
         },
         {
           "id": "st-03",
@@ -448,8 +787,21 @@
             "Desce o joelho de trás quase até tocar no chão.",
             "Empurra com a perna da frente para voltar e troca de perna."
           ],
-          "attributes": ["fisico"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "fisico"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Strength and balance",
+          "description_en": "Big step forward, back knee almost to the floor, push up and switch legs. The balance behind shots and direction changes.",
+          "cue_en": "Torso upright, front knee behind your toes.",
+          "steps_en": [
+            "Take a big step forward.",
+            "Lower your back knee almost to the floor.",
+            "Push off the front leg to return, and switch legs."
+          ]
         },
         {
           "id": "st-04",
@@ -469,9 +821,27 @@
             "Desce devagar até o peito quase tocar no chão.",
             "Empurra para cima. Se custar, apoia os joelhos — vale na mesma."
           ],
-          "record": { "unit": "flexões", "prompt": "Quantas fizeste na tua melhor série?" },
-          "attributes": ["fisico"],
-          "video": { "type": "pending", "url": "" }
+          "record": {
+            "unit": "flexões",
+            "prompt": "Quantas fizeste na tua melhor série?",
+            "unit_en": "push-ups",
+            "prompt_en": "How many in your best set?"
+          },
+          "attributes": [
+            "fisico"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Arm and chest strength",
+          "description_en": "Push-ups with a straight body. Too hard? Do them on your knees — they count too. Strong arms win shoulder-to-shoulder duels.",
+          "cue_en": "Board-straight body, chest almost to the floor.",
+          "steps_en": [
+            "Hands shoulder-width on the floor, body straight.",
+            "Lower slowly until your chest almost touches the floor.",
+            "Push up. Too hard? Knees down — it still counts."
+          ]
         },
         {
           "id": "st-05",
@@ -491,8 +861,21 @@
             "Levanta a anca até ombros-anca-joelhos ficarem em linha.",
             "Segura 2 segundos lá em cima e desce devagar."
           ],
-          "attributes": ["fisico"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "fisico"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Hip and posterior strength",
+          "description_en": "On your back, knees bent: lift your hips until your body is a straight line and lower slowly. This is where sprint power comes from.",
+          "cue_en": "Squeeze at the top, lower in control.",
+          "steps_en": [
+            "Lie on your back, knees bent, feet on the floor.",
+            "Lift your hips until shoulders-hips-knees are in line.",
+            "Hold 2 seconds at the top and lower slowly."
+          ]
         },
         {
           "id": "st-06",
@@ -512,8 +895,22 @@
             "Salta o mais alto que conseguires, braços a puxar para cima.",
             "Aterra macio com os joelhos fletidos e encadeia o próximo."
           ],
-          "attributes": ["fisico", "velocidade"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "fisico",
+            "velocidade"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Spring / heading",
+          "description_en": "Jump as high as you can, with a quick half-squat before every jump. It's the jump for headers in the heart of the box.",
+          "cue_en": "Arms throw you up, land soft.",
+          "steps_en": [
+            "Quick half-squat with your arms back.",
+            "Jump as high as you can, arms driving up.",
+            "Land soft with bent knees and chain the next one."
+          ]
         }
       ]
     },
@@ -541,8 +938,21 @@
             "Toques pequenos com a sola, a segurar e a mover a bola.",
             "Alterna os pés e protege a bola com o corpo."
           ],
-          "attributes": ["controlo", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "controlo",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Classic futsal control",
+          "description_en": "Control the ball with your sole, futsal-style: small touches holding and moving the ball with the bottom of your foot, alternating feet.",
+          "cue_en": "Ball glued to your sole, body protects it.",
+          "steps_en": [
+            "Small sole touches, holding and moving the ball.",
+            "Alternate feet and shield the ball with your body."
+          ]
         },
         {
           "id": "ft-02",
@@ -561,8 +971,21 @@
             "Conduz a bola em deslocamento, sempre com a sola.",
             "Empurra e trava com a planta do pé, bola sempre colada."
           ],
-          "attributes": ["dominio", "controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Tight-space dribbling",
+          "description_en": "Dribble on the move using your sole to push and stop the ball, keeping it close — like on a tight futsal court.",
+          "cue_en": "Small touches, quick changes.",
+          "steps_en": [
+            "Dribble on the move, always with your sole.",
+            "Push and brake with the bottom of your foot, ball glued to you."
+          ]
         },
         {
           "id": "ft-03",
@@ -581,8 +1004,21 @@
             "Faz um toque de sola para enganar o adversário.",
             "Sai rápido com o interior para o espaço."
           ],
-          "attributes": ["dominio", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Tight-space feint",
+          "description_en": "Combine a sole touch with a quick inside-foot exit to beat an imaginary defender in a short space.",
+          "cue_en": "Trick with the sole, leave with the inside.",
+          "steps_en": [
+            "Fake with a sole touch to fool the defender.",
+            "Exit fast with your inside foot into space."
+          ]
         },
         {
           "id": "ft-04",
@@ -602,9 +1038,27 @@
             "Passa de primeira com o interior — sem toque de controlo.",
             "Alterna os pés e aumenta o ritmo aos poucos."
           ],
-          "record": { "unit": "passes seguidos", "prompt": "Quantos passes de primeira seguidos fizeste?" },
-          "attributes": ["passe"],
-          "video": { "type": "pending", "url": "" }
+          "record": {
+            "unit": "passes seguidos",
+            "prompt": "Quantos passes de primeira seguidos fizeste?",
+            "unit_en": "passes in a row",
+            "prompt_en": "How many first-time passes in a row?"
+          },
+          "attributes": [
+            "passe"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Quick futsal passing",
+          "description_en": "First-time passes against the wall, no controlling touch: the ball comes back and goes straight out. In futsal there's no time — the pass is now.",
+          "cue_en": "Firm inside foot, body behind the ball, head up.",
+          "steps_en": [
+            "Stand 2-3 metres from the wall.",
+            "Pass first-time with your inside foot — no controlling touch.",
+            "Alternate feet and build up the tempo."
+          ]
         },
         {
           "id": "ft-05",
@@ -624,8 +1078,21 @@
             "Remata de bico, quase sem levar a perna atrás.",
             "Varia a distância e tenta esconder a intenção."
           ],
-          "attributes": ["remate"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Futsal's secret shot",
+          "description_en": "The toe poke: fast, no backswing, impossible to read. Train it at a target — it's futsal's number 1 weapon.",
+          "cue_en": "No backswing — the keeper can't guess it.",
+          "steps_en": [
+            "Mark a target on the wall or goal.",
+            "Poke the ball with your toe, almost no backswing.",
+            "Vary the distance and hide your intention."
+          ]
         },
         {
           "id": "ft-06",
@@ -645,8 +1112,22 @@
             "No toque seguinte, passa de interior contra a parede.",
             "Recebe, rola para o outro lado e repete."
           ],
-          "attributes": ["passe", "controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "passe",
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Sole + pass on the move",
+          "description_en": "Roll the ball sideways with your sole and pass it inside-foot against the wall right after. Futsal's most-used combo.",
+          "cue_en": "The roll opens the angle, the pass leaves on time.",
+          "steps_en": [
+            "Roll the ball sideways with your sole.",
+            "On the next touch, pass inside-foot against the wall.",
+            "Receive, roll the other way and repeat."
+          ]
         },
         {
           "id": "ft-07",
@@ -666,8 +1147,21 @@
             "Puxa-a enquanto giras 180 graus sobre o outro pé.",
             "Sai do giro já a conduzir para o outro lado."
           ],
-          "attributes": ["dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Spin with the ball glued",
+          "description_en": "Drag the ball with your sole and spin 180 degrees with it glued to your foot, shielding it with your body. Escape any tight spot.",
+          "cue_en": "Your body stays between the ball and the defender.",
+          "steps_en": [
+            "Lightly step on the ball with your sole.",
+            "Drag it while you spin 180 over your other foot.",
+            "Come out of the spin already dribbling the other way."
+          ]
         },
         {
           "id": "ft-08",
@@ -687,8 +1181,22 @@
             "Finta com a sola para um lado, devagar.",
             "Explode para o lado contrário em dois toques."
           ],
-          "attributes": ["dominio", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Duel in minimal space",
+          "description_en": "In a 2-metre square (real or imaginary): a short sole feint and an explosive exit past the defender. Futsal 1v1s happen in a hand-span of floor.",
+          "cue_en": "Trick slowly, leave explosively.",
+          "steps_en": [
+            "Mark a small square (two steps wide).",
+            "Feint with your sole to one side, slowly.",
+            "Explode to the opposite side in two touches."
+          ]
         }
       ]
     },
@@ -717,9 +1225,27 @@
             "Bola parada: remata colocado, a apontar a um canto de cada vez.",
             "Alterna o canto e o pé a cada remate."
           ],
-          "record": { "unit": "remates certeiros", "prompt": "Quantos acertaste no alvo?" },
-          "attributes": ["remate"],
-          "video": { "type": "pending", "url": "" }
+          "record": {
+            "unit": "remates certeiros",
+            "prompt": "Quantos acertaste no alvo?",
+            "unit_en": "shots on target",
+            "prompt_en": "How many hit the target?"
+          },
+          "attributes": [
+            "remate"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Shooting accuracy",
+          "description_en": "Ball still in front of goal (or a wall target). Shoot placed into the corners, switching corner every shot.",
+          "cue_en": "Placement before power — pick the corner BEFORE you shoot.",
+          "steps_en": [
+            "Mark targets in the corners of the goal (or on the wall).",
+            "Ball still: shoot placed, aiming at one corner at a time.",
+            "Switch corner and foot with every shot."
+          ]
         },
         {
           "id": "fin-02",
@@ -739,8 +1265,22 @@
             "Remata logo no segundo toque — sem toques extra.",
             "Varia o ângulo do primeiro toque (frente, esquerda, direita)."
           ],
-          "attributes": ["remate", "controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate",
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Two-touch finishing",
+          "description_en": "Short touch forward to get the ball out of your feet and shoot right after — two touches total.",
+          "cue_en": "First touch prepares, second one decides.",
+          "steps_en": [
+            "Short touch forward, out of your feet.",
+            "Shoot on the second touch — no extra touches.",
+            "Vary the angle of the first touch (forward, left, right)."
+          ]
         },
         {
           "id": "fin-03",
@@ -760,8 +1300,22 @@
             "Conduz em ziguezague rápido por entre eles.",
             "Remata no fim sem parar a bola."
           ],
-          "attributes": ["remate", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Finishing after a dribble",
+          "description_en": "Fast zigzag through 2 cones towards goal and shoot at the end without stopping the ball.",
+          "cue_en": "The last touch already sets up the shot.",
+          "steps_en": [
+            "Place 2 cones on the way to goal.",
+            "Dribble a fast zigzag through them.",
+            "Shoot at the end without stopping the ball."
+          ]
         },
         {
           "id": "fin-04",
@@ -781,8 +1335,22 @@
             "Ajusta o corpo enquanto ela volta.",
             "Remata de primeira — sem toque de controlo."
           ],
-          "attributes": ["remate", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "First-time shooting",
+          "description_en": "Pass the ball against the wall (or ask for a pass) and shoot first-time as it comes back — no controlling touch.",
+          "cue_en": "Standing foot beside the ball, eyes on it to the end.",
+          "steps_en": [
+            "Pass the ball against the wall with medium power.",
+            "Adjust your body while it comes back.",
+            "Shoot first-time — no controlling touch."
+          ]
         },
         {
           "id": "fin-05",
@@ -802,8 +1370,22 @@
             "Faz uma tesoura ou passo por cima a 'passar' um defesa imaginário.",
             "Remata imediatamente a seguir à finta."
           ],
-          "attributes": ["remate", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Feint + finish",
+          "description_en": "Dribble to the edge of the box, do a scissors or step-over and shoot right after the move.",
+          "cue_en": "The move opens the space — the shot follows instantly.",
+          "steps_en": [
+            "Dribble towards goal (or your target).",
+            "Do a scissors or step-over past an imaginary defender.",
+            "Shoot immediately after the move."
+          ]
         },
         {
           "id": "fin-06",
@@ -823,8 +1405,22 @@
             "Remata com o peito do pé, corpo por cima da bola.",
             "Só conta se acertar no alvo — força COM pontaria."
           ],
-          "attributes": ["remate", "fisico"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate",
+            "fisico"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Long-range shooting",
+          "description_en": "Shots from further out, laces and power — but always on target. Power only counts if it hits.",
+          "cue_en": "Laces, body over the ball.",
+          "steps_en": [
+            "Step further from goal than usual.",
+            "Shoot with your laces, body over the ball.",
+            "It only counts on target — power WITH aim."
+          ]
         },
         {
           "id": "fin-07",
@@ -844,8 +1440,22 @@
             "Ganha o 1x1 com uma finta e mudança de velocidade.",
             "Remata assim que tiveres ângulo — sem toques a mais."
           ],
-          "attributes": ["remate", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Win the duel, then finish",
+          "description_en": "Your idea: face a defender (dad, a friend or a cone), win the 1v1 with a move and shoot at goal.",
+          "cue_en": "Win the duel first, shoot second — never the other way.",
+          "steps_en": [
+            "Put a defender (or a cone) between you and the goal.",
+            "Win the 1v1 with a feint and a change of pace.",
+            "Shoot as soon as you have the angle — no extra touches."
+          ]
         }
       ]
     },
@@ -874,8 +1484,21 @@
             "Alterna toques de sola e de interior.",
             "Aumenta o ritmo só quando a bola obedecer."
           ],
-          "attributes": ["controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Weak-foot control",
+          "description_en": "Sole and inside touches using ONLY your weak foot: hold, move and stop the ball without ever using your strong foot.",
+          "cue_en": "Slow and clean — technique before speed.",
+          "steps_en": [
+            "Only your weak foot touches the ball — the strong one supports.",
+            "Alternate sole touches and inside touches.",
+            "Speed up only when the ball obeys."
+          ]
         },
         {
           "id": "wf-02",
@@ -895,8 +1518,22 @@
             "Conduz em ziguezague só com o pé fraco.",
             "Usa interior E exterior desse pé."
           ],
-          "attributes": ["dominio", "controlo"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio",
+            "controlo"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Weak-foot dribbling",
+          "description_en": "Slalom through the cones dribbling only with your weak foot — inside and outside.",
+          "cue_en": "Short touches, ball always close.",
+          "steps_en": [
+            "Set 4-5 cones in a line.",
+            "Weave through them using only your weak foot.",
+            "Use the inside AND the outside of that foot."
+          ]
         },
         {
           "id": "wf-03",
@@ -916,8 +1553,21 @@
             "Passa com o interior do pé fraco.",
             "Recebe também com o pé fraco e repete."
           ],
-          "attributes": ["passe"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "passe"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Weak-foot passing",
+          "description_en": "Passes against the wall using only the inside of your weak foot. Receive with the weak foot, pass with the weak foot.",
+          "cue_en": "Firm inside foot, locked ankle.",
+          "steps_en": [
+            "Stand 3-4 metres from the wall.",
+            "Pass with the inside of your weak foot.",
+            "Receive with the weak foot too, and repeat."
+          ]
         },
         {
           "id": "wf-04",
@@ -937,8 +1587,21 @@
             "Alterna interior e exterior desse pé.",
             "Vai aumentando a velocidade gradualmente."
           ],
-          "attributes": ["dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Your Inside-Outside, weak side",
+          "description_en": "Your favourite drill, but only with your weak foot: touch with the inside then the outside, in a short zigzag.",
+          "cue_en": "Keep the ball close with lots of touches.",
+          "steps_en": [
+            "Keep the ball close to your weak foot with lots of touches.",
+            "Alternate the inside and outside of that foot.",
+            "Build up the speed gradually."
+          ]
         },
         {
           "id": "wf-05",
@@ -958,8 +1621,21 @@
             "Só aumentas a força quando acertares 3 seguidos.",
             "Afasta-te um passo de cada vez."
           ],
-          "attributes": ["remate"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "remate"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Weak-foot shooting",
+          "description_en": "Shots at a target using only your weak foot: placed and slow first, then with more power.",
+          "cue_en": "Accuracy first, power later.",
+          "steps_en": [
+            "Start close to the target with placed shots.",
+            "Only add power after 3 hits in a row.",
+            "Step back one pace at a time."
+          ]
         },
         {
           "id": "wf-06",
@@ -979,9 +1655,28 @@
             "Toques baixos com o peito do pé, sem deixar cair.",
             "Conta os toques — tenta bater o recorde a cada série."
           ],
-          "record": { "unit": "toques", "prompt": "Quantos toques seguidos fizeste?" },
-          "attributes": ["controlo", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "record": {
+            "unit": "toques",
+            "prompt": "Quantos toques seguidos fizeste?",
+            "unit_en": "touches",
+            "prompt_en": "How many touches in a row?"
+          },
+          "attributes": [
+            "controlo",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Keep-ups",
+          "description_en": "Your idea: keep the ball in the air using only your weak foot. Count the touches and try to beat your record every set.",
+          "cue_en": "Laces flat, low soft touches.",
+          "steps_en": [
+            "Drop the ball from your chest or hands onto your weak foot.",
+            "Low touches with your laces, don't let it drop.",
+            "Count the touches — beat your record every set."
+          ]
         }
       ]
     },
@@ -1010,8 +1705,22 @@
             "Salta a pés juntos para cima, com explosão, e desce com calma.",
             "Variante reativa: assim que tocas no chão, salta logo outra vez."
           ],
-          "attributes": ["fisico", "velocidade"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "fisico",
+            "velocidade"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Leg power",
+          "description_en": "Nicolas's idea: two-footed jumps onto a STABLE box, step or low wall. Reactive variant (also his): the moment you touch the ground, jump again — no pause.",
+          "cue_en": "Explode up, land soft — and in reactive mode, the floor burns!",
+          "steps_en": [
+            "Pick a stable box or step, knee height max.",
+            "Jump onto it with both feet, explosively, and step down calmly.",
+            "Reactive variant: the moment you touch the ground, jump straight back up."
+          ]
         },
         {
           "id": "sa-02",
@@ -1031,8 +1740,22 @@
             "Conduz a bola em sprint com toques para a frente.",
             "Trava com a sola no fim e volta devagar a recuperar."
           ],
-          "attributes": ["velocidade", "dominio"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "velocidade",
+            "dominio"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Speed with the ball",
+          "description_en": "Sprint-dribble the ball 15-20 metres with long touches, brake with your sole and jog back to recover.",
+          "cue_en": "Longer touches than usual — the ball runs with you.",
+          "steps_en": [
+            "Mark 15-20 metres with two cones.",
+            "Sprint-dribble with touches pushed ahead of you.",
+            "Brake with your sole at the end and come back slowly."
+          ]
         },
         {
           "id": "sa-03",
@@ -1052,8 +1775,23 @@
             "Um pé em cada quadrado, o mais depressa que conseguires.",
             "Varia: dois pés por quadrado, ou deslocamento lateral."
           ],
-          "attributes": ["velocidade", "fisico", "resistencia"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "velocidade",
+            "fisico",
+            "resistencia"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Fast feet",
+          "description_en": "Fast feet through an agility ladder on the ground (or one drawn with chalk): one foot per square, as quick as you can.",
+          "cue_en": "On your toes, small quick steps.",
+          "steps_en": [
+            "Use an agility ladder or draw squares with chalk.",
+            "One foot in each square, as fast as you can.",
+            "Vary it: two feet per square, or sideways."
+          ]
         },
         {
           "id": "sa-04",
@@ -1073,8 +1811,22 @@
             "Sprinta em ziguezague, a cortar rente a cada cone.",
             "No fim, volta a andar e repete."
           ],
-          "attributes": ["velocidade", "resistencia"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "velocidade",
+            "resistencia"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Change of direction at speed",
+          "description_en": "Zigzag sprint through 4-5 cones, no ball, cutting as close to each cone as you can.",
+          "cue_en": "Get low on the cut, explode out of it.",
+          "steps_en": [
+            "Set 4-5 cones in a line, two steps apart.",
+            "Sprint the zigzag, cutting tight around each cone.",
+            "Walk back and repeat."
+          ]
         },
         {
           "id": "sa-05",
@@ -1094,9 +1846,28 @@
             "Aterra suave, com os joelhos fletidos.",
             "Encadeia os saltos sem parar, em ritmo."
           ],
-          "record": { "unit": "saltos", "prompt": "Quantos saltos seguidos fizeste?" },
-          "attributes": ["fisico", "resistencia"],
-          "video": { "type": "pending", "url": "" }
+          "record": {
+            "unit": "saltos",
+            "prompt": "Quantos saltos seguidos fizeste?",
+            "unit_en": "jumps",
+            "prompt_en": "How many jumps in a row?"
+          },
+          "attributes": [
+            "fisico",
+            "resistencia"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Jump power",
+          "description_en": "Nicolas's idea: jumps on the spot pulling both knees to your chest, one after another, landing soft.",
+          "cue_en": "Knees to chest, land soft, jump again.",
+          "steps_en": [
+            "Jump on the spot pulling both knees to your chest.",
+            "Land softly with bent knees.",
+            "Chain the jumps without stopping, in rhythm."
+          ]
         },
         {
           "id": "sa-06",
@@ -1116,8 +1887,22 @@
             "Ao sinal, explode em sprint 5-10 metros.",
             "Volta a andar e fica pronto para o próximo sinal."
           ],
-          "attributes": ["velocidade", "iq"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "velocidade",
+            "iq"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Reaction + burst",
+          "description_en": "Someone gives a signal (a clap or a shout) at random moments — on the signal, explode into a 5-10 metre sprint.",
+          "cue_en": "React to the sound, don't guess it.",
+          "steps_en": [
+            "Ask someone to clap whenever they want.",
+            "On the signal, explode into a 5-10 metre sprint.",
+            "Walk back and stay ready for the next one."
+          ]
         },
         {
           "id": "sa-07",
@@ -1137,8 +1922,23 @@
             "Depois só num pé — e alterna o pé.",
             "Aterra sempre com controlo antes do salto seguinte."
           ],
-          "attributes": ["fisico", "velocidade", "resistencia"],
-          "video": { "type": "pending", "url": "" }
+          "attributes": [
+            "fisico",
+            "velocidade",
+            "resistencia"
+          ],
+          "video": {
+            "type": "pending",
+            "url": ""
+          },
+          "skill_en": "Forward spring",
+          "description_en": "Nicolas's idea: jumps forward, first two-footed and then on one foot (switch foot each set).",
+          "cue_en": "Arms drive the jump, land in control.",
+          "steps_en": [
+            "Two-footed jumps forward, as far as you can.",
+            "Then on one foot — and switch feet.",
+            "Always land in control before the next jump."
+          ]
         }
       ]
     }

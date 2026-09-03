@@ -32,6 +32,22 @@ export const ATTRIBUTE_LABELS: Record<AttributeKey, string> = {
   iq: 'IQ de jogo',
 }
 
+export const ATTRIBUTE_LABELS_EN: Record<AttributeKey, string> = {
+  controlo: 'Control',
+  dominio: 'Ball Mastery',
+  passe: 'Passing',
+  remate: 'Shooting',
+  defesa: 'Defending',
+  fisico: 'Physical',
+  resistencia: 'Stamina',
+  velocidade: 'Pace',
+  iq: 'Game IQ',
+}
+
+export function attributeLabel(key: AttributeKey, lang: 'pt' | 'en'): string {
+  return lang === 'en' ? ATTRIBUTE_LABELS_EN[key] : ATTRIBUTE_LABELS[key]
+}
+
 export const ATTRIBUTE_CODES: Record<AttributeKey, string> = {
   controlo: 'CTL',
   dominio: 'DOM',
@@ -96,12 +112,14 @@ export function earnedMedals(
 }
 
 /** Texto da recompensa de um programa, para mostrar na UI. */
-export function rewardText(program: Program): string {
+export function rewardText(program: Program, lang: 'pt' | 'en' = 'pt'): string {
   if (program.reward.type === 'medal') {
-    return `Medalha "${program.reward.name} — Nível ${program.reward.level}"`
+    return lang === 'en'
+      ? `"${program.reward.name} — Level ${program.reward.level}" medal`
+      : `Medalha "${program.reward.name} — Nível ${program.reward.level}"`
   }
   return Object.entries(program.reward.points)
-    .map(([k, pts]) => `+${pts} ${ATTRIBUTE_LABELS[k as AttributeKey]}`)
+    .map(([k, pts]) => `+${pts} ${attributeLabel(k as AttributeKey, lang)}`)
     .join(', ')
 }
 
@@ -111,11 +129,11 @@ export function overallRating(xpTotal: number): number {
 }
 
 /** Título do cartão consoante o geral (escada até à "seleção"). */
-export function titleForRating(rating: number): string {
-  if (rating < 45) return 'Promessa'
-  if (rating < 50) return 'Jogador de Clube'
-  if (rating < 60) return 'Jogador Distrital'
-  if (rating < 70) return 'Jogador Nacional'
-  if (rating < 85) return 'Internacional'
-  return 'Lenda'
+export function titleForRating(rating: number, lang: 'pt' | 'en' = 'pt'): string {
+  if (rating < 45) return lang === 'en' ? 'Prospect' : 'Promessa'
+  if (rating < 50) return lang === 'en' ? 'Club Player' : 'Jogador de Clube'
+  if (rating < 60) return lang === 'en' ? 'District Player' : 'Jogador Distrital'
+  if (rating < 70) return lang === 'en' ? 'National Player' : 'Jogador Nacional'
+  if (rating < 85) return lang === 'en' ? 'International' : 'Internacional'
+  return lang === 'en' ? 'Legend' : 'Lenda'
 }

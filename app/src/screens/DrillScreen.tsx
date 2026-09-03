@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { DrillTimer } from '../components/DrillTimer'
 import { BoltIcon, ChevronLeftIcon, PlayIcon, StarIcon, TargetIcon, UsersIcon } from '../components/icons'
-import { categoryOfDrill } from '../lib/categories'
+import { categoryLabel, categoryOfDrill } from '../lib/categories'
+import { localizeDrill, useLang } from '../lib/i18n'
 import type { Drill } from '../types'
 
 interface Props {
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
+  const { lang, l } = useLang()
+  const loc = localizeDrill(drill, lang)
   const cat = categoryOfDrill(drill)
   // Nicolas: as séries têm de terminar no relógio. David: e depois o exercício
   // conclui-se SOZINHO — o relógio é o árbitro, não o botão.
@@ -33,15 +36,15 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
         <button
           className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl border border-line bg-panel"
           onClick={onBack}
-          aria-label="Voltar ao caminho"
+          aria-label={l('Voltar ao caminho', 'Back to path')}
         >
           <ChevronLeftIcon />
         </button>
         <div className="min-w-0 flex-1">
-          <div className="font-display text-xl leading-none">{drill.name}</div>
+          <div className="font-display text-xl leading-none">{loc.name}</div>
           <div className="mt-1 flex items-center gap-2 text-[12.5px] text-muted">
-            <span>{drill.skill}</span>
-            <span className="flex gap-px" title={`Dificuldade ${drill.difficulty}/5`}>
+            <span>{loc.skill}</span>
+            <span className="flex gap-px" title={l(`Dificuldade ${drill.difficulty}/5`, `Difficulty ${drill.difficulty}/5`)}>
               {[1, 2, 3, 4, 5].map((i) => (
                 <StarIcon key={i} size={11} filled={i <= drill.difficulty} />
               ))}
@@ -52,13 +55,13 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
           className="rounded-full px-2.5 py-1.5 text-[10.5px] font-extrabold tracking-[.1em] whitespace-nowrap uppercase"
           style={{ background: `${cat.color}24`, border: `1px solid ${cat.color}59`, color: cat.color }}
         >
-          {cat.label}
+          {categoryLabel(cat, lang)}
         </span>
         {drill.needs_people != null && (
           <span
             className="flex items-center gap-1 rounded-full px-2.5 py-1.5 text-[10.5px] font-extrabold whitespace-nowrap"
             style={{ background: `${cat.color}1F`, border: `1px solid ${cat.color}59`, color: cat.color }}
-            title={`Precisas de mais ${drill.needs_people} pessoa(s)`}
+            title={l(`Precisas de mais ${drill.needs_people} pessoa(s)`, `You need ${drill.needs_people} more player(s)`)}
           >
             <UsersIcon size={12} color={cat.color} />+{drill.needs_people}
           </span>
@@ -78,7 +81,7 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
           <iframe
             className="mb-5 aspect-[16/10] w-full rounded-2xl border border-line bg-black"
             src={drill.video.url}
-            title={`Vídeo: ${drill.name}`}
+            title={`${l('Vídeo', 'Video')}: ${loc.name}`}
             allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
           />
@@ -93,7 +96,9 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
             >
               <PlayIcon size={26} />
             </div>
-            <small className="text-[11.5px] tracking-[.08em] uppercase">Vídeo do exercício · em breve</small>
+            <small className="text-[11.5px] tracking-[.08em] uppercase">
+              {l('Vídeo do exercício · em breve', 'Drill video · coming soon')}
+            </small>
           </div>
         )}
 
@@ -101,23 +106,25 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
         <div className="mb-4 flex gap-2">
           <div className="flex-1 rounded-[14px] border border-line bg-panel px-3 py-2.5 text-center">
             <div className="font-display text-[22px] text-grass">{drill.sets}</div>
-            <div className="text-[10.5px] font-bold tracking-[.1em] text-muted uppercase">Séries</div>
+            <div className="text-[10.5px] font-bold tracking-[.1em] text-muted uppercase">{l('Séries', 'Sets')}</div>
           </div>
           <div className="flex-1 rounded-[14px] border border-line bg-panel px-3 py-2.5 text-center">
             <div className="font-display text-[22px]">{drill.work_seconds}s</div>
-            <div className="text-[10.5px] font-bold tracking-[.1em] text-muted uppercase">Trabalho</div>
+            <div className="text-[10.5px] font-bold tracking-[.1em] text-muted uppercase">{l('Trabalho', 'Work')}</div>
           </div>
           <div className="flex-1 rounded-[14px] border border-line bg-panel px-3 py-2.5 text-center">
             <div className="font-display text-[22px] text-flare2">{drill.rest_seconds}s</div>
-            <div className="text-[10.5px] font-bold tracking-[.1em] text-muted uppercase">Descanso</div>
+            <div className="text-[10.5px] font-bold tracking-[.1em] text-muted uppercase">{l('Descanso', 'Rest')}</div>
           </div>
         </div>
 
         {/* como fazer — passos numerados */}
         <div className="mb-4">
-          <b className="mb-2 block text-xs font-extrabold tracking-[.14em] text-muted uppercase">Como fazer</b>
+          <b className="mb-2 block text-xs font-extrabold tracking-[.14em] text-muted uppercase">
+            {l('Como fazer', 'How to do it')}
+          </b>
           <ol className="flex flex-col gap-2">
-            {drill.steps.map((step, i) => (
+            {loc.steps.map((step, i) => (
               <li key={i} className="flex items-start gap-2.5 text-[15px] leading-snug text-[#D8ECE0]">
                 <span className="mt-px flex h-[24px] w-[24px] flex-none items-center justify-center rounded-full bg-panel2 font-display text-[13px] text-grass">
                   {i + 1}
@@ -133,8 +140,8 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
             <TargetIcon size={18} color="#A3E635" />
           </span>
           <div>
-            <b className="mb-0.5 block text-xs tracking-[.1em] text-lime uppercase">Dica-chave</b>
-            <span className="text-[15px]">{drill.cue}</span>
+            <b className="mb-0.5 block text-xs tracking-[.1em] text-lime uppercase">{l('Dica-chave', 'Key cue')}</b>
+            <span className="text-[15px]">{loc.cue}</span>
           </div>
         </div>
 
@@ -154,11 +161,15 @@ export function DrillScreen({ drill, up, onBack, onComplete }: Props) {
             style={{ boxShadow: '0 6px 0 #15803D, 0 0 30px rgba(34,197,94,.3)' }}
           >
             <BoltIcon size={19} color="#052012" />
-            Concluído · +{drill.xp} XP
+            {l('Concluído', 'Complete')} · +{drill.xp} XP
           </div>
         ) : (
           <div className="flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-panel p-4 text-center text-[13.5px] font-bold text-muted">
-            ⏱️ O exercício conclui-se sozinho quando o relógio terminar as séries
+            ⏱️{' '}
+            {l(
+              'O exercício conclui-se sozinho quando o relógio terminar as séries',
+              'The drill completes itself when the clock finishes your sets',
+            )}
           </div>
         )}
       </div>

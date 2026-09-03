@@ -1,8 +1,16 @@
 import { CheckIcon, TrophyIcon } from '../components/icons'
 import { rewardText } from '../lib/attributes'
 import { categoryOfProgram } from '../lib/categories'
+import { useLang } from '../lib/i18n'
 import { programs } from '../lib/drills'
 import type { Program, ProgressState } from '../types'
+
+const FOCUS_EN: Record<string, string> = {
+  'Ball control': 'Ball control',
+  Remate: 'Shooting',
+  'Pé fraco': 'Weak foot',
+  Velocidade: 'Speed',
+}
 
 interface Props {
   progress: ProgressState
@@ -11,11 +19,16 @@ interface Props {
 
 /** Página dos Programas — cartões com cor por categoria (redesign 2026-08). */
 export function ProgramsScreen({ progress, onOpenProgram }: Props) {
+  const { lang, l } = useLang()
   return (
     <div className="screen">
       <header className="mb-4">
-        <div className="text-[11px] font-bold tracking-[.16em] text-muted uppercase">Desafios com recompensa</div>
-        <div className="font-display text-[27px] leading-[1.05] tracking-[.01em]">Programa Treinos</div>
+        <div className="text-[11px] font-bold tracking-[.16em] text-muted uppercase">
+          {l('Desafios com recompensa', 'Challenges with rewards')}
+        </div>
+        <div className="font-display text-[27px] leading-[1.05] tracking-[.01em]">
+          {l('Programa Treinos', 'Training Programs')}
+        </div>
       </header>
 
       <div className="flex flex-col gap-3">
@@ -46,16 +59,17 @@ export function ProgramsScreen({ progress, onOpenProgram }: Props) {
                 <div className="min-w-0">
                   <div className="font-display text-[19px] leading-tight">{program.name}</div>
                   <div className="mt-[3px] text-xs font-semibold text-muted">
-                    {program.days} dias · {program.minutes_per_day} min/dia · {program.focus}
+                    {program.days} {l('dias', 'days')} · {program.minutes_per_day} {l('min/dia', 'min/day')} ·{' '}
+                    {lang === 'en' ? (FOCUS_EN[program.focus] ?? program.focus) : program.focus}
                   </div>
                   <div className="mt-1.5 flex items-center gap-1.5 text-[12px] font-extrabold" style={{ color: cat.color }}>
                     <TrophyIcon size={13} color={cat.color} />
-                    {complete ? 'Recompensa ganha!' : rewardText(program)}
+                    {complete ? l('Recompensa ganha!', 'Reward earned!') : rewardText(program, lang)}
                   </div>
                 </div>
                 {soon ? (
                   <span className="rounded-full border border-line px-3 py-1.5 text-[11px] font-bold tracking-[.08em] whitespace-nowrap text-muted uppercase">
-                    Em breve
+                    {l('Em breve', 'Coming soon')}
                   </span>
                 ) : complete ? (
                   <span
@@ -63,7 +77,7 @@ export function ProgramsScreen({ progress, onOpenProgram }: Props) {
                     style={{ background: `${cat.color}29`, color: cat.color }}
                   >
                     <CheckIcon size={15} color={cat.color} />
-                    COMPLETO
+                    {l('COMPLETO', 'COMPLETE')}
                   </span>
                 ) : (
                   <button
@@ -74,7 +88,7 @@ export function ProgramsScreen({ progress, onOpenProgram }: Props) {
                       onOpenProgram(program)
                     }}
                   >
-                    {started ? 'CONTINUAR' : 'START'}
+                    {started ? l('CONTINUAR', 'CONTINUE') : 'START'}
                   </button>
                 )}
               </div>
@@ -88,7 +102,7 @@ export function ProgramsScreen({ progress, onOpenProgram }: Props) {
                       />
                     </div>
                     <span className="w-[76px] text-right text-[11.5px] font-extrabold text-muted">
-                      {done}/{total} exerc.
+                      {done}/{total} {l('exerc.', 'drills')}
                     </span>
                   </div>
                   <div className="flex items-center gap-2.5">
@@ -99,7 +113,7 @@ export function ProgramsScreen({ progress, onOpenProgram }: Props) {
                       />
                     </div>
                     <span className="w-[76px] text-right text-[11.5px] font-extrabold text-muted">
-                      {trainedDays}/{program.days} dias
+                      {trainedDays}/{program.days} {l('dias', 'days')}
                     </span>
                   </div>
                 </div>
@@ -110,7 +124,10 @@ export function ProgramsScreen({ progress, onOpenProgram }: Props) {
       </div>
 
       <p className="mt-4 text-center text-[12.5px] leading-normal text-muted">
-        Cada treino no Caminho também conta para estes desafios.
+        {l(
+          'Cada treino no Caminho também conta para estes desafios.',
+          'Every drill on your Path also counts towards these challenges.',
+        )}
       </p>
     </div>
   )

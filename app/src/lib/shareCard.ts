@@ -15,6 +15,7 @@ export interface ShareCardData {
   medals: { name: string; level: number }[]
   /** faixa extra de recorde (ex.: "NOVO RECORDE · 45 toques — Juggling Pé Fraco") */
   record?: { value: number; unit: string; drillName: string }
+  lang?: 'pt' | 'en'
 }
 
 const W = 1080
@@ -67,11 +68,14 @@ export async function generateShareImage(data: ShareCardData): Promise<Blob> {
   ctx.stroke()
   ctx.setLineDash([])
 
+  const lang = data.lang ?? 'pt'
+  const tr = (pt: string, en: string) => (lang === 'en' ? en : pt)
+
   // cabeçalho
   ctx.textAlign = 'center'
   ctx.fillStyle = '#8AA79A'
   ctx.font = `700 34px ${barlow}`
-  ctx.fillText('O   M E U   C A R T Ã O', W / 2, 200)
+  ctx.fillText(tr('O   M E U   C A R T Ã O', 'M Y   P L A Y E R   C A R D'), W / 2, 200)
 
   // faixa de recorde (opcional)
   let cardTop = 300
@@ -84,7 +88,11 @@ export async function generateShareImage(data: ShareCardData): Promise<Blob> {
     ctx.stroke()
     ctx.fillStyle = '#F6CE55'
     ctx.font = `44px ${anton}`
-    ctx.fillText(`NOVO RECORDE · ${data.record.value} ${data.record.unit.toUpperCase()}`, W / 2, 325)
+    ctx.fillText(
+      `${tr('NOVO RECORDE', 'NEW RECORD')} · ${data.record.value} ${data.record.unit.toUpperCase()}`,
+      W / 2,
+      325,
+    )
     ctx.fillStyle = '#D8ECE0'
     ctx.font = `700 30px ${barlow}`
     ctx.fillText(data.record.drillName, W / 2, 385)
@@ -126,7 +134,11 @@ export async function generateShareImage(data: ShareCardData): Promise<Blob> {
   ctx.font = `170px ${anton}`
   ctx.fillText(String(data.rating), cardX + 60, cardTop + 200)
   ctx.font = `52px ${anton}`
-  ctx.fillText(`${data.player.position} · ${positionLabel(data.player.position).toUpperCase()}`, cardX + 60, cardTop + 275)
+  ctx.fillText(
+    `${data.player.position} · ${positionLabel(data.player.position, lang).toUpperCase()}`,
+    cardX + 60,
+    cardTop + 275,
+  )
 
   // título
   ctx.textAlign = 'right'
@@ -178,7 +190,7 @@ export async function generateShareImage(data: ShareCardData): Promise<Blob> {
     const my = cardTop + cardH - 90
     ctx.font = `700 30px ${barlow}`
     for (const m of data.medals) {
-      const label = `🥇 ${m.name.toUpperCase()} · NÍVEL ${m.level}`
+      const label = `🥇 ${m.name.toUpperCase()} · ${tr('NÍVEL', 'LEVEL')} ${m.level}`
       const w = ctx.measureText(label).width + 60
       roundRect(ctx, mx, my - 46, w, 66, 33)
       ctx.fillStyle = 'rgba(58,44,5,.85)'
@@ -193,10 +205,20 @@ export async function generateShareImage(data: ShareCardData): Promise<Blob> {
   ctx.textAlign = 'center'
   ctx.fillStyle = '#FB923C'
   ctx.font = `86px ${anton}`
-  ctx.fillText(`🔥 ${data.streak} ${data.streak === 1 ? 'DIA' : 'DIAS'} DE STREAK`, W / 2, cardTop + cardH + 150)
+  ctx.fillText(
+    lang === 'en'
+      ? `🔥 ${data.streak}-DAY STREAK`
+      : `🔥 ${data.streak} ${data.streak === 1 ? 'DIA' : 'DIAS'} DE STREAK`,
+    W / 2,
+    cardTop + cardH + 150,
+  )
   ctx.fillStyle = '#8AA79A'
   ctx.font = `700 32px ${barlow}`
-  ctx.fillText('Treinado na vida real · construído no jogo', W / 2, H - 160)
+  ctx.fillText(
+    tr('Treinado na vida real · construído no jogo', 'Trained in real life · built in the game'),
+    W / 2,
+    H - 160,
+  )
   ctx.fillStyle = '#22C55E'
   ctx.font = `44px ${anton}`
   ctx.fillText('TREINO DO NICOLAS', W / 2, H - 95)

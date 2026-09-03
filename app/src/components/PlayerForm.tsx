@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { POSITIONS } from '../hooks/usePlayer'
+import { useLang } from '../lib/i18n'
 import type { PlayerProfile } from '../types'
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 /** Formulário do cartão (onboarding + editar no Perfil). Guardado só no dispositivo. */
 export function PlayerForm({ initial, submitLabel, onSave }: Props) {
+  const { lang, l } = useLang()
   const [name, setName] = useState(initial?.name ?? '')
   const [position, setPosition] = useState(initial?.position ?? 'EE')
   const [objective, setObjective] = useState(initial?.objective ?? '')
@@ -26,7 +28,7 @@ export function PlayerForm({ initial, submitLabel, onSave }: Props) {
       }}
     >
       <label className="flex flex-col gap-1.5">
-        <span className="text-xs font-bold tracking-[.1em] text-muted uppercase">O teu nome</span>
+        <span className="text-xs font-bold tracking-[.1em] text-muted uppercase">{l('O teu nome', 'Your name')}</span>
         <input
           className="rounded-xl border border-line bg-panel px-3.5 py-3 text-[16px] font-semibold text-chalk outline-none focus:border-grass"
           value={name}
@@ -38,7 +40,7 @@ export function PlayerForm({ initial, submitLabel, onSave }: Props) {
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-xs font-bold tracking-[.1em] text-muted uppercase">Posição</span>
+        <span className="text-xs font-bold tracking-[.1em] text-muted uppercase">{l('Posição', 'Position')}</span>
         <select
           className="appearance-none rounded-xl border border-line bg-panel px-3.5 py-3 text-[16px] font-semibold text-chalk outline-none focus:border-grass"
           value={position}
@@ -46,19 +48,19 @@ export function PlayerForm({ initial, submitLabel, onSave }: Props) {
         >
           {POSITIONS.map((p) => (
             <option key={p.code} value={p.code}>
-              {p.code} · {p.label}
+              {p.code} · {lang === 'en' ? p.labelEn : p.label}
             </option>
           ))}
         </select>
       </label>
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-xs font-bold tracking-[.1em] text-muted uppercase">O teu objetivo</span>
+        <span className="text-xs font-bold tracking-[.1em] text-muted uppercase">{l('O teu objetivo', 'Your goal')}</span>
         <input
           className="rounded-xl border border-line bg-panel px-3.5 py-3 text-[16px] font-semibold text-chalk outline-none focus:border-grass"
           value={objective}
           onChange={(e) => setObjective(e.target.value)}
-          placeholder="Ex.: chegar à seleção distrital"
+          placeholder={l('Ex.: chegar à seleção distrital', 'E.g.: make the district team')}
           maxLength={40}
         />
       </label>

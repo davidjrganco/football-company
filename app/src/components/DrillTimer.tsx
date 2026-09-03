@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLang } from '../lib/i18n'
 import {
   IDLE,
   pauseTimer,
@@ -78,6 +79,7 @@ interface Props {
  * lib/timerLogic (testadas).
  */
 export function DrillTimer({ sets, workSeconds, restSeconds, onFinished }: Props) {
+  const { l } = useLang()
   const [t, setT] = useState<TimerState>(IDLE)
   const [, setTick] = useState(0) // só para re-render enquanto conta
   const prevPhase = useRef(t.phase)
@@ -115,19 +117,28 @@ export function DrillTimer({ sets, workSeconds, restSeconds, onFinished }: Props
 
   const phaseLabel =
     t.phase === 'idle'
-      ? `${sets} séries × ${workSeconds}s · descanso ${restSeconds}s`
+      ? l(
+          `${sets} séries × ${workSeconds}s · descanso ${restSeconds}s`,
+          `${sets} sets × ${workSeconds}s · rest ${restSeconds}s`,
+        )
       : t.phase === 'work'
-        ? `Série ${t.setNo}/${sets}`
+        ? l(`Série ${t.setNo}/${sets}`, `Set ${t.setNo}/${sets}`)
         : t.phase === 'rest'
-          ? `Descanso · a seguir série ${t.setNo + 1}/${sets}`
-          : 'Séries concluídas! 💪'
+          ? l(`Descanso · a seguir série ${t.setNo + 1}/${sets}`, `Rest · next: set ${t.setNo + 1}/${sets}`)
+          : l('Séries concluídas! 💪', 'All sets done! 💪')
 
   const total = t.phase === 'rest' ? restSeconds : workSeconds
   const offset = t.phase === 'idle' ? 0 : CIRCUMFERENCE * (1 - remaining / total)
   const ringColor = t.phase === 'rest' ? '#F97316' : '#22C55E'
 
   const buttonLabel =
-    t.phase === 'idle' ? 'Iniciar' : t.phase === 'done' ? 'Repetir' : running ? 'Parar' : 'Continuar'
+    t.phase === 'idle'
+      ? l('Iniciar', 'Start')
+      : t.phase === 'done'
+        ? l('Repetir', 'Repeat')
+        : running
+          ? l('Parar', 'Pause')
+          : l('Continuar', 'Resume')
 
   return (
     <div className="my-2 mb-5 flex flex-col items-center gap-3">

@@ -14,6 +14,7 @@ export type CategoryKey =
 export interface CategoryStyle {
   key: CategoryKey
   label: string
+  labelEn: string
   color: string // cor principal
   dark: string // texto sobre a cor
   shadow: string // sombra 3D dos botões
@@ -21,10 +22,15 @@ export interface CategoryStyle {
   tintBg2: string
 }
 
+export function categoryLabel(cat: CategoryStyle, lang: 'pt' | 'en'): string {
+  return lang === 'en' ? cat.labelEn : cat.label
+}
+
 export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
   dominio: {
     key: 'dominio',
     label: 'Domínio',
+    labelEn: 'Ball Mastery',
     color: '#22C55E',
     dark: '#052012',
     shadow: '#16A34A',
@@ -34,6 +40,7 @@ export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
   velocidade: {
     key: 'velocidade',
     label: 'Velocidade',
+    labelEn: 'Speed',
     color: '#38BDF8',
     dark: '#04202F',
     shadow: '#0E7FBE',
@@ -43,6 +50,7 @@ export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
   finalizacao: {
     key: 'finalizacao',
     label: 'Finalização',
+    labelEn: 'Finishing',
     color: '#FB923C',
     dark: '#241509',
     shadow: '#C2410C',
@@ -52,6 +60,7 @@ export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
   pefraco: {
     key: 'pefraco',
     label: 'Pé fraco',
+    labelEn: 'Weak Foot',
     color: '#A3E635',
     dark: '#1A2405',
     shadow: '#65A30D',
@@ -61,6 +70,7 @@ export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
   forca: {
     key: 'forca',
     label: 'Força',
+    labelEn: 'Strength',
     color: '#C084FC',
     dark: '#1E1035',
     shadow: '#7C3AED',
@@ -70,6 +80,7 @@ export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
   defesa: {
     key: 'defesa',
     label: 'Defesa',
+    labelEn: 'Defending',
     color: '#F87171',
     dark: '#2B0E0E',
     shadow: '#DC2626',
@@ -79,6 +90,7 @@ export const CATEGORIES: Record<CategoryKey, CategoryStyle> = {
   futsal: {
     key: 'futsal',
     label: 'Futsal',
+    labelEn: 'Futsal',
     color: '#8AA79A',
     dark: '#0C1712',
     shadow: '#5B7268',
