@@ -75,6 +75,35 @@ inventar. Propostas (✅ = entra, risca o que não queres):
 
 **Os teus:** 1. ______________________________ 2. ______________________________
 
+## Missão 4 — Desenha o Modo Amigos 👥
+
+Está na hora de pensar na parte social: **partilhar sucessos e exercícios com
+os teus amigos**. Tu é que sabes como os teus amigos funcionam — desenha tu:
+
+**O que gostavas de partilhar?** (podes marcar vários)
+- [ ] O meu cartão de jogador (rating + atributos)
+- [ ] A minha streak 🔥
+- [ ] Programa completo / medalhas 🏆
+- [ ] Um recorde ("fiz 45 toques de juggling!")
+- [ ] Um exercício-desafio ("tenta tu este!")
+
+**Como preferias partilhar?**
+- [ ] Imagem bonita para mandar no WhatsApp (funciona já, sem contas)
+- [ ] Os amigos verem dentro da app (precisa de contas — mais à frente)
+- [ ] As duas coisas: imagem já, contas depois
+
+**Que desafio entre amigos seria mais fixe?** (escolhe o nº 1)
+- [ ] Quem faz mais toques de juggling
+- [ ] Quem aguenta a streak mais tempo
+- [ ] Quem completa primeiro um programa
+- [ ] "Bate o meu recorde" — mando o desafio, ele tenta bater
+- [ ] Outro: ______________________________
+
+**Sobre os teus amigos** (ajuda-nos a construir bem):
+- Quantos amigos teus iam usar isto? ______
+- Eles têm telemóvel próprio? [ ] Sim, a maioria · [ ] Alguns · [ ] Poucos
+- Que apps usam para falar? ______________________________
+
 ## Votação — o que vem a seguir? 🗳️ (escolhe 1)
 
 - [ ] **Conquistas e medalhas** — 7 dias de streak, 1000 XP, nível completo… uma estante de troféus no cartão
