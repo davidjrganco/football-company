@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
-import { applyCompletion } from '../lib/progressLogic'
-import type { Drill, ProgressState } from '../types'
+import { applyCompletion, type CompleteOpts } from '../lib/progressLogic'
+import type { Drill, FeedbackLevel, ProgressState } from '../types'
 
 const STORAGE_KEY = 'treino-progress-v1'
 
@@ -11,6 +11,8 @@ const DEFAULT_STATE: ProgressState = {
   completionCounts: {},
   claimedPrograms: [],
   programTrainingDays: {},
+  daily: { date: '', doneIds: [], bonusClaimed: false },
+  feedback: {},
   streak: { current: 0, best: 0, lastTrainedDate: null },
 }
 
@@ -48,6 +50,8 @@ function load(): ProgressState {
       completionCounts: { ...parsed.completionCounts },
       claimedPrograms: parsed.claimedPrograms ?? [],
       programTrainingDays: { ...parsed.programTrainingDays },
+      daily: { ...DEFAULT_STATE.daily, ...parsed.daily },
+      feedback: { ...parsed.feedback },
       streak: { ...DEFAULT_STATE.streak, ...parsed.streak },
     }
     // migração v1→v2: quem já tinha exercícios feitos passa a contar 1 de cada
@@ -72,6 +76,7 @@ export interface CompletionResult {
   xpGained: number
   streak: number
   wasNew: boolean // primeira vez que este exercício foi concluído (desbloqueia o seguinte)
+  sessionBonus: number // XP extra por ter completado o Treino de Hoje (0 se não)
 }
 
 export function useProgress() {
@@ -88,15 +93,26 @@ export function useProgress() {
    * perdiam-se umas às outras). Regras puras em lib/progressLogic (testadas).
    */
   const completeDrill = useCallback(
-    (
-      drill: Drill,
-      opts?: { dayProgramIds?: string[]; claimProgramIds?: string[] },
-    ): CompletionResult => {
+    (drill: Drill, opts?: CompleteOpts): CompletionResult => {
       const wasNew = !progress.completedDrillIds.includes(drill.id)
-      const next = applyCompletion(progress, drill, opts ?? {}, today(), yesterday())
+      const { state, sessionBonus } = applyCompletion(progress, drill, opts ?? {}, today(), yesterday())
+      save(state)
+      setProgress(state)
+      return { xpGained: drill.xp, streak: state.streak.current, wasNew, sessionBonus }
+    },
+    [progress],
+  )
+
+  /** "Como correu?" — guarda o feedback do exercício (semente da dificuldade adaptativa). */
+  const recordFeedback = useCallback(
+    (drillId: string, level: FeedbackLevel) => {
+      const counts = progress.feedback[drillId] ?? { facil: 0, normal: 0, dificil: 0 }
+      const next: ProgressState = {
+        ...progress,
+        feedback: { ...progress.feedback, [drillId]: { ...counts, [level]: counts[level] + 1 } },
+      }
       save(next)
       setProgress(next)
-      return { xpGained: drill.xp, streak: next.streak.current, wasNew }
     },
     [progress],
   )
@@ -106,5 +122,5 @@ export function useProgress() {
     [progress.completedDrillIds],
   )
 
-  return { progress, completeDrill, isCompleted }
+  return { progress, completeDrill, isCompleted, recordFeedback }
 }

@@ -67,6 +67,8 @@ interface Props {
   sets: number
   workSeconds: number
   restSeconds: number
+  /** chamado quando as séries terminam (desbloqueia o Concluir — pedido do Nicolas) */
+  onFinished?: () => void
 }
 
 /**
@@ -75,7 +77,7 @@ interface Props {
  * avisa com som + vibração em cada transição. Transições puras em
  * lib/timerLogic (testadas).
  */
-export function DrillTimer({ sets, workSeconds, restSeconds }: Props) {
+export function DrillTimer({ sets, workSeconds, restSeconds, onFinished }: Props) {
   const [t, setT] = useState<TimerState>(IDLE)
   const [, setTick] = useState(0) // só para re-render enquanto conta
   const prevPhase = useRef(t.phase)
@@ -98,8 +100,11 @@ export function DrillTimer({ sets, workSeconds, restSeconds }: Props) {
     prevPhase.current = t.phase
     if (prev === 'work' && t.phase === 'rest') signal('rest')
     else if (prev === 'rest' && t.phase === 'work') signal('work')
-    else if (prev === 'work' && t.phase === 'done') signal('done')
-  }, [t.phase])
+    else if (prev === 'work' && t.phase === 'done') {
+      signal('done')
+      onFinished?.()
+    }
+  }, [t.phase, onFinished])
 
   const onButton = () => {
     ensureAudio() // criar o áudio num gesto do utilizador (regra dos browsers)

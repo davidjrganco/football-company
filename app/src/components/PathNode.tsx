@@ -1,14 +1,15 @@
 import { categoryOfDrill } from '../lib/categories'
 import type { Drill } from '../types'
-import { CheckIcon, LockIcon, TargetIcon, BootIcon, FootIcon, BallIcon } from './icons'
+import { CheckIcon, LockIcon, TargetIcon, BootIcon, DumbbellIcon, FootIcon, BallIcon } from './icons'
 
 export type NodeState = 'done' | 'current' | 'locked'
 
-function CategoryIcon({ drill, color, size }: { drill: Drill; color: string; size: number }) {
+export function CategoryIcon({ drill, color, size }: { drill: Drill; color: string; size: number }) {
   const cat = categoryOfDrill(drill)
   if (cat.key === 'velocidade') return <BootIcon size={size} color={color} />
   if (cat.key === 'finalizacao') return <TargetIcon size={size} color={color} />
   if (cat.key === 'pefraco') return <FootIcon size={size} color={color} />
+  if (cat.key === 'forca') return <DumbbellIcon size={size} color={color} />
   return <BallIcon size={size} color={color} />
 }
 

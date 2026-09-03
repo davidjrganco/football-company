@@ -4,9 +4,11 @@ import { ProgramCelebration } from './components/ProgramCelebration'
 import { usePlayer } from './hooks/usePlayer'
 import { localToday, useProgress } from './hooks/useProgress'
 import { ATTRIBUTE_CODES, attributeValues, overallRating } from './lib/attributes'
+import { SESSION_BONUS_XP, buildDailySession } from './lib/dailySession'
 import {
   allDrills,
   currentDrillIndex,
+  futsalDrills,
   isProgramComplete,
   mainPathDrills,
   programDrills,
@@ -25,21 +27,23 @@ import type { Drill, Program } from './types'
 
 const SHEET_MS = 280
 
+// de onde veio o exercício aberto — decide o "próximo" no auto-avanço
+type DrillOrigin = { kind: 'main' } | { kind: 'session' } | { kind: 'futsal' } | { kind: 'program'; program: Program }
+
 export default function App() {
-  const { progress, completeDrill } = useProgress()
+  const { progress, completeDrill, recordFeedback } = useProgress()
   const { player, savePlayer } = usePlayer()
   const [view, setView] = useState<View>('path')
   const [activeProgram, setActiveProgram] = useState<Program | null>(null)
   const [activeDrill, setActiveDrill] = useState<Drill | null>(null)
-  // programa de origem do exercício aberto (null = veio do caminho misto)
-  const [drillOrigin, setDrillOrigin] = useState<Program | null>(null)
+  const [drillOrigin, setDrillOrigin] = useState<DrillOrigin>({ kind: 'main' })
   const [sheetUp, setSheetUp] = useState(false)
   const [completion, setCompletion] = useState<CompletionData | null>(null)
   const [pendingProgramCele, setPendingProgramCele] = useState<Program | null>(null)
   const [programCelebration, setProgramCelebration] = useState<Program | null>(null)
   const closeTimer = useRef<number | null>(null)
 
-  const openDrill = useCallback((drill: Drill, origin: Program | null) => {
+  const openDrill = useCallback((drill: Drill, origin: DrillOrigin) => {
     if (closeTimer.current) window.clearTimeout(closeTimer.current)
     setActiveDrill(drill)
     setDrillOrigin(origin)
@@ -69,6 +73,10 @@ export default function App() {
         return daysAfter >= program.days
       })
 
+      // sessão "Treino de Hoje" — o exercício conta venha de onde vier
+      const session = buildDailySession(new Date(), progress)
+      const sessionIds = session.map((d) => d.id)
+
       // deltas de atributos (antes → depois) para o ecrã de conclusão
       const before = attributeValues(progress, allDrills, programs)
       const afterProgress = {
@@ -87,17 +95,36 @@ export default function App() {
         to: after[key],
       }))
 
-      // conclusão + dias + recompensas numa só gravação (atómico)
+      // conclusão + dias + sessão + recompensas numa só gravação (atómico)
       const result = completeDrill(drill, {
         dayProgramIds: containing.map((p) => p.id),
         claimProgramIds: claims.map((p) => p.id),
+        sessionIds,
+        sessionBonusXp: SESSION_BONUS_XP,
       })
       closeDrill()
 
-      // próximo exercício no contexto de onde veio (programa aberto ou caminho misto)
-      const contextDrills = drillOrigin ? programDrills(drillOrigin) : mainPathDrills
-      const nextIdx = currentDrillIndex(contextDrills, completedNow)
-      const next = nextIdx < contextDrills.length ? contextDrills[nextIdx] : null
+      // próximo exercício, no contexto de onde este veio
+      let next: Drill | null = null
+      if (drillOrigin.kind === 'session') {
+        const doneToday = progress.daily.date === localToday() ? progress.daily.doneIds : []
+        next = session.find((d) => d.id !== drill.id && !doneToday.includes(d.id)) ?? null
+      } else if (drillOrigin.kind === 'program') {
+        const drills = programDrills(drillOrigin.program)
+        const nextIdx = currentDrillIndex(drills, completedNow)
+        next = nextIdx < drills.length ? drills[nextIdx] : null
+      } else if (drillOrigin.kind === 'futsal') {
+        const nextIdx = currentDrillIndex(futsalDrills, completedNow)
+        next = nextIdx < futsalDrills.length ? futsalDrills[nextIdx] : null
+      } else {
+        const nextIdx = currentDrillIndex(mainPathDrills, completedNow)
+        next = nextIdx < mainPathDrills.length ? mainPathDrills[nextIdx] : null
+      }
+
+      const doneTodayAfter =
+        (progress.daily.date === localToday() ? progress.daily.doneIds : []).filter((id) =>
+          sessionIds.includes(id),
+        ).length + (sessionIds.includes(drill.id) ? 1 : 0)
 
       setCompletion({
         drill,
@@ -105,8 +132,8 @@ export default function App() {
         streak: result.streak,
         attrDeltas,
         overallFrom: overallRating(progress.xpTotal),
-        overallTo: overallRating(progress.xpTotal + drill.xp),
-        xpTotalAfter: progress.xpTotal + drill.xp,
+        overallTo: overallRating(progress.xpTotal + drill.xp + result.sessionBonus),
+        xpTotalAfter: progress.xpTotal + drill.xp + result.sessionBonus,
         programRows: containing.map((p) => {
           const days = progress.programTrainingDays[p.id] ?? []
           const dayCount = days.includes(localToday()) ? days.length : days.length + 1
@@ -114,6 +141,10 @@ export default function App() {
         }),
         nextDrill: next,
         wasNew: result.wasNew,
+        sessionBonus: result.sessionBonus,
+        sessionProgress: sessionIds.length
+          ? { done: Math.min(doneTodayAfter, sessionIds.length), total: sessionIds.length }
+          : null,
       })
       setPendingProgramCele(claims[0] ?? null)
     },
@@ -145,7 +176,12 @@ export default function App() {
   return (
     <div className="phone">
       {view === 'path' && (
-        <PathScreen progress={progress} player={player} onOpenDrill={(d) => openDrill(d, null)} />
+        <PathScreen
+          progress={progress}
+          player={player}
+          onOpenDrill={(d) => openDrill(d, { kind: 'main' })}
+          onOpenSessionDrill={(d) => openDrill(d, { kind: 'session' })}
+        />
       )}
       {view === 'programs' &&
         (activeProgram ? (
@@ -153,7 +189,7 @@ export default function App() {
             program={activeProgram}
             progress={progress}
             onBack={() => setActiveProgram(null)}
-            onOpenDrill={(d) => openDrill(d, activeProgram)}
+            onOpenDrill={(d) => openDrill(d, { kind: 'program', program: activeProgram })}
           />
         ) : (
           <ProgramsScreen progress={progress} onOpenProgram={setActiveProgram} />
@@ -161,7 +197,9 @@ export default function App() {
       {view === 'profile' && (
         <ProfileScreen progress={progress} player={player} onSavePlayer={savePlayer} />
       )}
-      {view === 'futsal' && <FutsalScreen />}
+      {view === 'futsal' && (
+        <FutsalScreen progress={progress} onOpenDrill={(d) => openDrill(d, { kind: 'futsal' })} />
+      )}
 
       {activeDrill && (
         <DrillScreen drill={activeDrill} up={sheetUp} onBack={closeDrill} onComplete={handleComplete} />
@@ -172,6 +210,7 @@ export default function App() {
           data={completion}
           onNext={(d) => dismissCompletion(d)}
           onClose={() => dismissCompletion(null)}
+          onFeedback={(level) => recordFeedback(completion.drill.id, level)}
         />
       )}
       {programCelebration && (

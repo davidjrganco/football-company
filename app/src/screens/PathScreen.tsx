@@ -1,6 +1,8 @@
-import { PathNode, type NodeState } from '../components/PathNode'
-import { BoltIcon, FlameIcon } from '../components/icons'
+import { CategoryIcon, PathNode, type NodeState } from '../components/PathNode'
+import { BoltIcon, CheckIcon, FlameIcon, TrophyIcon } from '../components/icons'
 import { CATEGORIES, categoryOfDrill } from '../lib/categories'
+import { SESSION_BONUS_XP, buildDailySession, sessionMinutes } from '../lib/dailySession'
+import { localToday } from '../hooks/useProgress'
 import { currentDrillIndex, mainPathDrills, mainPathLevels } from '../lib/drills'
 import type { Drill, PlayerProfile, ProgressState } from '../types'
 
@@ -8,27 +10,28 @@ interface Props {
   progress: ProgressState
   player: PlayerProfile
   onOpenDrill: (drill: Drill) => void
+  onOpenSessionDrill: (drill: Drill) => void
 }
 
 /**
  * Ecrã principal (redesign 2026-08): responde logo "o que faço agora?" com o
  * hero PRÓXIMO TREINO, e o caminho misto por níveis com cor por categoria.
  */
-export function PathScreen({ progress, player, onOpenDrill }: Props) {
+export function PathScreen({ progress, player, onOpenDrill, onOpenSessionDrill }: Props) {
   const cur = currentDrillIndex(mainPathDrills, progress.completedDrillIds)
   const nextDrill = cur < mainPathDrills.length ? mainPathDrills[cur] : null
-  // caminho completo → o hero passa a sugerir o Treino do Dia (rotação diária)
-  const now = new Date()
-  const dayOfYear = Math.floor((now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 86400000)
-  const dailyDrill = mainPathDrills.length ? mainPathDrills[dayOfYear % mainPathDrills.length] : null
-  const heroDrill = nextDrill ?? dailyDrill
-  const heroLabel = nextDrill ? 'Próximo treino' : 'Treino do dia'
-  const nextCat = heroDrill ? categoryOfDrill(heroDrill) : CATEGORIES.dominio
   const doneCount = mainPathDrills.filter((d) => progress.completedDrillIds.includes(d.id)).length
   const levelIdx = Math.max(
     0,
     mainPathLevels.findIndex((l) => l.drills.some((d) => d.id === nextDrill?.id)),
   )
+
+  // TREINO DE HOJE — a app diz o que fazer (Iteração D)
+  const session = buildDailySession(new Date(), progress)
+  const doneToday = progress.daily.date === localToday() ? progress.daily.doneIds : []
+  const sessionDone = session.filter((d) => doneToday.includes(d.id)).length
+  const sessionComplete = session.length > 0 && sessionDone >= session.length
+  const nextSessionDrill = session.find((d) => !doneToday.includes(d.id)) ?? null
 
   let offset = 0
 
@@ -71,66 +74,105 @@ export function PathScreen({ progress, player, onOpenDrill }: Props) {
         </div>
       </header>
 
-      {/* PRÓXIMO TREINO / TREINO DO DIA (hero) */}
-      {heroDrill ? (
+      {/* TREINO DE HOJE (hero) — a app diz-te o que fazer (Iteração D) */}
+      {session.length > 0 && (
         <div
-          className="relative mb-1.5 cursor-pointer overflow-hidden rounded-[18px] px-4 py-3.5"
+          className="relative mb-2 overflow-hidden rounded-[18px] px-4 py-3.5"
           style={{
-            background: `linear-gradient(135deg, ${nextCat.tintBg}, ${nextCat.tintBg2})`,
-            border: `1px solid ${nextCat.color}66`,
-            boxShadow: `0 10px 24px rgba(0,0,0,.45), 0 0 26px ${nextCat.color}1F`,
+            background: 'linear-gradient(135deg, #2E2410, #1C1609)',
+            border: '1px solid rgba(234,179,8,.45)',
+            boxShadow: '0 10px 24px rgba(0,0,0,.45), 0 0 26px rgba(234,179,8,.12)',
           }}
-          onClick={() => onOpenDrill(heroDrill)}
         >
           <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <div className="text-[11px] font-extrabold tracking-[.16em] uppercase" style={{ color: nextCat.color }}>
-                {heroLabel}
+            <div>
+              <div className="flex items-center gap-1.5 text-[11px] font-extrabold tracking-[.16em] text-[#F6CE55] uppercase">
+                <TrophyIcon size={13} color="#F6CE55" />
+                Treino de Hoje
               </div>
-              <div className="mt-[3px] font-display text-[23px] leading-[1.05]">{heroDrill.name}</div>
-              <div className="mt-1 text-xs font-bold text-muted">
-                {nextCat.label} · {heroDrill.sets} × {heroDrill.work_seconds}s · +{heroDrill.xp} XP
+              <div className="mt-[3px] font-display text-[21px] leading-[1.05]">
+                {sessionComplete
+                  ? 'Sessão completa!'
+                  : `${session.length} exercícios · ~${sessionMinutes(session)} min`}
               </div>
             </div>
-            <button
-              className="cursor-pointer rounded-xl border-none px-5 py-3 font-display text-[15px] tracking-[.06em] whitespace-nowrap"
-              style={{ background: nextCat.color, color: nextCat.dark, boxShadow: `0 5px 0 ${nextCat.shadow}` }}
-              onClick={(e) => {
-                e.stopPropagation()
-                onOpenDrill(heroDrill)
-              }}
-            >
-              COMEÇAR
-            </button>
+            {sessionComplete ? (
+              <span className="flex items-center gap-1.5 rounded-xl bg-[rgba(234,179,8,.18)] px-3.5 py-2.5 font-display text-sm whitespace-nowrap text-[#F6CE55]">
+                <CheckIcon size={15} color="#F6CE55" />+{SESSION_BONUS_XP} XP
+              </span>
+            ) : (
+              <button
+                className="cursor-pointer rounded-xl border-none bg-[#EAB308] px-5 py-3 font-display text-[15px] tracking-[.06em] whitespace-nowrap text-[#2E2410]"
+                style={{ boxShadow: '0 5px 0 #A16207' }}
+                onClick={() => nextSessionDrill && onOpenSessionDrill(nextSessionDrill)}
+              >
+                {sessionDone > 0 ? 'CONTINUAR' : 'COMEÇAR'}
+              </button>
+            )}
           </div>
-          <div className="mt-3 flex items-center gap-2">
-            <span className="text-[10.5px] font-extrabold tracking-[.12em] text-muted uppercase">
-              {nextDrill ? `Nível ${levelIdx + 1}` : 'Caminho completo'}
-            </span>
-            <div className="flex flex-1 gap-1">
-              {mainPathLevels.map((level, i) => {
-                const levelDone = level.drills.filter((d) => progress.completedDrillIds.includes(d.id)).length
-                const pct = level.drills.length ? Math.round((levelDone / level.drills.length) * 100) : 0
-                return (
-                  <div key={level.name} className="h-[5px] flex-1 overflow-hidden rounded bg-[rgba(233,245,236,.1)]">
-                    <div
-                      className="h-full rounded bg-grass"
-                      style={{ width: `${pct}%`, boxShadow: i === levelIdx ? '0 0 8px rgba(34,197,94,.5)' : undefined }}
-                    />
-                  </div>
-                )
-              })}
-            </div>
-            <span className="text-[11px] font-extrabold text-lime">
-              {doneCount}/{mainPathDrills.length}
-            </span>
+
+          <div className="mt-3 flex flex-col gap-1.5">
+            {session.map((d) => {
+              const done = doneToday.includes(d.id)
+              const cat = categoryOfDrill(d)
+              const isNext = d === nextSessionDrill
+              return (
+                <div
+                  key={d.id}
+                  className={`flex cursor-pointer items-center gap-2.5 rounded-xl px-2.5 py-2 ${done ? 'opacity-60' : ''}`}
+                  style={{
+                    background: isNext ? `${cat.color}14` : 'rgba(233,245,236,.05)',
+                    border: isNext ? `1px solid ${cat.color}59` : '1px solid transparent',
+                  }}
+                  onClick={() => onOpenSessionDrill(d)}
+                >
+                  <CategoryIcon drill={d} color={cat.color} size={16} />
+                  <span className={`flex-1 text-[13.5px] font-bold ${done ? 'line-through' : ''}`}>{d.name}</span>
+                  {done ? (
+                    <CheckIcon size={14} color="#22C55E" />
+                  ) : (
+                    <span className="text-[11px] font-extrabold text-muted">
+                      {d.sets}×{d.work_seconds}s
+                    </span>
+                  )}
+                </div>
+              )
+            })}
           </div>
-        </div>
-      ) : (
-        <div className="mb-1.5 rounded-[18px] border border-line bg-panel px-4 py-3.5 text-center font-display text-lg text-lime">
-          Caminho completo — és uma máquina!
+          <div className="mt-2.5 h-[6px] overflow-hidden rounded-full bg-[rgba(233,245,236,.1)]">
+            <div
+              className="h-full rounded-full bg-gradient-to-r from-[#EAB308] to-[#F6CE55]"
+              style={{ width: `${Math.round((sessionDone / session.length) * 100)}%` }}
+            />
+          </div>
         </div>
       )}
+
+      {/* progresso do caminho */}
+      <div className="mb-1.5 rounded-2xl border border-line bg-panel px-4 py-3">
+        <div className="flex items-center gap-2">
+          <span className="text-[10.5px] font-extrabold tracking-[.12em] text-muted uppercase">
+            {nextDrill ? `Nível ${levelIdx + 1}` : 'Caminho completo'}
+          </span>
+          <div className="flex flex-1 gap-1">
+            {mainPathLevels.map((level, i) => {
+              const levelDone = level.drills.filter((d) => progress.completedDrillIds.includes(d.id)).length
+              const pct = level.drills.length ? Math.round((levelDone / level.drills.length) * 100) : 0
+              return (
+                <div key={level.name} className="h-[5px] flex-1 overflow-hidden rounded bg-[rgba(233,245,236,.1)]">
+                  <div
+                    className="h-full rounded bg-grass"
+                    style={{ width: `${pct}%`, boxShadow: i === levelIdx ? '0 0 8px rgba(34,197,94,.5)' : undefined }}
+                  />
+                </div>
+              )
+            })}
+          </div>
+          <span className="text-[11px] font-extrabold text-lime">
+            {doneCount}/{mainPathDrills.length}
+          </span>
+        </div>
+      </div>
 
       {/* trilho por níveis */}
       {mainPathLevels.map((level) => {

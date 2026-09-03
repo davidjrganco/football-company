@@ -1,8 +1,8 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { BoltIcon, CheckIcon, ChevronRightIcon, FlameIcon, TrophyIcon } from '../components/icons'
 import { categoryOfDrill, categoryOfProgram } from '../lib/categories'
 import { XP_PER_OVERALL_POINT } from '../lib/attributes'
-import type { AttributeKey, Drill } from '../types'
+import type { AttributeKey, Drill, FeedbackLevel } from '../types'
 
 export interface AttrDelta {
   code: string
@@ -22,12 +22,15 @@ export interface CompletionData {
   programRows: { name: string; day: number; days: number; programId: string }[]
   nextDrill: Drill | null
   wasNew: boolean
+  sessionBonus: number // XP extra por completar o Treino de Hoje
+  sessionProgress: { done: number; total: number } | null
 }
 
 interface Props {
   data: CompletionData
   onNext: (drill: Drill) => void
   onClose: () => void
+  onFeedback: (level: FeedbackLevel) => void
 }
 
 const CONFETTI_COLORS = ['#22C55E', '#A3E635', '#F97316', '#F4FBF6', '#38BDF8', '#EAB308']
@@ -36,8 +39,14 @@ const CONFETTI_COLORS = ['#22C55E', '#A3E635', '#F97316', '#F4FBF6', '#38BDF8', 
  * Ecrã de conclusão (redesign 2026-08): o coração do produto — treinaste na
  * vida real, o teu jogador sobe na app, à frente dos teus olhos.
  */
-export function CompletionScreen({ data, onNext, onClose }: Props) {
+export function CompletionScreen({ data, onNext, onClose, onFeedback }: Props) {
   const cat = categoryOfDrill(data.drill)
+  const [feedbackGiven, setFeedbackGiven] = useState<FeedbackLevel | null>(null)
+  const giveFeedback = (level: FeedbackLevel) => {
+    if (feedbackGiven) return
+    setFeedbackGiven(level)
+    onFeedback(level)
+  }
   const xpToNext = XP_PER_OVERALL_POINT - (data.xpTotalAfter % XP_PER_OVERALL_POINT)
   const overallPct = Math.round(((data.xpTotalAfter % XP_PER_OVERALL_POINT) / XP_PER_OVERALL_POINT) * 100)
 
@@ -86,6 +95,44 @@ export function CompletionScreen({ data, onNext, onClose }: Props) {
         </div>
       </div>
 
+      {/* sessão do dia completa → bónus */}
+      {data.sessionBonus > 0 && (
+        <div className="cele-box mt-3 flex items-center gap-2 rounded-[14px] border border-[rgba(234,179,8,.45)] bg-[rgba(234,179,8,.14)] px-4 py-2.5">
+          <TrophyIcon size={17} color="#EAB308" />
+          <span className="font-display text-[18px] text-[#F6CE55]">
+            TREINO DE HOJE COMPLETO · +{data.sessionBonus} XP
+          </span>
+        </div>
+      )}
+
+      {/* como correu? — semente da dificuldade adaptativa */}
+      <div className="mt-4 w-full rounded-[18px] border border-line bg-panel px-[17px] py-[13px]">
+        <div className="text-[11px] font-extrabold tracking-[.14em] text-muted uppercase">Como correu?</div>
+        <div className="mt-2.5 flex gap-2">
+          {(
+            [
+              ['facil', '😌 Fácil'],
+              ['normal', '🙂 Normal'],
+              ['dificil', '🔥 Difícil'],
+            ] as [FeedbackLevel, string][]
+          ).map(([level, label]) => (
+            <button
+              key={level}
+              className={`flex-1 rounded-xl border px-2 py-2.5 text-[13.5px] font-extrabold transition-opacity ${
+                feedbackGiven === level
+                  ? 'border-grass bg-[rgba(34,197,94,.16)] text-grass'
+                  : feedbackGiven
+                    ? 'cursor-default border-line bg-panel2 text-muted opacity-40'
+                    : 'cursor-pointer border-line bg-panel2 text-chalk'
+              }`}
+              onClick={() => giveFeedback(level)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* o teu jogador subiu */}
       <div className="mt-4 w-full rounded-[18px] border border-line bg-panel px-[17px] py-[15px] shadow-card">
         <div className="text-[11px] font-extrabold tracking-[.14em] text-grass uppercase">O teu jogador</div>
@@ -124,6 +171,17 @@ export function CompletionScreen({ data, onNext, onClose }: Props) {
 
       {/* desafios que avançaram + desbloqueio */}
       <div className="mt-3 flex w-full flex-col gap-2">
+        {data.sessionProgress && data.sessionBonus === 0 && (
+          <div className="flex items-center justify-between rounded-[14px] border border-[rgba(234,179,8,.3)] bg-[rgba(234,179,8,.08)] px-[15px] py-[11px]">
+            <span className="flex items-center gap-2 text-[13.5px] font-extrabold">
+              <TrophyIcon size={15} color="#EAB308" />
+              Treino de Hoje
+            </span>
+            <span className="text-[12.5px] font-extrabold text-[#F6CE55]">
+              {data.sessionProgress.done}/{data.sessionProgress.total}
+            </span>
+          </div>
+        )}
         {data.programRows.map((p) => {
           const pcat = categoryOfProgram(p.programId)
           return (

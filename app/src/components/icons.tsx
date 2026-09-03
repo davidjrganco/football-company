@@ -127,6 +127,18 @@ export function BootIcon({ size = 20, color = 'currentColor' }: IconProps) {
   )
 }
 
+export function DumbbellIcon({ size = 20, color = 'currentColor' }: IconProps) {
+  // haltere — força
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 12h6" />
+      <rect x="4" y="8" width="3" height="8" rx="1" />
+      <rect x="17" y="8" width="3" height="8" rx="1" />
+      <path d="M2.5 10.5v3M21.5 10.5v3" />
+    </svg>
+  )
+}
+
 export function FootIcon({ size = 20, color = 'currentColor' }: IconProps) {
   // pé/meia — pé fraco
   return (

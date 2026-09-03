@@ -80,6 +80,15 @@ export interface StreakState {
   lastTrainedDate: string | null // YYYY-MM-DD
 }
 
+// Sessão diária "Treino de Hoje" (Iteração D)
+export interface DailyState {
+  date: string // YYYY-MM-DD da sessão a que isto se refere
+  doneIds: string[] // exercícios da sessão concluídos hoje
+  bonusClaimed: boolean // bónus de sessão completa já entregue
+}
+
+export type FeedbackLevel = 'facil' | 'normal' | 'dificil'
+
 export interface ProgressState {
   xpTotal: number
   drillsDone: number
@@ -89,6 +98,9 @@ export interface ProgressState {
   // dias (YYYY-MM-DD) em que treinou cada programa — a recompensa exige
   // todos os exercícios feitos E program.days dias de treino
   programTrainingDays: Record<string, string[]>
+  daily: DailyState
+  // "Como correu?" por exercício (semente da dificuldade adaptativa)
+  feedback: Record<string, Record<FeedbackLevel, number>>
   streak: StreakState
 }
 

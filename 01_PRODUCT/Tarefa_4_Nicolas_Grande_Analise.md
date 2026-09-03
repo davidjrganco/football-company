@@ -1,10 +1,31 @@
 ---
 doc: Tarefa 4 (Nicolas) — A Grande Análise: balanço e próximos passos, juntos
 area: 01_PRODUCT
-estado: À espera da sessão de análise (David + Nicolas)
+estado: RESPONDIDA (sessão feita; manuscrito do Nicolas 02/09 + WhatsApp do David 03/09)
 responsavel: Nicolas (decisões) · David (apoio) · Claude (construção)
-atualizado: 2026-08-24
+atualizado: 2026-09-03
 ---
+
+# ✅ RESPOSTAS DA SESSÃO (02-03/09/2026)
+
+**Nicolas (manuscrito, assinado 02/09):**
+- *O que menos gosta:* "Os exercícios: só carregas para concluir e acaba — devia
+  estar a contar os trinta segundos e só aí é que acabava." → **o Concluir deve
+  exigir as séries feitas** (anti-batota). E: "no caminho devia haver **mais
+  treinos de físico, como agilidade e força**".
+- *O que falta para mostrar aos amigos:* "Uma app mais completa, com mais
+  coisas e menos erros."
+- *Parte 3 — prioridade dele:* "**Melhoria no futsal, mais exercícios, etc.**"
+
+**David (WhatsApp, 03/09):**
+- Mais ajuda à pessoa: em vez de programas de 14 dias seguidos da mesma coisa,
+  a app deve gerar o **treino do dia misto** ("5 exercícios: 3 ball mastery +
+  2 força; no dia seguinte 3 weak foot + 3 agility…"). O **Weak Foot mantém-se
+  como desafio de 27 dias** (é bom ser um desafio).
+- Segunda análise do ChatGPT (7/10): converge — a home deve dizer o que treinar
+  hoje; gamificação (badges/missões/recordes) e IA de vídeo como direções
+  futuras; feedback pós-exercício (Fácil/Normal/Difícil) para adaptar
+  dificuldade; identidade "Duolingo + EA FC + treinador pessoal".
 
 # Relatório — o que fizemos com a tua Tarefa 3b
 

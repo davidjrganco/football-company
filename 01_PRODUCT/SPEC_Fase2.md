@@ -85,6 +85,26 @@ Com base nas respostas do Nicolas à Tarefa 3 (20/08/2026):
   A escolha 150 vs 120 XP (5 vs 4 treinos) **confirma-se na Tarefa 3b
   (pergunta extra 2).**
 
+## Iteração D — "A app diz-te o que treinar" (CONSTRUÍDA 2026-09-03)
+
+Da Grande Análise (Nicolas 02/09) + WhatsApp do David 03/09:
+- **Treino de Hoje**: sessão diária gerada (5 exercícios, plano de rotação por
+  dia da semana a misturar categorias — ideia do David), determinística, só com
+  exercícios desbloqueados; hero dourado na home com lista, progresso e
+  **bónus +50 XP** ao completar a sessão (entregue atomicamente); cada
+  exercício conta para os dias dos Programas venha de onde vier.
+- **Séries obrigatórias** (pedido do Nicolas): o Concluir fica bloqueado até o
+  temporizador terminar as séries.
+- **Feedback pós-treino**: "Como correu?" (Fácil/Normal/Difícil) no ecrã de
+  conclusão, guardado por exercício — semente da dificuldade adaptativa.
+- **Força**: categoria nova (roxa) com 6 exercícios sem equipamento (st-01..06),
+  no caminho misto (agora **38** em 4 níveis) e no plano diário.
+- **Futsal a sério** (prioridade do Nicolas): 3→**8 exercícios** (ft-04..08:
+  passes de primeira, bico, rolo e passe, giro de sola, 1v1 de salão) num
+  mini-caminho jogável com desbloqueio — secção continua secundária (ADR-0002).
+  Passe passa a ter 3 exercícios de cobertura; Defesa continua a 0 (dívida).
+- drills.json v4: 46 exercícios. 32 testes Vitest (inclui gerador da sessão).
+
 ## Iteração C — Caminho misto + Programas à parte (CONSTRUÍDA 2026-08-24)
 
 Com base na Tarefa 3b respondida (manuscrito 23/08 + WhatsApp 24/08):

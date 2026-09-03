@@ -6,10 +6,10 @@
   },
   "main_path": {
     "levels": [
-      { "name": "NÍVEL 1", "drill_ids": ["fb-01", "fb-02", "fb-03", "sa-03", "wf-01", "fin-01", "sa-02", "fb-04"] },
-      { "name": "NÍVEL 2", "drill_ids": ["fb-05", "fin-02", "wf-02", "sa-04", "fb-06", "wf-03", "sa-06", "fb-07"] },
-      { "name": "NÍVEL 3", "drill_ids": ["fin-03", "fb-08", "sa-07", "wf-04", "fb-09", "fin-04", "sa-05", "fb-10"] },
-      { "name": "NÍVEL 4", "drill_ids": ["wf-05", "fin-06", "fb-11", "sa-01", "fin-05", "wf-06", "fb-12", "fin-07"] }
+      { "name": "NÍVEL 1", "drill_ids": ["fb-01", "fb-02", "st-01", "fb-03", "sa-03", "wf-01", "fin-01", "sa-02", "fb-04"] },
+      { "name": "NÍVEL 2", "drill_ids": ["fb-05", "fin-02", "st-02", "wf-02", "sa-04", "fb-06", "wf-03", "sa-06", "fb-07"] },
+      { "name": "NÍVEL 3", "drill_ids": ["fin-03", "fb-08", "st-03", "sa-07", "wf-04", "fb-09", "fin-04", "st-05", "sa-05", "fb-10"] },
+      { "name": "NÍVEL 4", "drill_ids": ["wf-05", "fin-06", "st-04", "fb-11", "sa-01", "fin-05", "wf-06", "st-06", "fb-12", "fin-07"] }
     ]
   },
   "programs": [
@@ -328,6 +328,141 @@
       ]
     },
     {
+      "id": "futebol-forca",
+      "sport": "futebol",
+      "primary": false,
+      "name": "Força",
+      "category": "Strength",
+      "drills": [
+        {
+          "id": "st-01",
+          "order": 1,
+          "name": "Agachamentos",
+          "name_en": "Squats",
+          "skill": "Força de pernas",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Agachamentos com o peso do corpo: desce como se te sentasses numa cadeira invisível, sobe com força. Pernas fortes = remates fortes e duelos ganhos.",
+          "cue": "Peito para a frente, joelhos na direção dos pés.",
+          "steps": [
+            "Pés à largura dos ombros, braços esticados em frente.",
+            "Desce devagar como se te sentasses, até as coxas ficarem paralelas ao chão.",
+            "Sobe com força, sem tirar os calcanhares do chão."
+          ],
+          "attributes": ["fisico"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "st-02",
+          "order": 2,
+          "name": "Prancha",
+          "name_en": "Plank",
+          "skill": "Core / tronco firme",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Prancha de antebraços: corpo reto como uma tábua, do calcanhar à cabeça. Um tronco forte protege a bola e aguenta os empurrões.",
+          "cue": "Barriga apertada, corpo em linha reta — sem deixar a anca cair.",
+          "steps": [
+            "Apoia os antebraços no chão, cotovelos debaixo dos ombros.",
+            "Estica o corpo: só antebraços e pontas dos pés no chão.",
+            "Aguenta os 30 segundos sem deixar a anca descer nem subir."
+          ],
+          "attributes": ["fisico", "resistencia"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "st-03",
+          "order": 3,
+          "name": "Afundos",
+          "name_en": "Lunges",
+          "skill": "Força e equilíbrio",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 25,
+          "xp": 30,
+          "description": "Passo grande em frente, desce o joelho de trás quase até ao chão, sobe e troca de perna. Equilíbrio de remate e de mudança de direção.",
+          "cue": "Tronco direito, o joelho da frente não passa a ponta do pé.",
+          "steps": [
+            "Dá um passo grande em frente.",
+            "Desce o joelho de trás quase até tocar no chão.",
+            "Empurra com a perna da frente para voltar e troca de perna."
+          ],
+          "attributes": ["fisico"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "st-04",
+          "order": 4,
+          "name": "Flexões",
+          "name_en": "Push-ups",
+          "skill": "Força de braços e peito",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Flexões de braços com o corpo reto. Se ainda custarem, faz com os joelhos apoiados — conta na mesma. Braços fortes ganham duelos ombro a ombro.",
+          "cue": "Corpo em tábua, desce até o peito quase tocar no chão.",
+          "steps": [
+            "Mãos no chão à largura dos ombros, corpo em tábua.",
+            "Desce devagar até o peito quase tocar no chão.",
+            "Empurra para cima. Se custar, apoia os joelhos — vale na mesma."
+          ],
+          "attributes": ["fisico"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "st-05",
+          "order": 5,
+          "name": "Ponte de Glúteos",
+          "name_en": "Glute Bridge",
+          "skill": "Força de anca e posterior",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Deitado de costas, joelhos dobrados: levanta a anca até o corpo ficar em linha e desce devagar. É daqui que vem a força do sprint.",
+          "cue": "Aperta os glúteos lá em cima, desce controlado.",
+          "steps": [
+            "Deita-te de costas, joelhos dobrados, pés no chão.",
+            "Levanta a anca até ombros-anca-joelhos ficarem em linha.",
+            "Segura 2 segundos lá em cima e desce devagar."
+          ],
+          "attributes": ["fisico"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "st-06",
+          "order": 6,
+          "name": "Saltos Verticais",
+          "name_en": "Vertical Jumps",
+          "skill": "Impulsão / cabeceamento",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 30,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Saltos ao ar o mais alto possível, com meio agachamento antes de cada salto. É o salto do cabeceamento no coração da área.",
+          "cue": "Braços atiram-te para cima, aterra macio.",
+          "steps": [
+            "Meio agachamento rápido com os braços atrás.",
+            "Salta o mais alto que conseguires, braços a puxar para cima.",
+            "Aterra macio com os joelhos fletidos e encadeia o próximo."
+          ],
+          "attributes": ["fisico", "velocidade"],
+          "video": { "type": "pending", "url": "" }
+        }
+      ]
+    },
+    {
       "id": "futsal-intro",
       "sport": "futsal",
       "primary": false,
@@ -390,6 +525,111 @@
           "steps": [
             "Faz um toque de sola para enganar o adversário.",
             "Sai rápido com o interior para o espaço."
+          ],
+          "attributes": ["dominio", "iq"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "ft-04",
+          "order": 4,
+          "name": "Passes de Primeira",
+          "name_en": "One-Touch Passing",
+          "skill": "Passe rápido de futsal",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 20,
+          "xp": 30,
+          "description": "Passes de primeira contra a parede, sem controlar: a bola volta e sai logo. No futsal não há tempo — o passe é já.",
+          "cue": "Interior firme, corpo atrás da bola, cabeça levantada.",
+          "steps": [
+            "Coloca-te a 2-3 metros da parede.",
+            "Passa de primeira com o interior — sem toque de controlo.",
+            "Alterna os pés e aumenta o ritmo aos poucos."
+          ],
+          "attributes": ["passe"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "ft-05",
+          "order": 5,
+          "name": "Bico ao Alvo",
+          "name_en": "Toe Poke Finish",
+          "skill": "O remate secreto do futsal",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "O remate de bico: rápido, sem balanço, impossível de prever. Treina-o ao alvo — é a arma número 1 do futsal.",
+          "cue": "Sem balanço — o guarda-redes não pode adivinhar.",
+          "steps": [
+            "Marca um alvo na parede ou baliza.",
+            "Remata de bico, quase sem levar a perna atrás.",
+            "Varia a distância e tenta esconder a intenção."
+          ],
+          "attributes": ["remate"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "ft-06",
+          "order": 6,
+          "name": "Rolo e Passe",
+          "name_en": "Roll and Pass",
+          "skill": "Sola + passe em movimento",
+          "difficulty": 2,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 25,
+          "xp": 30,
+          "description": "Rola a bola para o lado com a sola e passa de interior à parede logo a seguir. A combinação mais usada do futsal.",
+          "cue": "O rolo abre o ângulo, o passe sai no tempo certo.",
+          "steps": [
+            "Rola a bola para o lado com a sola.",
+            "No toque seguinte, passa de interior contra a parede.",
+            "Recebe, rola para o outro lado e repete."
+          ],
+          "attributes": ["passe", "controlo"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "ft-07",
+          "order": 7,
+          "name": "Giro com a Sola",
+          "name_en": "Sole Spin",
+          "skill": "Rodar com a bola colada",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Puxa a bola com a sola e gira 180 graus com ela colada ao pé, protegendo-a com o corpo. Sais de qualquer aperto de salão.",
+          "cue": "O corpo fica sempre entre a bola e o adversário.",
+          "steps": [
+            "Pisa a bola ao de leve com a sola.",
+            "Puxa-a enquanto giras 180 graus sobre o outro pé.",
+            "Sai do giro já a conduzir para o outro lado."
+          ],
+          "attributes": ["dominio"],
+          "video": { "type": "pending", "url": "" }
+        },
+        {
+          "id": "ft-08",
+          "order": 8,
+          "name": "1v1 de Salão",
+          "name_en": "Futsal 1v1",
+          "skill": "Duelo em espaço mínimo",
+          "difficulty": 3,
+          "sets": 3,
+          "work_seconds": 40,
+          "rest_seconds": 30,
+          "xp": 30,
+          "description": "Num quadrado de 2 metros (real ou imaginário): finta curta de sola e saída explosiva a ultrapassar o adversário. O 1v1 do futsal é num palmo de chão.",
+          "cue": "Engana devagar, sai a explodir.",
+          "steps": [
+            "Marca um quadrado pequeno (2 passos de lado).",
+            "Finta com a sola para um lado, devagar.",
+            "Explode para o lado contrário em dois toques."
           ],
           "attributes": ["dominio", "iq"],
           "video": { "type": "pending", "url": "" }

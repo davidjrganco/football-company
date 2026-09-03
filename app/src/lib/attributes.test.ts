@@ -10,6 +10,8 @@ const base = (over: Partial<ProgressState> = {}): ProgressState => ({
   completionCounts: {},
   claimedPrograms: [],
   programTrainingDays: {},
+  daily: { date: '', doneIds: [], bonusClaimed: false },
+  feedback: {},
   streak: { current: 0, best: 0, lastTrainedDate: null },
   ...over,
 })
@@ -48,9 +50,9 @@ describe('cartão (regras do Nicolas)', () => {
 })
 
 describe('integridade dos dados (drills.json)', () => {
-  it('o caminho misto tem 32 exercícios únicos e válidos', () => {
-    expect(mainPathDrills.length).toBe(32)
-    expect(new Set(mainPathDrills.map((d) => d.id)).size).toBe(32)
+  it('o caminho misto tem 38 exercícios únicos e válidos (v4: +Força)', () => {
+    expect(mainPathDrills.length).toBe(38)
+    expect(new Set(mainPathDrills.map((d) => d.id)).size).toBe(38)
   })
 
   it('todos os programas referem exercícios existentes', () => {
@@ -58,13 +60,12 @@ describe('integridade dos dados (drills.json)', () => {
     for (const p of programs) for (const id of p.drill_ids) expect(ids.has(id)).toBe(true)
   })
 
-  it('só Passe e Defesa ficam sem cobertura (dívida conhecida — Tarefa do Nicolas)', () => {
+  it('só Defesa fica sem cobertura (dívida conhecida — exercícios por criar)', () => {
     const covered = new Set(allDrills.flatMap((d) => d.attributes))
     expect(covered.has('resistencia')).toBe(true) // corrigido no Raio-X 2026-08
-    const uncovered = ['passe', 'defesa'].filter((a) => {
-      const count = allDrills.filter((d) => d.attributes.includes(a as never)).length
-      return count === 0
-    })
-    expect(uncovered).toEqual(['defesa']) // passe tem 1; defesa espera por exercícios novos
+    const passe = allDrills.filter((d) => d.attributes.includes('passe' as never)).length
+    expect(passe).toBeGreaterThanOrEqual(3) // reforçado no futsal (Iteração D)
+    const defesa = allDrills.filter((d) => d.attributes.includes('defesa' as never)).length
+    expect(defesa).toBe(0) // espera por exercícios novos
   })
 })

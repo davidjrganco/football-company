@@ -20,6 +20,11 @@ export const footballDrills: Drill[] = [...footballPath.drills].sort(
 /** Todos os exercícios (todos os paths) — para o motor de atributos. */
 export const allDrills: Drill[] = data.paths.flatMap((p) => p.drills)
 
+/** Exercícios de futsal, pela ordem (mini-caminho da secção secundária). */
+export const futsalDrills: Drill[] = [...(futsalPath?.drills ?? [])].sort(
+  (a, b) => a.order - b.order,
+)
+
 const drillsById = new Map(allDrills.map((d) => [d.id, d]))
 
 /** Programas de treino multi-dia (Tarefa 3). */
