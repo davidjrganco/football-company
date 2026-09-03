@@ -1,48 +1,65 @@
 ---
-doc: Tarefa 5 (Nicolas) — Nome da app, vídeos do Nível 1 e a invenção da Defesa
+doc: Tarefa 5 (Nicolas) — Vídeos do Nível 1, a invenção da Defesa e o Modo Amigos
 area: 01_PRODUCT
 estado: À espera do Nicolas
 responsavel: Nicolas (decisões) · David (apoio) · Claude (construção)
 atualizado: 2026-09-03
 ---
 
-# Relatório — o que a Grande Análise construiu
+# Relatório completo — tudo o que mudou desde a Grande Análise
 
-> Nicolas: as tuas respostas de 02/09 (e as ideias do pai) entraram TODAS na
-> app no dia 03/09:
-> - **A app agora diz-te o que treinar** 🏆: a home abre com o "Treino de Hoje"
->   — 5 exercícios misturados que mudam todos os dias (segunda: domínio+força;
->   terça: pé fraco+velocidade; …). Completar a sessão dá **+50 XP de bónus**.
-> - **Acabou a batota** ⏱️ (o teu pedido): o "Concluir" só desbloqueia quando o
->   relógio termina as séries. Agora é a suar.
-> - **Mais físico, como pediste** 💪: categoria nova FORÇA (roxa) com 6
->   exercícios — agachamentos, prancha, afundos, flexões, ponte e saltos
->   verticais. O caminho cresceu para 38 exercícios.
-> - **O futsal que votaste** ⚽: de 3 para 8 exercícios num caminho próprio —
->   passes de primeira, o bico ao alvo, rolo e passe, giro de sola e 1v1 de
->   salão. Tudo conta para o cartão.
-> - **"Como correu?"** 🙂: no fim de cada treino dizes se foi fácil, normal ou
->   difícil — a app vai aprender contigo.
+> Nicolas: desde a folha da Grande Análise, a app levou a maior evolução da
+> sua vida. Aqui está TUDO, por ordem:
+
+**1 · A app ficou muito mais bonita 🎨**
+- Cada categoria tem agora a sua cor: verde = domínio · azul = velocidade ·
+  laranja = finalização · lima = pé fraco · roxo = força.
+- Ícones desenhados a sério em todo o lado (adeus símbolos soltos), nós do
+  caminho com brilho e etiquetas de XP, e o teu cartão dourado ficou premium —
+  com brilho, círculo tático gravado e os 9 atributos em grelha.
+
+**2 · Ecrã novo "TREINO CONCLUÍDO" 🏁**
+- Ao acabar um exercício já não é só um flash: vês o XP a entrar, a streak, os
+  teus atributos a subir (ex.: REM 41 → 42), a barra do Geral, os desafios que
+  avançaram e o que desbloqueaste — com botão "Próximo treino".
+
+**3 · A app agora diz-te o que treinar 🏆**
+- A home abre com o "Treino de Hoje": 5 exercícios misturados que mudam todos
+  os dias (segunda: domínio+força · terça: pé fraco+velocidade · …).
+- Completar a sessão do dia dá +50 XP de bónus. E cada exercício conta
+  automaticamente para os dias dos Programas.
+
+**4 · Acabou a batota (o teu pedido) ⏱️**
+- O "Concluir" só desbloqueia quando o relógio termina as séries todas.
+- E o relógio agora apita e vibra: fim da série, descanso, série seguinte —
+  podes treinar de olhos na bola, não no ecrã.
+
+**5 · Mais físico, como pediste 💪**
+- Categoria nova FORÇA: agachamentos, prancha, afundos, flexões, ponte e
+  saltos verticais — escritos para jogador ("pernas fortes = remates fortes").
+- O caminho cresceu de 32 para 38 exercícios, com força em todos os níveis.
+- A Resistência também já sobe (escada, sprints, saltos contam para ela).
+
+**6 · O futsal que votaste ⚽**
+- De 3 para 8 exercícios num caminho próprio com desbloqueio: passes de
+  primeira, o bico ao alvo (o remate secreto do futsal), rolo e passe, giro de
+  sola e 1v1 de salão. Tudo conta para o cartão — o Passe finalmente treina-se.
+
+**7 · "Como correu?" 🙂**
+- No fim de cada treino dizes se foi fácil, normal ou difícil. A app está a
+  guardar isso para um dia ajustar a dificuldade a ti.
+
+**8 · O teu progresso está protegido 🔒**
+- No Perfil há agora "Cópia de segurança": guarda um ficheiro com tudo (XP,
+  streak, medalhas). Se trocares de telemóvel, repões e não perdes nada.
+- E por trás: o código da empresa está no GitHub com 32 testes automáticos a
+  vigiar as regras do jogo — "menos erros", como pediste.
 
 ---
 
 # Tarefa 5 — Três missões + uma votação 🚀
 
-## Missão 1 — O nome. Desta vez é a sério! 📛
-
-A app já faz demasiado para se chamar "Treino do Nicolas". **Sem nome não há
-identidade, e sem identidade não se mostra aos amigos.** Escolhe ou inventa:
-
-- [ ] CRAQUE
-- [ ] CAMINHO DO CRAQUE
-- [ ] FUTPATH
-- [ ] GOLAÇO
-- [ ] PRO11
-- [ ] O meu nome: ______________________________
-
-E o ícone: [ ] ✓ verde atual · [ ] ⚽ bola sob holofotes · [ ] 🔥 chama · [ ] ⚡ raio · [ ] outro: ______
-
-## Missão 2 — Grava os 9 vídeos do Nível 1 🎬
+## Missão 1 — Grava os 9 vídeos do Nível 1 🎬
 
 Agora que as séries são obrigatórias, o vídeo é o treinador. **Tu és o modelo**
 (como decidiste na Tarefa 3). Regras: telemóvel na horizontal · 20-40 segundos ·
@@ -58,7 +75,7 @@ Agora que as séries são obrigatórias, o vídeo é o treinador. **Tu és o mod
 - [ ] Sprint com Bola
 - [ ] Puxa e Empurra
 
-## Missão 3 — Inventa a Defesa 🛡️
+## Missão 2 — Inventa a Defesa 🛡️
 
 Segredo do cartão: a **DEF é o único atributo que nunca pode subir** — não
 existe nenhum exercício de defesa na app! O Diretor de Treino tem de a
@@ -75,7 +92,7 @@ inventar. Propostas (✅ = entra, risca o que não queres):
 
 **Os teus:** 1. ______________________________ 2. ______________________________
 
-## Missão 4 — Desenha o Modo Amigos 👥
+## Missão 3 — Desenha o Modo Amigos 👥
 
 Está na hora de pensar na parte social: **partilhar sucessos e exercícios com
 os teus amigos**. Tu é que sabes como os teus amigos funcionam — desenha tu:
