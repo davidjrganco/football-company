@@ -238,6 +238,8 @@ export interface HighlightData {
   lang?: 'pt' | 'en'
   /** linhas extra centradas (ex.: passos do exercício) */
   lines?: string[]
+  /** link visível em baixo (ex.: "joga em nicoappp.netlify.app") */
+  footerUrl?: string
 }
 
 export async function generateHighlightImage(data: HighlightData): Promise<Blob> {
@@ -330,7 +332,12 @@ export async function generateHighlightImage(data: HighlightData): Promise<Blob>
   ctx.fillText(data.footerName, W / 2, H - 160)
   ctx.fillStyle = '#22C55E'
   ctx.font = `46px ${anton}`
-  ctx.fillText('TREINO DO NICOLAS', W / 2, H - 95)
+  ctx.fillText('TREINO DO NICOLAS', W / 2, data.footerUrl ? H - 105 : H - 95)
+  if (data.footerUrl) {
+    ctx.fillStyle = '#8AA79A'
+    ctx.font = `600 30px ${barlow}`
+    ctx.fillText(data.footerUrl, W / 2, H - 55)
+  }
 
   return new Promise((resolve, reject) => {
     canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('canvas vazio'))), 'image/png')
@@ -362,22 +369,57 @@ function wrapText(
   lines.forEach((l, i) => ctx.fillText(l, x, startY + i * lineHeight))
 }
 
-/** Partilha nativa do telemóvel; sem suporte, descarrega o ficheiro. */
-export async function shareImage(blob: Blob, filename: string) {
+/**
+ * Partilha nativa do telemóvel: imagem + (opcional) texto e link. Sem suporte a
+ * partilha, copia o link e descarrega a imagem.
+ */
+export async function shareImage(
+  blob: Blob,
+  filename: string,
+  extra?: { text?: string; url?: string },
+) {
   const file = new File([blob], filename, { type: 'image/png' })
   const nav = navigator as Navigator & { canShare?: (d: ShareData) => boolean }
+
+  // 1) tentar partilhar imagem + texto + link juntos
+  const full: ShareData = { files: [file] }
+  if (extra?.text) full.text = extra.text
+  if (extra?.url) full.url = extra.url
+  if (nav.share && nav.canShare?.(full)) {
+    try {
+      await nav.share(full)
+      return
+    } catch {
+      /* cancelado — segue */
+    }
+  }
+  // 2) alguns alvos não aceitam ficheiro + texto: partilhar só a imagem
   if (nav.share && nav.canShare?.({ files: [file] })) {
     try {
       await nav.share({ files: [file] })
       return
     } catch {
-      // cancelado ou sem permissão — cai para o download
+      /* cancelado — segue */
     }
   }
-  const url = URL.createObjectURL(blob)
+  // 3) sem partilha de ficheiros: partilhar o link, ou copiá-lo, + descarregar a imagem
+  if (extra?.url && nav.share) {
+    try {
+      await nav.share({ text: extra.text, url: extra.url })
+    } catch {
+      /* segue */
+    }
+  } else if (extra?.url) {
+    try {
+      await navigator.clipboard?.writeText(extra.url)
+    } catch {
+      /* segue */
+    }
+  }
+  const objUrl = URL.createObjectURL(blob)
   const a = document.createElement('a')
-  a.href = url
+  a.href = objUrl
   a.download = filename
   a.click()
-  URL.revokeObjectURL(url)
+  URL.revokeObjectURL(objUrl)
 }

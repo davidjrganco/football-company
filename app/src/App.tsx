@@ -21,6 +21,7 @@ import {
   allDrills,
   currentDrillIndex,
   currentSoloDrillIndex,
+  drillsById,
   futsalDrills,
   isProgramComplete,
   mainPathDrills,
@@ -29,6 +30,7 @@ import {
   programsContainingDrill,
 } from './lib/drills'
 import { CompletionScreen, type CompletionData } from './screens/CompletionScreen'
+import { ChallengeReceived } from './screens/ChallengeReceived'
 import { DrillScreen } from './screens/DrillScreen'
 import { FutsalScreen } from './screens/FutsalScreen'
 import { OnboardingScreen } from './screens/OnboardingScreen'
@@ -59,6 +61,17 @@ export default function App() {
   const [programCelebration, setProgramCelebration] = useState<Program | null>(null)
   const [pendingAchievements, setPendingAchievements] = useState<Achievement[]>([])
   const [achievementCele, setAchievementCele] = useState<Achievement[] | null>(null)
+  // desafio recebido por link (?c=<exercício>)
+  const [challengeDrill, setChallengeDrill] = useState<Drill | null>(() => {
+    try {
+      const id = new URLSearchParams(window.location.search).get('c')
+      const d = id ? drillsById.get(id) : undefined
+      if (d) window.history.replaceState(null, '', window.location.pathname) // limpa o URL
+      return d ?? null
+    } catch {
+      return null
+    }
+  })
   const closeTimer = useRef<number | null>(null)
 
   const openDrill = useCallback((drill: Drill, origin: DrillOrigin) => {
@@ -277,6 +290,8 @@ export default function App() {
     async (drill: Drill) => {
       if (!player) return
       const loc = localizeDrill(drill, lang)
+      const link = `${window.location.origin}/?c=${drill.id}`
+      const host = window.location.host
       try {
         const blob = await generateHighlightImage({
           eyebrow: lang === 'en' ? 'Can you do this?' : 'Consegues fazer isto?',
@@ -286,8 +301,13 @@ export default function App() {
           accent: categoryOfDrill(drill).color,
           lang,
           lines: loc.steps,
+          footerUrl: lang === 'en' ? `try it at ${host}` : `joga em ${host}`,
         })
-        await shareImage(blob, lang === 'en' ? 'challenge.png' : 'desafio.png')
+        const text =
+          lang === 'en'
+            ? `${player.name} challenges you: ${loc.name}! Can you do it? 👉 ${link}`
+            : `${player.name} desafia-te: ${loc.name}! Consegues? 👉 ${link}`
+        await shareImage(blob, lang === 'en' ? 'challenge.png' : 'desafio.png', { text, url: link })
       } catch {
         /* cancelado */
       }
@@ -371,6 +391,17 @@ export default function App() {
           achievements={achievementCele}
           onShare={(a) => void shareAchievement(a)}
           onDone={() => setAchievementCele(null)}
+        />
+      )}
+      {challengeDrill && (
+        <ChallengeReceived
+          drill={challengeDrill}
+          onAccept={(d) => {
+            setChallengeDrill(null)
+            setView('path')
+            openDrill(d, { kind: 'main' })
+          }}
+          onDismiss={() => setChallengeDrill(null)}
         />
       )}
 
