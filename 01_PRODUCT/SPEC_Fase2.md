@@ -12,6 +12,37 @@ atualizado: 2026-08-18
 > (`Player_Review_2026-08-18_Notas_Nicolas.md`). A Fase 2 divide-se em duas
 > iterações; a **A** está construída, a **B** aguarda conteúdo e decisões.
 
+## Iteração G — Conquistas + partilhar tudo (CONSTRUÍDA 2026-09-04)
+
+Pedido do David: "sensação Duolingo" — partilhar feitos, exercícios, progresso.
+Análise dada: interatividade a sério entre amigos (ligas, contas) = Fase 3 com
+backend + ADR novo; o Nicolas já escolheu partilha por imagem (Tarefa 5), por
+isso construiu-se a camada SEM contas:
+- **Conquistas** (`lib/achievements.ts`): 18 medalhas derivadas do progresso
+  (puras, nunca guardadas) — primeiro treino, streaks 3/7/14/30, XP
+  500/1000/2500, meio caminho / caminho completo, 1.º programa / todos, 1.º
+  recorde, medalha de pé fraco, defesa com companhia, futsal completo, 25 dias,
+  jogador completo. `newlyUnlocked(before,after)`.
+- **Celebração estilo Duolingo** (`AchievementCelebration`): medalhão + confetti
+  + PARTILHAR, encadeada depois da conclusão/programa; `completeDrill` devolve
+  `state` p/ detetar as novas.
+- **Grelha de Conquistas no Perfil** (Badge.tsx, 4 colunas, X/18; modal com
+  partilha ou barra de progresso).
+- **Partilhar tudo por imagem story 9:16** (`generateHighlightImage`): conquista,
+  progresso (botão no Perfil), e exercício-desafio ("Consegues fazer isto?" com
+  os passos — botão "Desafiar um amigo" no exercício).
+- 42 testes. Ligas/amigos-em-tempo-real ficam p/ Fase 3 (contas+Supabase+ADR).
+
+## Iteração F — Retenção e integridade (CONSTRUÍDA 2026-09-04)
+
+As 5 melhorias da análise global:
+- **Escudos de streak** (máx 2; ganha-se ao completar o Treino de Hoje; salva a
+  streak de 1 dia falhado).
+- **Sessão adaptativa** ao "Como correu?" (o "difícil" tem prioridade).
+- **Calendário do mês** no Perfil (`trainingDays` no estado).
+- **XP decrescente** para repetições do mesmo exercício no mesmo dia (30→15→5).
+- **Lembrete diário** best-effort (Notification + Periodic Background Sync).
+
 ## Iteração A — Cartão vivo + exercício rico (construída)
 
 ### Cartão de jogador (regras do Nicolas)
