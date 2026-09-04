@@ -228,6 +228,140 @@ export async function generateShareImage(data: ShareCardData): Promise<Blob> {
   })
 }
 
+// ---- imagem de destaque genérica (conquista / progresso / exercício-desafio) ----
+export interface HighlightData {
+  eyebrow: string // "DESBLOQUEEI" · "O MEU PROGRESSO" · "CONSEGUES FAZER ISTO?"
+  big: string // título da conquista / nome do exercício / número grande
+  sub?: string // descrição / detalhe
+  footerName: string // linha do jogador
+  accent: string
+  lang?: 'pt' | 'en'
+  /** linhas extra centradas (ex.: passos do exercício) */
+  lines?: string[]
+}
+
+export async function generateHighlightImage(data: HighlightData): Promise<Blob> {
+  try {
+    await document.fonts.load('120px Anton')
+    await document.fonts.load('700 40px Barlow')
+  } catch {
+    /* fontes de recurso */
+  }
+  const anton = "Anton, 'Arial Narrow', sans-serif"
+  const barlow = 'Barlow, Arial, sans-serif'
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')!
+
+  const bg = ctx.createLinearGradient(0, 0, 0, H)
+  bg.addColorStop(0, '#0C1712')
+  bg.addColorStop(1, '#0A130F')
+  ctx.fillStyle = bg
+  ctx.fillRect(0, 0, W, H)
+  const glow = ctx.createRadialGradient(W / 2, H * 0.32, 60, W / 2, H * 0.32, 900)
+  glow.addColorStop(0, `${data.accent}2E`)
+  glow.addColorStop(1, 'rgba(0,0,0,0)')
+  ctx.fillStyle = glow
+  ctx.fillRect(0, 0, W, H)
+
+  // círculo de giz
+  ctx.strokeStyle = 'rgba(244,251,236,.14)'
+  ctx.lineWidth = 4
+  ctx.setLineDash([10, 24])
+  ctx.beginPath()
+  ctx.arc(W / 2, 0, 420, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.setLineDash([])
+
+  ctx.textAlign = 'center'
+  // eyebrow
+  ctx.fillStyle = '#8AA79A'
+  ctx.font = `700 40px ${barlow}`
+  ctx.fillText(data.eyebrow.toUpperCase(), W / 2, 360)
+
+  // medalhão grande com o acento
+  const cy = 720
+  ctx.beginPath()
+  ctx.arc(W / 2, cy, 210, 0, Math.PI * 2)
+  const badge = ctx.createLinearGradient(W / 2 - 210, cy - 210, W / 2 + 210, cy + 210)
+  badge.addColorStop(0, data.accent)
+  badge.addColorStop(1, `${data.accent}bb`)
+  ctx.fillStyle = badge
+  ctx.shadowColor = `${data.accent}88`
+  ctx.shadowBlur = 80
+  ctx.fill()
+  ctx.shadowBlur = 0
+  // marca de visto/estrela simples no centro do medalhão
+  ctx.strokeStyle = '#0C1712'
+  ctx.lineWidth = 22
+  ctx.lineCap = 'round'
+  ctx.lineJoin = 'round'
+  ctx.beginPath()
+  ctx.moveTo(W / 2 - 70, cy)
+  ctx.lineTo(W / 2 - 15, cy + 55)
+  ctx.lineTo(W / 2 + 80, cy - 55)
+  ctx.stroke()
+
+  // título grande
+  ctx.fillStyle = '#F4FBF6'
+  ctx.font = `92px ${anton}`
+  wrapText(ctx, data.big.toUpperCase(), W / 2, 1080, W - 160, 96)
+
+  // subtítulo
+  if (data.sub) {
+    ctx.fillStyle = '#D8ECE0'
+    ctx.font = `700 40px ${barlow}`
+    wrapText(ctx, data.sub, W / 2, 1230, W - 220, 52)
+  }
+
+  // linhas extra (passos)
+  if (data.lines?.length) {
+    ctx.fillStyle = '#8AA79A'
+    ctx.font = `600 34px ${barlow}`
+    data.lines.slice(0, 3).forEach((line, i) => {
+      ctx.fillText(`${i + 1}. ${line}`, W / 2, 1420 + i * 60)
+    })
+  }
+
+  // rodapé com nome + marca
+  ctx.fillStyle = '#8AA79A'
+  ctx.font = `700 34px ${barlow}`
+  ctx.fillText(data.footerName, W / 2, H - 160)
+  ctx.fillStyle = '#22C55E'
+  ctx.font = `46px ${anton}`
+  ctx.fillText('TREINO DO NICOLAS', W / 2, H - 95)
+
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('canvas vazio'))), 'image/png')
+  })
+}
+
+function wrapText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  x: number,
+  y: number,
+  maxWidth: number,
+  lineHeight: number,
+) {
+  const words = text.split(' ')
+  let line = ''
+  const lines: string[] = []
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word
+    if (ctx.measureText(test).width > maxWidth && line) {
+      lines.push(line)
+      line = word
+    } else {
+      line = test
+    }
+  }
+  if (line) lines.push(line)
+  const startY = y - ((lines.length - 1) * lineHeight) / 2
+  lines.forEach((l, i) => ctx.fillText(l, x, startY + i * lineHeight))
+}
+
 /** Partilha nativa do telemóvel; sem suporte, descarrega o ficheiro. */
 export async function shareImage(blob: Blob, filename: string) {
   const file = new File([blob], filename, { type: 'image/png' })

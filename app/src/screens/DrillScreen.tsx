@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { DrillTimer } from '../components/DrillTimer'
-import { BoltIcon, ChevronLeftIcon, PlayIcon, StarIcon, TargetIcon, UsersIcon } from '../components/icons'
+import { BoltIcon, ChevronLeftIcon, PlayIcon, ShareIcon, StarIcon, TargetIcon, UsersIcon } from '../components/icons'
 import { categoryLabel, categoryOfDrill } from '../lib/categories'
 import { localizeDrill, useLang } from '../lib/i18n'
 import type { Drill } from '../types'
@@ -12,9 +12,10 @@ interface Props {
   xpPreview?: number
   onBack: () => void
   onComplete: (drill: Drill) => void
+  onChallenge: (drill: Drill) => void
 }
 
-export function DrillScreen({ drill, up, xpPreview, onBack, onComplete }: Props) {
+export function DrillScreen({ drill, up, xpPreview, onBack, onComplete, onChallenge }: Props) {
   const { lang, l } = useLang()
   const loc = localizeDrill(drill, lang)
   const cat = categoryOfDrill(drill)
@@ -155,6 +156,15 @@ export function DrillScreen({ drill, up, xpPreview, onBack, onComplete }: Props)
           restSeconds={drill.rest_seconds}
           onFinished={() => setSeriesDone(true)}
         />
+
+        {/* desafiar um amigo com este exercício (partilha por imagem) */}
+        <button
+          className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-line bg-panel2 py-2.5 text-[13px] font-bold text-chalk"
+          onClick={() => onChallenge(drill)}
+        >
+          <ShareIcon size={15} color="#F4FBF6" />
+          {l('Desafiar um amigo', 'Challenge a friend')}
+        </button>
       </div>
 
       <div className="border-t border-line px-[18px] pt-3.5 pb-[calc(16px+env(safe-area-inset-bottom))]">

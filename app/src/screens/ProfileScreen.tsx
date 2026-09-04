@@ -7,6 +7,9 @@ import { drillsById } from '../lib/drills'
 import { localizeDrill, useLang } from '../lib/i18n'
 import { disableReminder, enableReminder, reminderEnabled } from '../lib/reminder'
 import { TrainingCalendar } from '../components/TrainingCalendar'
+import { Badge } from '../components/Badge'
+import { ACHIEVEMENTS, unlockedCount } from '../lib/achievements'
+import type { Achievement } from '../lib/achievements'
 import { positionLabel } from '../hooks/usePlayer'
 import {
   ATTRIBUTE_CODES,
@@ -24,12 +27,15 @@ interface Props {
   progress: ProgressState
   player: PlayerProfile
   onSavePlayer: (profile: PlayerProfile) => void
+  onShareAchievement: (a: Achievement) => void
+  onShareProgress: () => void
 }
 
 /** Cartão de jogador premium (redesign 2026-08): brilho, círculo tático, grelha 3×3. */
-export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
+export function ProfileScreen({ progress, player, onSavePlayer, onShareAchievement, onShareProgress }: Props) {
   const { lang, setLang, l } = useLang()
   const [editing, setEditing] = useState(false)
+  const [openBadge, setOpenBadge] = useState<Achievement | null>(null)
   const [backupMsg, setBackupMsg] = useState<string | null>(null)
   const restoreInput = useRef<HTMLInputElement>(null)
   const values = attributeValues(progress, allDrills, programs)
@@ -274,8 +280,45 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
         </div>
       </div>
 
+      {/* conquistas (estilo Duolingo) */}
+      <div className="mt-3 rounded-2xl border border-line bg-panel px-[15px] py-[13px]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-extrabold tracking-[.1em] text-lime uppercase">
+            <TrophyIcon size={14} color="#A3E635" />
+            {l('Conquistas', 'Achievements')}
+          </div>
+          <span className="text-[11.5px] font-extrabold text-muted">
+            {unlockedCount(progress)}/{ACHIEVEMENTS.length}
+          </span>
+        </div>
+        <div className="mt-3 grid grid-cols-4 gap-y-3">
+          {ACHIEVEMENTS.map((a) => {
+            const unlocked = a.reached(progress)
+            return (
+              <button
+                key={a.id}
+                className="flex cursor-pointer flex-col items-center gap-1 border-none bg-transparent"
+                onClick={() => setOpenBadge(a)}
+              >
+                <Badge icon={a.icon} color={a.color} unlocked={unlocked} size={52} />
+                <span className={`text-center text-[9.5px] leading-tight font-bold ${unlocked ? 'text-chalk' : 'text-muted'}`}>
+                  {a.title[lang === 'en' ? 1 : 0]}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
       {/* calendário do mês — o "não quebres a corrente" à vista */}
       <TrainingCalendar trainingDays={progress.trainingDays} />
+      <button
+        className="mt-2 flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl border border-line bg-panel2 p-2.5 text-[13px] font-bold text-chalk"
+        onClick={onShareProgress}
+      >
+        <ShareIcon size={15} color="#F4FBF6" />
+        {l('Partilhar o meu progresso', 'Share my progress')}
+      </button>
 
       {/* lembrete diário (melhor esforço, sem servidores) */}
       <div className="mt-3 rounded-2xl border border-line bg-panel px-[15px] py-[13px]">
@@ -374,6 +417,57 @@ export function ProfileScreen({ progress, player, onSavePlayer }: Props) {
           </>
         )}
       </p>
+
+      {openBadge && (
+        <div
+          className="absolute inset-0 z-30 flex items-center justify-center bg-[rgba(6,12,9,.82)] p-6 backdrop-blur-[3px]"
+          onClick={() => setOpenBadge(null)}
+        >
+          <div className="w-full rounded-2xl border border-line bg-pitch p-6 text-center" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-center">
+              <Badge icon={openBadge.icon} color={openBadge.color} unlocked={openBadge.reached(progress)} size={96} />
+            </div>
+            <div className="mt-4 font-display text-[24px]">{openBadge.title[lang === 'en' ? 1 : 0]}</div>
+            <div className="mt-1 text-[13.5px] font-bold text-muted">{openBadge.desc[lang === 'en' ? 1 : 0]}</div>
+            {openBadge.reached(progress) ? (
+              <button
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl border-none px-5 py-3 font-display text-[15px] tracking-[.05em]"
+                style={{ background: openBadge.color, color: '#0C1712', boxShadow: `0 5px 0 ${openBadge.color}88` }}
+                onClick={() => {
+                  onShareAchievement(openBadge)
+                  setOpenBadge(null)
+                }}
+              >
+                <ShareIcon size={16} color="#0C1712" />
+                {l('PARTILHAR', 'SHARE')}
+              </button>
+            ) : (
+              (() => {
+                const pr = openBadge.progress(progress)
+                return (
+                  <div className="mt-5">
+                    <div className="h-2 overflow-hidden rounded-full bg-[rgba(233,245,236,.1)]">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${Math.round((pr.cur / pr.target) * 100)}%`, background: openBadge.color }}
+                      />
+                    </div>
+                    <div className="mt-2 text-[12.5px] font-bold text-muted">
+                      {pr.cur} / {pr.target} · {l('a caminho!', 'on your way!')}
+                    </div>
+                  </div>
+                )
+              })()
+            )}
+            <button
+              className="mt-3 cursor-pointer border-none bg-transparent text-[13px] font-bold text-muted"
+              onClick={() => setOpenBadge(null)}
+            >
+              {l('Fechar', 'Close')}
+            </button>
+          </div>
+        </div>
+      )}
 
       {editing && (
         <div className="absolute inset-0 z-30 flex items-center justify-center bg-[rgba(6,12,9,.8)] p-5 backdrop-blur-[3px]">

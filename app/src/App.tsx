@@ -1,6 +1,9 @@
 import { useCallback, useRef, useState } from 'react'
 import { BottomNav, type View } from './components/BottomNav'
+import { AchievementCelebration } from './components/AchievementCelebration'
 import { ProgramCelebration } from './components/ProgramCelebration'
+import { type Achievement, newlyUnlocked, unlockedCount } from './lib/achievements'
+import { categoryOfDrill } from './lib/categories'
 import { usePlayer } from './hooks/usePlayer'
 import { localToday, useProgress } from './hooks/useProgress'
 import {
@@ -13,7 +16,7 @@ import {
 import { SESSION_BONUS_XP, buildDailySession } from './lib/dailySession'
 import { localizeDrill, useLang } from './lib/i18n'
 import { xpForCompletion } from './lib/progressLogic'
-import { generateShareImage, shareImage } from './lib/shareCard'
+import { generateHighlightImage, generateShareImage, shareImage } from './lib/shareCard'
 import {
   allDrills,
   currentDrillIndex,
@@ -54,6 +57,8 @@ export default function App() {
   const [completion, setCompletion] = useState<CompletionData | null>(null)
   const [pendingProgramCele, setPendingProgramCele] = useState<Program | null>(null)
   const [programCelebration, setProgramCelebration] = useState<Program | null>(null)
+  const [pendingAchievements, setPendingAchievements] = useState<Achievement[]>([])
+  const [achievementCele, setAchievementCele] = useState<Achievement[] | null>(null)
   const closeTimer = useRef<number | null>(null)
 
   const openDrill = useCallback((drill: Drill, origin: DrillOrigin) => {
@@ -116,6 +121,10 @@ export default function App() {
         sessionBonusXp: SESSION_BONUS_XP,
       })
       closeDrill()
+
+      // conquistas desbloqueadas com este treino (mostradas depois da conclusão)
+      const gained = newlyUnlocked(progress, result.state)
+      setPendingAchievements(gained)
 
       // próximo exercício, no contexto de onde este veio
       let next: Drill | null = null
@@ -195,18 +204,95 @@ export default function App() {
     [player, progress, lang],
   )
 
+  // fila de celebrações: conclusão → programa → conquistas → (próximo/nada)
   const dismissCompletion = useCallback(
     (nextDrill: Drill | null) => {
-      const cele = pendingProgramCele
+      const prog = pendingProgramCele
+      const achs = pendingAchievements
       setCompletion(null)
       setPendingProgramCele(null)
-      if (cele) {
-        setProgramCelebration(cele) // celebração especial de programa completo
+      if (prog) {
+        setProgramCelebration(prog)
+      } else if (achs.length) {
+        setAchievementCele(achs)
+        setPendingAchievements([])
       } else if (nextDrill) {
         openDrill(nextDrill, drillOrigin)
       }
     },
-    [pendingProgramCele, drillOrigin, openDrill],
+    [pendingProgramCele, pendingAchievements, drillOrigin, openDrill],
+  )
+
+  const dismissProgramCele = useCallback(() => {
+    setProgramCelebration(null)
+    if (pendingAchievements.length) {
+      setAchievementCele(pendingAchievements)
+      setPendingAchievements([])
+    }
+  }, [pendingAchievements])
+
+  // ---- partilhas por imagem (Modo Amigos fase 1, sem contas) ----
+  const shareAchievement = useCallback(
+    async (a: Achievement) => {
+      if (!player) return
+      try {
+        const blob = await generateHighlightImage({
+          eyebrow: lang === 'en' ? 'I unlocked' : 'Desbloqueei',
+          big: a.title[lang === 'en' ? 1 : 0],
+          sub: a.desc[lang === 'en' ? 1 : 0],
+          footerName: player.name,
+          accent: a.color,
+          lang,
+        })
+        await shareImage(blob, lang === 'en' ? 'achievement.png' : 'conquista.png')
+      } catch {
+        /* cancelado */
+      }
+    },
+    [player, lang],
+  )
+
+  const shareProgress = useCallback(async () => {
+    if (!player) return
+    try {
+      const rating = overallRating(progress.xpTotal)
+      const blob = await generateHighlightImage({
+        eyebrow: lang === 'en' ? 'My progress' : 'O meu progresso',
+        big: `${progress.trainingDays.length} ${lang === 'en' ? 'training days' : 'dias de treino'}`,
+        sub:
+          lang === 'en'
+            ? `${rating} OVR · ${progress.xpTotal} XP · ${progress.streak.best}-day best streak · ${unlockedCount(progress)} achievements`
+            : `${rating} GERAL · ${progress.xpTotal} XP · melhor streak ${progress.streak.best} dias · ${unlockedCount(progress)} conquistas`,
+        footerName: player.name,
+        accent: '#22C55E',
+        lang,
+      })
+      await shareImage(blob, lang === 'en' ? 'my-progress.png' : 'o-meu-progresso.png')
+    } catch {
+      /* cancelado */
+    }
+  }, [player, progress, lang])
+
+  const shareDrillChallenge = useCallback(
+    async (drill: Drill) => {
+      if (!player) return
+      const loc = localizeDrill(drill, lang)
+      try {
+        const blob = await generateHighlightImage({
+          eyebrow: lang === 'en' ? 'Can you do this?' : 'Consegues fazer isto?',
+          big: loc.name,
+          sub: `${drill.sets} × ${drill.work_seconds}s`,
+          footerName: `${player.name} ${lang === 'en' ? 'challenges you' : 'desafia-te'}`,
+          accent: categoryOfDrill(drill).color,
+          lang,
+          lines: loc.steps,
+        })
+        await shareImage(blob, lang === 'en' ? 'challenge.png' : 'desafio.png')
+      } catch {
+        /* cancelado */
+      }
+    },
+    [player, lang],
   )
 
   if (!player) {
@@ -241,7 +327,13 @@ export default function App() {
           <ProgramsScreen progress={progress} onOpenProgram={setActiveProgram} />
         ))}
       {view === 'profile' && (
-        <ProfileScreen progress={progress} player={player} onSavePlayer={savePlayer} />
+        <ProfileScreen
+          progress={progress}
+          player={player}
+          onSavePlayer={savePlayer}
+          onShareAchievement={(a) => void shareAchievement(a)}
+          onShareProgress={() => void shareProgress()}
+        />
       )}
       {view === 'futsal' && (
         <FutsalScreen progress={progress} onOpenDrill={(d) => openDrill(d, { kind: 'futsal' })} />
@@ -257,6 +349,7 @@ export default function App() {
           )}
           onBack={closeDrill}
           onComplete={handleComplete}
+          onChallenge={(d) => void shareDrillChallenge(d)}
         />
       )}
 
@@ -271,7 +364,14 @@ export default function App() {
         />
       )}
       {programCelebration && (
-        <ProgramCelebration program={programCelebration} onDone={() => setProgramCelebration(null)} />
+        <ProgramCelebration program={programCelebration} onDone={dismissProgramCele} />
+      )}
+      {achievementCele && (
+        <AchievementCelebration
+          achievements={achievementCele}
+          onShare={(a) => void shareAchievement(a)}
+          onDone={() => setAchievementCele(null)}
+        />
       )}
 
       <BottomNav view={view} onChange={setView} />

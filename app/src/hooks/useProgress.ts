@@ -96,6 +96,7 @@ export interface CompletionResult {
   sessionBonus: number // XP extra por ter completado o Treino de Hoje (0 se não)
   shieldUsed: boolean // um escudo salvou a streak
   shieldEarned: boolean // ganhou um escudo ao completar a sessão
+  state: ProgressState // estado depois do treino (para detetar conquistas novas)
 }
 
 export function useProgress() {
@@ -124,7 +125,7 @@ export function useProgress() {
       )
       save(state)
       setProgress(state)
-      return { xpGained, streak: state.streak.current, wasNew, sessionBonus, shieldUsed, shieldEarned }
+      return { xpGained, streak: state.streak.current, wasNew, sessionBonus, shieldUsed, shieldEarned, state }
     },
     [progress],
   )
